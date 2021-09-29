@@ -19,4 +19,6 @@ public class PerfAspect {
         System.out.println(System.currentTimeMillis() - begin);
         return retVal;
     }
+
+    //@Around말고도 @Before, @AfterReturning, @AfterThrowing도 가능.
 }
