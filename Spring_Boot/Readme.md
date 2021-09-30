@@ -22,7 +22,10 @@
   2. @EnableConfigurationProperties("property 이름.class")을 Configuration class에 설정
   3. 자동설정 사용하는 프로젝트에서 프로퍼티 키값을 작성 후 실행 -> 자동 완성
 
+```java
+@Autowired
 
+```
 
 
 
