@@ -36,7 +36,7 @@
 
    
 
-<img src="/Users/jungwoo/Library/Application Support/typora-user-images/image-20211002040648128.png" alt="image-20211002040648128" style="zoom: 50%;" />
+<img src="./img/image-20211002040648128.png" alt="image-20211002040648128" style="zoom: 50%;" />
 
 2. 프로젝트에 ssl key 적용
 
@@ -52,7 +52,7 @@ server.ssl.key-alias= tomcat
 
 3. 프로젝트 실행 후 확인
 
-![image-20211002041115115](/Users/jungwoo/Library/Application Support/typora-user-images/image-20211002041115115.png)
+![image-20211002041115115](./img/image-20211002041115115.png)
 
 
 
@@ -127,7 +127,7 @@ server.port = 8443
 
 그 결과 아래와 같이 정상적으로 된다. 브라우저에서는 인증서 문제로 접속 불가.
 
-![image-20211002043143082](/Users/jungwoo/Library/Application Support/typora-user-images/image-20211002043143082.png)
+![image-20211002043143082](./img/image-20211002043143082.png)
 
 
 
@@ -153,7 +153,7 @@ server.http2.enabled=true//추가
 
 
 
-![S](/Users/jungwoo/Library/Application Support/typora-user-images/image-20211002044920689.png)
+![S](./img/image-20211002044920689.png)
 
 HTTP2로 적용이 된다.
 
@@ -169,7 +169,7 @@ Spring Boot ships by default with Tomcat 9.0.x which supports `h2c` out of the b
 
 Project Structure에서 SDK를 자바 9버전으로 변경 후 모듈에서 의존성탭으로 들어간 후 Module SDK를 자바 9버전으로 변경하면 된다.
 
-![image-20211002051135283](/Users/jungwoo/Library/Application Support/typora-user-images/image-20211002051135283.png)
+![image-20211002051135283](./img/image-20211002051135283.png)
 
 정상적으로 되는 모습.
 

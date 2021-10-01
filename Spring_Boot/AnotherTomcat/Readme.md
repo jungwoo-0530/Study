@@ -8,7 +8,7 @@
 
 
 
-![image-20211001023628586](/Users/jungwoo/Library/Application Support/typora-user-images/image-20211001023628586.png)
+![image-20211001023628586](./img/image-20211001023628586.png)
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-![image-20211001024834101](/Users/jungwoo/Library/Application Support/typora-user-images/image-20211001024834101.png)
+![image-20211001024834101](./img/image-20211001024834101.png)
 
 
 
@@ -64,7 +64,7 @@ jetty에서 undertow로 변경
         </dependency>
 ```
 
-![image-20211001025207021](/Users/jungwoo/Library/Application Support/typora-user-images/image-20211001025207021.png)
+![image-20211001025207021](./img/image-20211001025207021.png)
 
 
 
@@ -126,26 +126,10 @@ public class PortListener implements ApplicationListener<ServletWebServerInitial
 
 
 
-![image-20211001030555283](/Users/jungwoo/Library/Application Support/typora-user-images/image-20211001030555283.png)
+![image-20211001030555283](./img/image-20211001030555283.png)
 
 
 
 제대로 찍힌 것을 알 수 있고 undertow가 실행되고 바로 출력이 저 이벤트가 실행 된 것을 알 수 있다.
 
 
-
-### HTTPS
-
-
-
-우선 개인키를 생성해야한다.
-
-터미널에서 개인키를 생성 방법은 keytool을 사용하면 된다.
-
-```terminal
-keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 400
-```
-
-
-
-생성이 완료되면 해당 디렉토리에 keystore.p12라는 개인키가 생성이 된다.
