@@ -59,7 +59,7 @@ public class Application {
 
 그 결과 정상적으로 출력이 된다.
 
-<img src="../img/image-20211002092554933.png" alt="image-20211002092554933" style="zoom:50%;" />
+<img src="../img/image-20211002092554933.png" alt="image-20211002092554933" style="zoom: 25%;" />
 
 
 
@@ -120,9 +120,9 @@ public class Application {
 
 또한 터미널에서 주는 방법은 아래와 같다.
 
-<img src="../img/image-20211002095650247.png" alt="image-20211002095650247" style="zoom:67%;" />
+<img src="../img/image-20211002095650247.png" alt="image-20211002095650247" style="zoom: 33%;" />
 
-![image-20211002095711386](../img/image-20211002095711386.png)
+<img src="../img/image-20211002095711386.png" alt="image-20211002095711386" style="zoom:33%;" />
 
 mvn을 패키징하고 --jungwoo 아규먼트를 주고 실행한다.
 
@@ -149,7 +149,7 @@ public class SampleListener{
 
 
 
-<img src="../img/image-20211002095307672.png" alt="image-20211002095307672" style="zoom:67%;" />
+<img src="../img/image-20211002095307672.png" alt="image-20211002095307672" style="zoom: 33%;" />
 
 정상적으로 들어온 것을 알 수 있다.
 
@@ -180,7 +180,7 @@ public class SampleListener implements ApplicationRunner
 
 
 
-<img src="../img/image-20211002100134140.png" alt="image-20211002100134140" style="zoom:67%;" />
+<img src="../img/image-20211002100134140.png" alt="image-20211002100134140" style="zoom: 33%;" />
 
 
 
