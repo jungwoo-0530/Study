@@ -8,7 +8,7 @@
 
 
 
-![image-20211001023628586](./img/image-20211001023628586.png)
+<img src="./img/image-20211001023628586.png" alt="image-20211001023628586" style="width:50%;" />
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-![image-20211001024834101](./img/image-20211001024834101.png)
+<img src="./img/image-20211001024834101.png" alt="image-20211001024834101" style="width:33%;" />
 
 
 
@@ -64,7 +64,7 @@ jetty에서 undertow로 변경
         </dependency>
 ```
 
-![image-20211001025207021](./img/image-20211001025207021.png)
+<img src="./img/image-20211001025207021.png" alt="image-20211001025207021" style="width:33%;" />
 
 
 
@@ -126,7 +126,7 @@ public class PortListener implements ApplicationListener<ServletWebServerInitial
 
 
 
-![image-20211001030555283](./img/image-20211001030555283.png)
+<img src="./img/image-20211001030555283.png" alt="image-20211001030555283" style="width:70%;" />
 
 
 
