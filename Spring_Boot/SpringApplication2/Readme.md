@@ -188,4 +188,4 @@ ApplicationRunner는 JVM option을 아예 받지 못하고 아규먼트만 받�
 
 또한 ApplicationRunner가 여러 개라면 @Order(숫자)를 사용하여 ApplicationRunner의 순서를 정할 수 있다. 참고로 낮은 숫자가 우선순위가 높다.
 
-![image-20211002100134140](../img/image-20211002100134140.png)
+<img src="../img/image-20211002100134140.png" alt="image-20211002100134140" style="width:40%;" />
