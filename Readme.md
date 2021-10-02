@@ -36,11 +36,11 @@
 
   
 
-- ## [외부 설정]()
+- ## [외부 설정(property)](./Spring_Boot/properties/Readme.md)
 
 
 
-- ## [프로 파일]()
+- ## [프로 파일(profile)](./Spring_Boot/profile/Readme.md)
 
 
 
@@ -68,6 +68,8 @@
 
 
 
+# Spring Mvc
+
 
 
 # [Web Study](./Web_Basic/Readme.md)
@@ -91,7 +93,6 @@
    2. mvn spring boot:run : Maven - name - Plugins - spring-boot - spring-boot:run
 
       플러그인  : less 파일들을 컴파일해서 css파일을 작성하고 자바스크립트를 작성
-
 
 
 
