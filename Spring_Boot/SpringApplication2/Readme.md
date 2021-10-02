@@ -120,7 +120,7 @@ public class Application {
 
 또한 터미널에서 주는 방법은 아래와 같다.
 
-<img src="../img/image-20211002095650247.png" alt="image-20211002095650247" style="width:30%;" />
+<img src="../img/image-20211002095650247.png" alt="image-20211002095650247" style="width:50%;" />
 
 <img src="../img/image-20211002095711386.png" alt="image-20211002095711386" sstyle="width:30%;" />
 
@@ -149,7 +149,7 @@ public class SampleListener{
 
 
 
-<img src="../img/image-20211002095307672.png" alt="image-20211002095307672" style="width:30%;" />
+<img src="../img/image-20211002095307672.png" alt="image-20211002095307672" style="width:20%;" />
 
 정상적으로 들어온 것을 알 수 있다.
 
