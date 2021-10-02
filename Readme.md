@@ -15,6 +15,8 @@
 
   - #### [ConfigurationProperties]()
 
+  
+  
 - ## 내장 웹 서버
   - #### [컨테이너와 포트](./Spring_Boot/AnotherTomcat/Readme.md)
 
@@ -22,9 +24,17 @@
 
 
 
-- ### [SpringApplication](./Spring_Boot/SpringApplication1/Readme.md)
+- ### SpringApplication
 
+  - #### [로그레벨설정과 배너](./Spring_Boot/SpringApplication1/Readme.md)
 
+    - https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-spring-application.html#boot-features-spring-application
+
+  - #### [ApplicationEvent, WebApplicationType, ApplicationArguments, ApplicationRunner](./Spring_Boot/SpringApplication2/Readme.md)
+
+    - https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-spring-application.html#boot-features-application-events-and-listeners
+
+  
 
 - ## [외부 설정]()
 

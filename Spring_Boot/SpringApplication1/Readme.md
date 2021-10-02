@@ -1,4 +1,4 @@
-# SpringApplication
+# SpringApplication-1
 
 
 
@@ -102,10 +102,3 @@ public class SpringApplication1Application {
 
 
 **SpringApplicationBuilder**로 빌더 패던 사용으로 만들 수 있다.
-
-
-
-
-
-### 3. ApplicationEvent
-
