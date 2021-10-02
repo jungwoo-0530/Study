@@ -59,7 +59,7 @@ public class Application {
 
 그 결과 정상적으로 출력이 된다.
 
-<img src="../img/image-20211002092554933.png" alt="image-20211002092554933" style="zoom: 25%;" />
+<img src="../img/image-20211002092554933.png" alt="image-20211002092554933" style="width:30%;" />
 
 
 
@@ -114,15 +114,15 @@ public class Application {
 
 아규먼트를 주는 방법은 두가지가 존재한다.
 
-<img src="../img/image-20211002094931329.png" alt="image-20211002094931329" style="zoom:67%;" />
+<img src="../img/image-20211002094931329.png" alt="image-20211002094931329" style="width:30%;" />
 
 위와 같이 project Configuration에서 주는 방법
 
 또한 터미널에서 주는 방법은 아래와 같다.
 
-<img src="../img/image-20211002095650247.png" alt="image-20211002095650247" style="zoom: 33%;" />
+<img src="../img/image-20211002095650247.png" alt="image-20211002095650247" style="width:30%;" />
 
-<img src="../img/image-20211002095711386.png" alt="image-20211002095711386" style="zoom:33%;" />
+<img src="../img/image-20211002095711386.png" alt="image-20211002095711386" sstyle="width:30%;" />
 
 mvn을 패키징하고 --jungwoo 아규먼트를 주고 실행한다.
 
@@ -149,7 +149,7 @@ public class SampleListener{
 
 
 
-<img src="../img/image-20211002095307672.png" alt="image-20211002095307672" style="zoom: 33%;" />
+<img src="../img/image-20211002095307672.png" alt="image-20211002095307672" style="width:30%;" />
 
 정상적으로 들어온 것을 알 수 있다.
 
@@ -180,12 +180,10 @@ public class SampleListener implements ApplicationRunner
 
 
 
-<img src="../img/image-20211002100134140.png" alt="image-20211002100134140" style="zoom: 33%;" />
+<img src="../img/image-20211002100134140.png" alt="image-20211002100134140" style="width:30%;" />
 
 
 
 ApplicationRunner는 JVM option을 아예 받지 못하고 아규먼트만 받을 수 있다.
 
 또한 ApplicationRunner가 여러 개라면 @Order(숫자)를 사용하여 ApplicationRunner의 순서를 정할 수 있다. 참고로 낮은 숫자가 우선순위가 높다.
-
-<img src="../img/image-20211002100134140.png" alt="image-20211002100134140" style="width:40%;" />
