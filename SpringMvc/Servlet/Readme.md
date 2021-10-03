@@ -618,6 +618,8 @@ public class HelloController {
 
 기능들은 loop문을 돌면서 해당하는 특정한 빈들을 찾는데 찾지 못한다면 기본전략을 사용하여 기능이 동작한다.
 
+기능들은 DispatcherServlet.properties에 정의되어 있다.
+
 
 
 ### DispatcherServlet - ViewResolver 커스텀
