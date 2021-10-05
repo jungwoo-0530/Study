@@ -90,7 +90,7 @@
 
 
 
-- ### [Formatter, HandlerInterceptor, resource handler, HTTP message converter, 그 밖에 WebMvcConfig 설정](./SpringMvc/Configuration/Readme.md)
+- ### [Formatter, HandlerInterceptor, resource handler, HTTP message converter, 그 밖에 WebMvcConfig 설정](./SpringMvc/demo-boot-web/Readme.md)
 
 
 
