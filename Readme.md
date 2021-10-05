@@ -82,13 +82,15 @@
 
 - ### [Bean 설정 방법(@EnableWebMvc)](./Bean설정방법.md)
 
-
-
-- ### [JSP 사용하기, WAR 배포하기](./SpringMvc/demo-jsp/Readme.md)
-
+## WebMvcConfigurer
 
 
 
+- ### [WebMvcConfigurer, JSP 사용하기, WAR 배포하기](./SpringMvc/demo-jsp/Readme.md)
+
+
+
+- ### [Formatter, HandlerInterceptor, resource handler, HTTP message converter, 그 밖에 WebMvcConfig 설정](./SpringMvc/Configuration/Readme.md)
 
 
 
