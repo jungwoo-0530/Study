@@ -1,8 +1,25 @@
-# 스프링 부트에서 **JSP** 사용하기
+# WebMvcConfigurer
+
+<img src="../img/image-20211006042210264.png" alt="image-20211006042210264" style="width:40%;" />
 
 
 
+#### 스프링 부트의 “주관”이 적용된 자동 설정이 동작한다.
 
+- JSP 보다 Thymeleaf 선호
+- JSON 지원
+- 정적 리소스 지원 (+ 웰컴 페이지, 파비콘 등 지원)
+
+#### 스프링 MVC 커스터마이징
+
+- application.properties
+- **@Configuration + Implements WebMvcConfigurer: 스프링 부트의 스프링 **MVC 자동설정 **+** 추가 설정**
+
+- @Configuration + @EnableWebMvc + Imlements WebMvcConfigurer: 스프링 부트의 스프링 MVC 자동설정 사용하지 않음.스프링 부트에서 **JSP** 사용하기
+
+
+
+## 스프링 부트에서 JSP 사용하기
 
 “If possible, JSPs should be avoided. There are several known limitations when using them with embedded servlet containers.”
 
