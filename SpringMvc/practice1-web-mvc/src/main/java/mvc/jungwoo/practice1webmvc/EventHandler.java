@@ -22,6 +22,7 @@ public class EventHandler {
     @PostMapping(value = "/events",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    
     @ResponseBody
     public String eventCreate(){
         return "event";
