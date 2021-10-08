@@ -119,9 +119,9 @@
 
   - #### [URI 패턴](./SpringMvc/UriPattern.md)
 
-  - #### @RequestMapping
+  - #### [@RequestMapping](./SpringMvc/RequestMapping.md)
 
-  - #### 폼 서브밋(타임리프)
+  - #### [폼 서브밋(타임리프)](./SpringMvc/form_submit.md)
 
   - #### @ModelAttribute
 
