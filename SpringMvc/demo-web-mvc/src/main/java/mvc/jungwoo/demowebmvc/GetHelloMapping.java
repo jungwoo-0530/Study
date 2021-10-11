@@ -11,5 +11,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @RequestMapping(method = RequestMethod.GET, value = "/hello")//애노테이션 만들때는 GetMapping을 사용하지 못한다.
-public @interface GetHelloMapping {
 }

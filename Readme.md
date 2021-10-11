@@ -129,15 +129,15 @@
 
   - #### [폼 서브밋 (에러 처리)](./SpringMvc/form_submit_error.md)
 
-  - #### [@SessionAttributes](./SpringMvc/SessionAttribute.md)
+  - #### [@SessionAttributes](./SpringMvc/SessionAttributes.md)
 
-  - #### 멀티 폼 서브밋
+  - #### [멀티 폼 서브밋](./SpringMvc/multi_form_submit.md)
 
-  - #### @SessionAttribute
+  - #### [@SessionAttribute](./SpringMvc/SessionAttribute.md)
 
-  - #### RedirectAttributes
+  - #### [RedirectAttributes](./SpringMvc/RedirectAttributes.md)
 
-  - #### Flash Attribute
+  - #### [Flash Attribute](./SpringMvc/Flash_Attributes.md)
 
   - #### MultipartFile
 
