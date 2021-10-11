@@ -5,7 +5,7 @@
 - 스프링 부트에서는 이 기능이 기본적으로 비활성화 되어 있다.
 - Ignore-default-model-on-redirect 프로퍼티를 사용해서 활성화 할 수 있다.
 
-
+ 
 
 #### 원하는 값만 리다이렉트 할 때 전달하고 싶다면 RedirectAttributes에 명시적으로 추가할 수 있다.
 
