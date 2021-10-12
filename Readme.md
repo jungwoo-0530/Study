@@ -133,13 +133,13 @@
 
   - #### [멀티 폼 서브밋](./SpringMvc/multi_form_submit.md)
 
-  - #### [@SessionAttribute](./SpringMvc/SessionAttribute.md)
+  - #### [@SessionAttribute](./SpringMvc/SessionAttribute.md) - 세션설정
 
-  - #### [RedirectAttributes](./SpringMvc/RedirectAttributes.md)
+  - #### [RedirectAttributes](./SpringMvc/RedirectAttributes.md) - 리다이렉트
 
-  - #### [Flash Attribute](./SpringMvc/Flash_Attributes.md)
+  - #### [Flash Attribute](./SpringMvc/Flash_Attributes.md) - 리다이렉트
 
-  - #### MultipartFile
+  - #### [MultipartFile](./SpringMvc/MultipartFile.md) - 파일 업로드
 
   - #### ResponseEntity
 
