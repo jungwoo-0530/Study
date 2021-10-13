@@ -141,7 +141,7 @@
 
   - #### [MultipartFile](./SpringMvc/MultipartFile.md) - 파일 업로드
 
-  - #### ResponseEntity
+  - #### [ResponseEntity](./SpringMvc/ResponseEntity.md)
 
   - #### @RequestBody & HttpEntity
 
