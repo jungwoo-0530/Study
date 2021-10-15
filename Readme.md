@@ -152,6 +152,8 @@
   - #### [@ModelAttribute의 또 다른 사용법](./SpringMvc/@ModelAttribute2.md)
   
   - #### [DataBinder - @InitBinder](./SpringMvc/@initBiner.md)
+  
+  - #### [에외 처리 핸들러 - @ExceptionHandler](./SpringMvc/@ExceptionHandler.md)
 
 
 
