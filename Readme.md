@@ -143,7 +143,7 @@
 
   - #### [ResponseEntity](./SpringMvc/ResponseEntity.md) - 파일 다운로드
 
-  - #### @RequestBody & HttpEntity
+  - #### [@RequestBody & HttpEntity](./SpringMvc/RequestBody_HttpEntity.md)
 
   - #### @Response & ResponseEntity
 
