@@ -143,9 +143,9 @@
 
   - #### [ResponseEntity](./SpringMvc/ResponseEntity.md) - 파일 다운로드
 
-  - #### [@RequestBody & HttpEntity](./SpringMvc/RequestBody_HttpEntity.md)
+  - #### [@RequestBody & HttpEntity](./SpringMvc/RequestBody_HttpEntity.md) - 요청 본문(body)에 들어있는 데이터 변환
 
-  - #### @Response & ResponseEntity
+  - #### [@Response & ResponseEntity](./SpringMvc/ResponseBody_ResponseEntity.md) 
 
 
 
