@@ -74,4 +74,3 @@ addFlashAttribute를 할 수 있는데 이 newEvent 객체가 바로 HTTP 세션
 asMap()은 Map으로 변환하는 메서드이다. 맵으로 변환하여 key값 newEvent를 사용하여 get하여 newEvent에 넣는다.<img src="img/image-20211011122557008.png" alt="image-20211011122557008" style="width:50%;" />
 
 세션에 newEvent가 들어가 있는 것을 알 수 있다.
-
