@@ -70,6 +70,8 @@
 
   - #### [ExceptionHandler](./Spring_Boot/ExceptionHandler.md)
 
+  - #### [HATEOAS](./Spring_Boot/HATEOAS.md)
+
 
 
 
