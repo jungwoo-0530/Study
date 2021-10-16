@@ -58,6 +58,14 @@
 
   - #### [ViewResolver](./Spring_Boot/ViewResolver.md)-ContentNegotiatingViewResolver, xml converter
 
+  - #### [정적 리소스 지원](./Spring_Boot/정적_리소스_지원.md)
+
+
+
+
+
+
+
 - ## [스프링 데이터]()
 
 
