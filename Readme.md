@@ -60,6 +60,10 @@
 
   - #### [정적 리소스 지원](./Spring_Boot/정적_리소스_지원.md)
 
+  - #### [웹JAR](./Spring_Boot/웹JAR.md)
+
+  - #### [index 페이지와 파비콘](./Spring_Boot/index페이지와파비콘.md)
+
 
 
 
