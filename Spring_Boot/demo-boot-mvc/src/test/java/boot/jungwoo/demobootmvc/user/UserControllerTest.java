@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
@@ -27,17 +28,18 @@ public class UserControllerTest {
     }
 
     @Test
-    public void createUser_JSON() throws Exception {
+    public void createUser_XML() throws Exception {
         String userJson = "{\"username\":\"jungwoo\",\"password\":\"123\"}";
         mockMvc.perform(post("/users/create")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_XML)
                 .content(userJson))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username",
-                        is(equalTo("jungwoo"))))
-                .andExpect(jsonPath("$.password",
-                        is(equalTo("123"))));
+                .andExpect(xpath("/User/username")
+                        .string("jungwoo"))
+                .andExpect(xpath("/User/password")
+                        .string("123"));
 
     }
 
