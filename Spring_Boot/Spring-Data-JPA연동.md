@@ -98,7 +98,13 @@ public class Account {
 }
 ```
 
+@Entity는 객체와 테이블 맵핑하는 애노테이션이다. @Entity는 JPA가 관리하고 
+
 @GeneratedValue를 사용하면 Repository를 생성할 때, 자동으로 값을 생성해준다. 여기서는 id를 자동으로 생성.
+
+@Id는 기본키를 설정.
+
+
 
 
 
