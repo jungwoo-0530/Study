@@ -166,6 +166,8 @@ HandlerMapping, HandlerAdapter, ViewResolve는 모두 dispatcher-servlet.xml에 
 
 아래는 초밥 개발자님 블로그에서 퍼온 dispatcher-servlet.xml이다.
 
+이러한 dispatcher-servlet.xml을 WebConfig 자바 파일로도 할 수 있다.
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -218,3 +220,12 @@ Spring과 Spring Mvc에는 우리에게 큰 이득을 준다.
 - Spring에서는 요청마다 서블릿을 만들어서 사용했다면 Spring Mvc에서는 dispatcher servlet인 servlet하나로 1개이다.
 - 또한 Spring에서는 서블릿마다 Web.xml에 작성하여 servlet을 관리하였지만 Mvc에서는 Web.xml에 dispatcher하나만 있기 때문에 관리가 편하다고 볼 수 있다.
 - 추가로 Spring의 Servlet에서 View로 보내 주는 것까지 직접 다 만들었지만 Spring Mvc에서는 View를 분리시키는 효과를 보았기에 효율적으로 개발을 할 수 있다.
+
+
+
+-----------------------
+
+### Spring Boot
+
+
+
