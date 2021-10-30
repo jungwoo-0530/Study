@@ -18,10 +18,6 @@ public class Member {
 //    @Column(name = "TEAM_ID")
 //    private Long teamId;
 
-    @ManyToOne//멤버입장에서는 many to one. 여러 멤버가 하나의 팀을 가지기 때문에.
-    @JoinColumn(name = "TEAM_ID")//멤버 테이블 외래키인 TEAM_ID와 매핑을 하여야 하기에.
-    private Team team;
-
     public Long getId() {
         return id;
     }

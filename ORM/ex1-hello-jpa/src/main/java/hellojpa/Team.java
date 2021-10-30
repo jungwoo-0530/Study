@@ -12,7 +12,8 @@ public class Team {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "team")//mappedBy는 일대다매핑에서 나는 어떤것이랑 연결되어있지를 나타내는 것. 즉, Member.class에 team 변수랑 연결.
+    @OneToMany
+    @JoinColumn(name = "TEAM_ID")
     private List<Member> members = new ArrayList<>();
 
     public Long getId() {
