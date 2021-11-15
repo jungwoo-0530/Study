@@ -1,0 +1,20 @@
+spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/second
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      format_sql: true
+      show_sql: true
+    open-in-view: true
+logging.level:
+  org.hibernate.SQL: debug
+# org.hibernate.type: trace
