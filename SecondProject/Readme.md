@@ -1,10 +1,42 @@
-# 웹
+# 웹(Web)
 ## environment
 * IDE : IntelliJ
 * Database : H2
 * Build Tool : Gradle
 * Java.ver : 8
 * Framework : spring - boot 2.5.6
+
+
+
+
+
+## function
+
+1. 회원
+   1. 회원 등록
+   2. 회원 목록 - Admin 전용
+   3. 회원 추방 -  Admin 전용
+   4. 회원 탈퇴
+   5. 로그인
+2. 상품
+   1. 상품 등록 - Provider 전용
+   2. 상품 제거 - Provider, Admin 전용
+   3. 상품 목록
+   4. 상품 장바구니
+   5. 상품 관리 - Provider, Admin 전용
+3. 주문
+   1. 주문 목록
+   2. 상품 주문
+   3. 주문 취소
+   4. 주문 반품
+   5. 상품 주문 목록 - 누가 몇개 샀는지(Provider 전용)
+4. 기타
+   1. QnA 게시판 - Comment로 답변
+   2. 이메일 질문(1:1) - Admin 이메일로 전송.
+
+
+
+
 
 ## Dependency
 ```
