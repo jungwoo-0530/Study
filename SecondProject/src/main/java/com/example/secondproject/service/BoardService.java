@@ -23,12 +23,10 @@ public class BoardService {
     }
 
     @Transactional
-    public List<Board> findAll(){
+    public List<Board> findAll() {
         return boardRepository.findAll();
     }
 
-    @Transactional
-    public
 
 
 }
