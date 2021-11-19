@@ -84,6 +84,7 @@ dependencies {
   - 에러 처리(validated)
 
 - User Entity
+- User Dto
 
 - User Repository
 
@@ -95,9 +96,14 @@ dependencies {
 
 
 
+- 쿠키, 세션
+  - 
 
+- 아이디, 이메일 중복 체크
 
+```
 
+```
 
 
 

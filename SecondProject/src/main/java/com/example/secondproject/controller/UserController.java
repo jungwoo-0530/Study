@@ -1,7 +1,7 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.user.User;
-import com.example.secondproject.dto.JoinForm;
+import com.example.secondproject.dto.RegisterForm;
 import com.example.secondproject.dto.LoginForm;
 import com.example.secondproject.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +23,18 @@ public class UserController {
 
     private final UserService userService;
 //회원가입
-    @GetMapping("/join")
-    public String joinForm(@ModelAttribute JoinForm joinForm) {
-        return "/users/join";
+    @GetMapping("/register")
+    public String joinForm(@ModelAttribute RegisterForm joinForm) {
+        return "/users/register";
     }
 
-    @PostMapping("/join")
-    public String join(@ModelAttribute @Validated JoinForm joinForm,
+    @PostMapping("/register")
+    public String join(@ModelAttribute @Validated RegisterForm joinForm,
                        BindingResult bindingResult)
     {
         if (bindingResult.hasErrors()) {
             log.info(bindingResult.toString());
-            return "/users/join";
+            return "/users/register";
         }
 
         User newUser = new User();
@@ -51,7 +51,7 @@ public class UserController {
 //로그인
     @GetMapping("/login")
     public String loginForm(@ModelAttribute LoginForm loginForm) {
-        return "logins/loginForm";
+        return "users/loginForm";
     }
 
     @PostMapping("/login")
@@ -59,7 +59,7 @@ public class UserController {
                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info(bindingResult.toString());
-            return "logins/loginForm";
+            return "users/loginForm";
         }
 
 
@@ -67,7 +67,7 @@ public class UserController {
 
         if (!checkLogin) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "logins/loginForm";
+            return "users/loginForm";
         }
 
         // 로그인 성공 처리

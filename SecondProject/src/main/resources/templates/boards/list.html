@@ -1,6 +1,6 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/common ::head('Second')">
+<head th:replace="fragments/common ::head('My frist')">
     <!--    <meta charset="utf-8">-->
     <!--    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
 
@@ -32,21 +32,22 @@
 
 <body class="bg-light">
 <div class="container">
-    <h2>회원 목록</h2>
+    <h2>게시판</h2>
+    <div>총 건수 : <span th:text="${#lists.size(boards)}"></span></div>
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">name</th>
-            <th scope="col">id</th>
-            <th scope="col">email</th>
+            <th scope="col">번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성자</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user : ${users}">
-            <td> <a th:text="${user.name}" th:href="@{/users/{id} (id=${user.id})}"></a></td>
-            <!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
-            <td th:text="${user.loginid}"></td>
-            <td th:text="${user.email}"></td>
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.id}"></td>
+            <td> <a th:text="${board.title}" th:href="@{/boards/{id} (id=${board.id})}"></a></td>
+<!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
+            <td th:text="${board.name}"></td>
         </tr>
         </tbody>
 

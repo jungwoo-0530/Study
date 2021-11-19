@@ -1,6 +1,7 @@
 package com.example.secondproject.service;
 
 import com.example.secondproject.domain.board.Board;
+import com.example.secondproject.dto.BoardForm;
 import com.example.secondproject.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,16 +19,32 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Long save(Board board) {
+    public void save(Board board) {
         boardRepository.save(board);
-        return board.getId();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Board> findAll() {
         return boardRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public Board findById(Long id) {
+        return boardRepository.findById(id).get();
+    }
 
+    @Transactional
+    public void update(Long id, String title, String name, String content) {
 
+        Board board = boardRepository.findById(id).get();//영속상태
+
+        board.change(title, name, content);//변경감지, 비지니스로직을 엔티티에.
+
+        //Board findOneBoard = boardRepository.findById(id).get();//영속상태.
+    }
+
+    @Transactional
+    public void deleteBoard(Long id) {
+        boardRepository.deleteById(id);
+    }
 }

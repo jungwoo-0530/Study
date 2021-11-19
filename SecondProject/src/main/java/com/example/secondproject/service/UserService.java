@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -23,12 +22,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public User createUser(User user) {
+    public void createUser(User user) {
         //password 암호화.
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
-        return user;
     }
 
     //password가 일치하지 않을 경우, null 반환.
