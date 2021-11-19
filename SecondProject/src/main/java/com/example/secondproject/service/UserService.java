@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -23,6 +24,7 @@ public class UserService {
 
     @Transactional
     public User createUser(User user) {
+        //password 암호화.
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
@@ -60,5 +62,5 @@ public class UserService {
     }
 
 
-
+    public List<User> findAllUsers() {return userRepository.findAll();}
 }
