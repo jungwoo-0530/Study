@@ -14,10 +14,16 @@
 
 1. 회원
    1. 회원 등록
-   2. 회원 목록 - Admin 전용
-   3. 회원 추방 -  Admin 전용
-   4. 회원 탈퇴
-   5. 로그인
+   
+   2. 로그인
+   
+   3. 회원 목록 - Admin 전용
+   
+   4. 회원 추방 -  Admin 전용
+   
+   5. 회원 탈퇴
+   
+      
 2. 상품
    1. 상품 등록 - Provider 전용
    2. 상품 제거 - Provider, Admin 전용
@@ -52,90 +58,52 @@ dependencies {
 }
 ```
 
-우선 의존성 추가를 한 내용은 순서대로 spring data jpa, thymeleaf, web, devtools, lombok, h2이다.
+
+
+## H2 DB 생성
+
+1. https://www.h2database.com/로 접속 후 자신에게 맞는 버전 설치.
+2. 압축 풀고 터미널로 h2 실행
+   - ./h2.sh
+3. 실행하기 전에 h2.sh의 권한을 사용할 수 있게 풀어 준다
+   - chmod +x h2.sh
+4. DB 생성
+   - <img src="img/image-20211120052906801.png" alt="image-20211120052906801" style="width:50%;" />
+   - 위에 스샷에서 second가 DB 이름이다.
+5. DB 접속 
+   - JDBC URL에 jdbc:h2:tcp://localhost/~/second 입력 후 연결.
 
 
 
 
-## 메인화면 만들기
-1. 공통으로 들어가는 view
 
-우선 어느 화면으로 이동하던 대쉬보드는 항상 있어야하므로 common.html을 _resource_templates/fragments에 생성한다. 즉, 여기에는 매 화면에 공통으로 들어가는 view를 작성한다.
-``` html
-<!DOCTYPE html>
+## 1 - 1. 회원 등록
 
-<html xmlns:th="http://www.thymeleaf.org">
+- 구현 안한 것
+  - 시큐리티
+  - 에러 처리(validated)
 
-<head th:fragment="head(title)">
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+- User Entity
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link href="starter-template.css" th:href="@{/starter-template.css}" rel="stylesheet">
+- User Repository
 
-    <title th:text="${title}">Second</title>
-</head>
-<body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:fragment="menu(menu)">
-    <a class="navbar-brand" href="/">JPASHOP</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+- User Service
 
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active" th:classappend="${menu} == 'home'? 'active'">
-                <a class="nav-link" href="#" th:href="@{/}">Home <span class="sr-only" th:if="${menu} == 'home'">(current)</span></a>
-            </li>
-            <li class="nav-item" th:classappend="${menu} == 'join'? 'active'">
-                <a class="nav-link" href="#" th:href="@{/members/join}">회원가입 <span class="sr-only" th:if="${menu} == 'join'">(current)</span></a>
-            </li>
-            <li class="nav-item" th:classappend="${menu} == 'board'? 'active'">
-                <a class="nav-link" href="#" th:href="@{/boards}">게시판 <span class="sr-only" th:if="${menu} == 'board'">(current)</span></a>
-            </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </div>
-</nav>
-</body>
+- Join Form (회원 등록할 때 사용하는 Dto)
 
-</html>
-
-```
-네비바에서 
+<img src="img/image-20211120062958394.png" alt="image-20211120062958394" style="width:80%;" />
 
 
-이제 home.html을 작성하여 메인화면을 생성한다. 
-```html
-<!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/common ::head('second')">
-</head>
-<body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('home')">
-
-</nav>
-
-<main role="main" class="container">
-
-    <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-    </div>
-
-</main>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
 
-</body>
-</html>
 
-```
 
+
+
+
+## 1 - 2. 로그인
+
+1. 구현 안한 것
+   1. 시큐리티
+   2. 에러 처리(validated)
+   3. 세션, 쿠키

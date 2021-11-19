@@ -25,13 +25,16 @@
             <li class="nav-item active" th:classappend="${menu} == 'home'? 'active'">
                 <a class="nav-link" href="#" th:href="@{/}">Home <span class="sr-only" th:if="${menu} == 'home'">(current)</span></a>
             </li>
-            <li class="nav-item" th:classappend="${menu} == 'join'? 'active'">
-                <a class="nav-link" href="#" th:href="@{/members/join}">회원가입 <span class="sr-only" th:if="${menu} == 'join'">(current)</span></a>
-            </li>
             <li class="nav-item" th:classappend="${menu} == 'board'? 'active'">
                 <a class="nav-link" href="#" th:href="@{/boards}">게시판 <span class="sr-only" th:if="${menu} == 'board'">(current)</span></a>
             </li>
+
         </ul>
+
+<!--        <a class="btn btn-secondary mr-2 my-2 my-sm-0" th:href="@{/account/register}" sec:authorize="!isAuthenticated()">register</a>-->
+<!--        <a class="btn btn-secondary my-2 my-sm-0" th:href="@{/account/login}" sec:authorize="!isAuthenticated()">login</a> &lt;!&ndash; 로그인이 안된 경우  &ndash;&gt;-->
+        <a class="btn btn-secondary mr-2 my-2 my-sm-0" th:href="@{/join}">join</a>
+        <a class="btn btn-secondary my-2 my-sm-0" th:href="@{/login}">login</a> <!-- 로그인이 안된 경우  -->
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
             <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
