@@ -2,12 +2,14 @@ package com.example.secondproject.domain.board;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor
 public class Board {
 
     @Id
@@ -22,6 +24,11 @@ public class Board {
     @Lob
     private String content;
 
+    public Board(String title, String name, String content) {
+        this.title = title;
+        this.name = name;
+        this.content = content;
+    }
 
     //비지니스로직
     //객체지향 디자인 방법중에 GRASP.

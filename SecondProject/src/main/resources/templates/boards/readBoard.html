@@ -36,37 +36,38 @@
 </style>
 <body class="bg-light">
 <div class="container">
-    <h2>게시판</h2>
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">번호</th>
-                <th th:text="${boardForm.id}"></th>
-            </tr>
-            <tr>
-                <th scope="col">제목</th>
-                <th th:text="${boardForm.title}"></th>
-            </tr>
-            <tr>
-                <th scope="col">작성자</th>
-                <th th:text="${boardForm.name}"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th th:text="${boardForm.content}"></th>
-            </tr>
-            </tbody>
-        </table>
-        <div class="text-right">
-            <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/edit(id=${boardForm.id})}" methods="get">수정</a>
-            <form id="delete-form" th:action="@{/boards/{id}/delete(id=${boardForm.id})}" method="post">
-                <input type="hidden" name="_method" value="delete"/>
-                <button id="delete-btn">삭제</button>
-            </form>
-<!--            <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/delete(id=${boardForm.id})}">삭제</a>-->
-            <a type="button" class="btn btn-primary" th:href="@{/boards}">목록</a>
+    <hr/>
+    <div class="row">
+        <div class="col-md-10">
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>제목</th>
+                    <td th:text="${boardForm.title}"></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>글쓴이</th>
+                    <td th:text="${boardForm.name}"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" th:text="${boardForm.content}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-right">
+                <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/edit(id=${boardForm.id})}" methods="get">수정</a>
+                <form id="delete-form" th:action="@{/boards/{id}/delete(id=${boardForm.id})}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-primary">삭제</button>
+                </form>
+                <!--            <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/delete(id=${boardForm.id})}">삭제</a>-->
+                <a type="button" class="btn btn-primary" th:href="@{/boards}">목록</a>
+            </div>
         </div>
+    </div>
+    <hr/>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>

@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class BoardController {
 
         //모델을 boards/writeboard.html로 넘김. html에서 ${boardForm}으로 사용 가능.
         model.addAttribute("boardForm", new BoardForm());
-        return "boards/writeboard";
+        return "/boards/writeBoard";
     }
 
     @PostMapping("/boards/new")
@@ -69,7 +68,7 @@ public class BoardController {
         Board board = boardService.findById(id);
 
         model.addAttribute("boardForm", board);
-        return "/boards/readboard";
+        return "/boards/readBoard";
     }
 
     @GetMapping("/boards/{boardId}/edit")
@@ -89,7 +88,7 @@ public class BoardController {
     }
 
 
-    @PostMapping("/boards/{boardId}/edit")//뷰(readboard.html)로부터 form이 넘어옴. 파라미터로 받음
+    @PostMapping("/boards/{boardId}/edit")//뷰(readBoard.html)로부터 form이 넘어옴. 파라미터로 받음
     public String updateForm(@PathVariable("boardId") Long boardId, @ModelAttribute("boardForm") BoardForm boardForm)
     {
 

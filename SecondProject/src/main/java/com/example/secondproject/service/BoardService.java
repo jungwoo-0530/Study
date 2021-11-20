@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,5 +47,12 @@ public class BoardService {
     @Transactional
     public void deleteBoard(Long id) {
         boardRepository.deleteById(id);
+    }
+
+    @PostConstruct
+    @Transactional
+    public void initBoardDb() {
+        Board board = new Board("test", "김정우", "안녕하세요 첫번째 글입니다");
+        boardRepository.save(board);
     }
 }

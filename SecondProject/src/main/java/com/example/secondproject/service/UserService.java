@@ -51,7 +51,7 @@ public class UserService {
 
     @Transactional
     @PostConstruct
-    public void initDB() {
+    public void initUserDb() {
         User user = new User("test", "김정우",
                 "test", "test@naver.com");
         String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -61,4 +61,7 @@ public class UserService {
 
 
     public List<User> findAllUsers() {return userRepository.findAll();}
+
+
+
 }
