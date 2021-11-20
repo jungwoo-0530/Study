@@ -2,9 +2,12 @@ package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.board.Board;
 import com.example.secondproject.dto.BoardForm;
+import com.example.secondproject.repository.BoardRepository;
 import com.example.secondproject.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,9 +22,11 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardRepository boardRepository;
+
 
     @GetMapping("/boards")
-    public String list(Model model){
+    public String list(Model model) {
         log.info("BoardController getmapping list");
 
 
@@ -89,8 +94,7 @@ public class BoardController {
 
 
     @PostMapping("/boards/{boardId}/edit")//뷰(readBoard.html)로부터 form이 넘어옴. 파라미터로 받음
-    public String updateForm(@PathVariable("boardId") Long boardId, @ModelAttribute("boardForm") BoardForm boardForm)
-    {
+    public String updateForm(@PathVariable("boardId") Long boardId, @ModelAttribute("boardForm") BoardForm boardForm) {
 
         //준영속 엔티티다.
         //getId해서 setId하였기에 한번 들어갔다 나왔기에 준영속 엔티티다.
@@ -121,11 +125,16 @@ public class BoardController {
 
     //폼은 get, post밖에 안되므로 <input type="hidden" name="_method" value="delete"/> 설정해야함.
     @DeleteMapping("/boards/{boardId}/delete")
-    public String deleteForm(@PathVariable("boardId")Long boardId){
+    public String deleteForm(@PathVariable("boardId") Long boardId) {
         log.info("BoardController DeleteMapping deleteForm");
         boardService.deleteBoard(boardId);
         return "redirect:/boards";
     }
 
 
+    //paging list
+    @GetMapping("/boards/paging")
+    public Page<Board> listPaging(Pageable pageable) {
+        return boardRepository.findAll(pageable);
+    }
 }

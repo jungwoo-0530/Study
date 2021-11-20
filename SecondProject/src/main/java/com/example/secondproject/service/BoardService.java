@@ -5,6 +5,8 @@ import com.example.secondproject.dto.BoardForm;
 import com.example.secondproject.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,10 +51,18 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
+    public void findAll(Pageable pageable){
+        boardRepository.findAll(,pageable).map()
+    }
+
+
+
     @PostConstruct
     @Transactional
     public void initBoardDb() {
-        Board board = new Board("test", "김정우", "안녕하세요 첫번째 글입니다");
-        boardRepository.save(board);
+        for (int i = 0; i < 100; i++) {
+            Board board = new Board("test", "김정우", "안녕하세요. "+ i + "번째 글입니다");
+            boardRepository.save(board);
+        }
     }
 }
