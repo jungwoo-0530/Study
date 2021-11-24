@@ -84,15 +84,197 @@ dependencies {
   - 에러 처리(validated)
 
 - User Entity
-- User Dto
+
+  ```java
+  package com.example.secondproject.domain.user;
+  
+  import lombok.AllArgsConstructor;
+  import lombok.Getter;
+  import lombok.NoArgsConstructor;
+  import lombok.Setter;
+  
+  import javax.persistence.*;
+  
+  @Entity
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  public class User {
+  
+      @Id
+      @GeneratedValue(strategy = GenerationType.IDENTITY)
+      @Column(name = "USER_ID")
+      private Long id;
+  
+      private String loginid;
+  
+      private String name;
+  
+      private String password;
+  
+      private String email;
+  
+      public User(String loginid, String name, String password, String email) {
+          this.loginid = loginid;
+          this.name = name;
+          this.password = password;
+          this.email = email;
+      }
+  
+      //주소는 api사용
+  
+  }
+  
+  ```
+
+  
+
+- User Dto(//RegisterForm.class)
+
+- ```java
+  package com.example.secondproject.dto;
+  
+  import lombok.Data;
+  import lombok.Getter;
+  
+  import javax.validation.constraints.Email;
+  import javax.validation.constraints.NotBlank;
+  import javax.validation.constraints.Size;
+  
+  @Data
+  public class RegisterForm {
+  
+      @NotBlank(message = "id를 꼭 입력해 주세요")
+      @Size(min = 5, max = 15, message = "id는 최소 5, 최대 15글자를 입력해주세요")
+      private String loginId;
+  
+      @NotBlank
+      private String password;
+  
+      @NotBlank
+      private String name;
+  
+      @Email(message = "이메일 양식에 맞춰서 입력해주세요")
+      @NotBlank(message = "이메일을 입력해주세요")//@Email이 null도 허용
+      private String email;
+  
+      //@Pattern(regexp = "(01[016789])(\\d{3,4})(\\d{4})", message = "올바른 휴대폰 번호를 입력해주세요.")
+      //핸드폰 번호
+  
+  }
+  
+  ```
+
+  - 우선 NotBlank로 항상 비어있어서는 안된다는 조건을 단다. NotBlank는 "" " "도 캐치하므로 NotBlank를 사용하는 것이 좋다.
+  - Email은 javax에서 email형식을 맞춰서 제약조건을 걸어준다.
 
 - User Repository
 
+```java
+package com.example.secondproject.repository;
+
+import com.example.secondproject.domain.user.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long>{
+
+    User findByLoginid(String loginid);
+
+}
+
+```
+
 - User Service
+
+```java
+package com.example.secondproject.service;
+
+import com.example.secondproject.domain.user.User;
+import com.example.secondproject.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public void createUser(User user) {
+        //password 암호화.
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
+
+    //password가 일치하지 않을 경우, null 반환.
+    //findByLoginId의 반환이 optional이므로 null 반환 가능
+    public boolean validationLogin(String loginId, String password) {
+        User loginUser = userRepository.findByLoginid(loginId);
+
+        if(loginUser == null){
+            System.out.println("해당 아이디의 유저가 존재하지 않습니다");
+            return false;
+        }
+
+        if (!passwordEncoder.matches(password, loginUser.getPassword())) {
+            System.out.println("비밀번호가 일치하지 않습니다.");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    @Transactional
+    @PostConstruct
+    public void initUserDb() {
+        User user = new User("test", "김정우",
+                "test", "test@naver.com");
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
+
+
+    public List<User> findAllUsers() {return userRepository.findAll();}
+
+}
+```
+
+
 
 - Join Form (회원 등록할 때 사용하는 Dto)
 
-<img src="img/image-20211120062958394.png" alt="image-20211120062958394" style="width:80%;" />
+
+
+```java
+package com.example.secondproject.dto;
+
+import lombok.Data;
+
+@Data
+public class LoginForm {
+    private String loginid;
+    private String password;
+}
+
+```
 
 
 
@@ -107,9 +289,57 @@ dependencies {
 
 
 
+- 암호화
+
+  - 암화화는 아래와 같이 config class를 만들어서 WebSecurityConfigurerAdapter를 상속받으면 PasswordEncoder 객체를 만들 수 있음. 객체를 사용하여 BCryptPasswordEncoder()객체를 받음.
+
+  - ```java
+    @Configuration
+    @EnableWebSecurity
+    public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    
+        @Bean
+        public PasswordEncoder getPasswordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+    
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.cors().disable()
+                    .csrf().disable()
+                    .formLogin().disable()
+                    .headers().frameOptions().disable();
+        }
+    
+    
+    }
+    ```
+
+    
+
+  <img src="img/image-20211120062958394.png" alt="image-20211120062958394" style="width:80%;" />
+
+
+
 ## 1 - 2. 로그인
 
 1. 구현 안한 것
    1. 시큐리티
    2. 에러 처리(validated)
    3. 세션, 쿠키
+
+
+
+## 1 - 3. 회원 목록
+
+
+
+
+
+## 1 - 4. 회원 추방
+
+
+
+
+
+## 1 - 5. 회원 탈퇴

@@ -1,18 +1,14 @@
 package com.example.secondproject.service;
 
 import com.example.secondproject.domain.board.Board;
-import com.example.secondproject.dto.BoardForm;
 import com.example.secondproject.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,10 +45,6 @@ public class BoardService {
     @Transactional
     public void deleteBoard(Long id) {
         boardRepository.deleteById(id);
-    }
-
-    public void findAll(Pageable pageable){
-        boardRepository.findAll(,pageable).map()
     }
 
 
