@@ -27,24 +27,24 @@ public class MemberController {
     private final MemberService memberService;
     //회원가입
     @GetMapping("/register")
-    public String joinForm(@ModelAttribute RegisterForm joinForm) {
-        return "/users/register";
+    public String joinForm(@ModelAttribute RegisterForm registerForm) {
+        return "users/register";
     }
 
     @PostMapping("/register")
-    public String join(@ModelAttribute @Validated RegisterForm joinForm,
+    public String join(@ModelAttribute @Validated RegisterForm registerForm,
                        BindingResult bindingResult)
     {
         if (bindingResult.hasErrors()) {
             log.info(bindingResult.toString());
-            return "/users/register";
+            return "users/register";
         }
 
         Member newMember = new Member();
-        newMember.setLoginid(joinForm.getLoginId());
-        newMember.setName(joinForm.getName());
-        newMember.setPassword(joinForm.getPassword());
-        newMember.setEmail(joinForm.getEmail());
+        newMember.setLoginid(registerForm.getLoginid());
+        newMember.setName(registerForm.getName());
+        newMember.setPassword(registerForm.getPassword());
+        newMember.setEmail(registerForm.getEmail());
 
         memberService.createUser(newMember);
 

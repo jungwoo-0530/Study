@@ -330,6 +330,30 @@ public class LoginForm {
 
 
 
+
+
+
+
+우선 시큐리티를 적용하기 전에 간단하게 용어 정리 먼저 해야한다.
+
+- Authentication
+  - 인증
+  - 애플리케이션에서는 인증에서 사용되는 객체
+
+
+
+위에서 만들었던 회원등록도 post 방식으로 form 전송을 하므로 csrf를 사용한다. 그래서 현재 상태에서는 정상적으로 작동을 하지 않는다. 그렇기에 disable을 하여 csrf를 작동하지 못하게 한다.
+
+csrf는 데이터 변조 공격이므로 csrf을 적용 후에는 모든 POST방식의 데이터 전송에 토큰 값이 있어야 한다. GET 방식을 제외한 POST, PATCH, DELETE 메서드에만 적용됩니다.
+
+토큰 값을 세션에 지정된 이름으로 저장돼있기 때문에 아래와 같이 Form 태그 안에 삽입해주면 된다.
+
+```html
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+```
+
+
+
 sec의 태그를 사용하기 위해서는 
 
 ```
@@ -352,17 +376,398 @@ implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecu
 
 을 작성하면 sec태그를 사용할 수 있다.
 
-
-
-csrf는 데이터 변조 공격이므로 csrf을 적용 후에는 모든 POST방식의 데이터 전송에 토큰 값이 있어야 한다. GET 방식을 제외한 POST, PATCH, DELETE 메서드에만 적용됩니다.
-
-토큰 값을 세션에 지정된 이름으로 저장돼있기 때문에 아래와 같이 Form 태그 안에 삽입해주면 된다.
+버튼에 아래와 같은 코드를 추가로 입력할 하면 권한이나 인증된 상태에 따라서 해당 버튼이 보이거나 안 보이게 할 수 있다.
 
 ```html
-<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+sec:authorize="isAnonymous()"
+sec:authorize="isAuthenticated()"
+sec:authorize="hasRole()"
+```
+
+- isAnonymous() : 익명의 사용자
+- isAuthenticated() : 인증된 사용자(로그인된 회원)
+- hasRole() : 부여된 특정 롤에 따라서 보여짐.
+  - sec:authorize="hasRole("ROLE_ADMIN")" : admin 롤을 가진 회원에게 보여짐.
+
+```html
+<a sec:authorize="isAnonymous()" class="btn btn-secondary mr-2 my-2 my-sm-0" th:href="@{/register}">회원가입</a>
+        <a sec:authorize="isAnonymous()" class="btn btn-secondary my-2 my-sm-0" th:href="@{/login}">로그인</a> <!-- 로그인이 안된 경우  -->
+        <a sec:authorize="isAuthenticated()" class="btn btn-secondary my-2 my-sm-0" th:href="@{/logout}">로그아웃</a> <!-- 로그인이 안된 경우  -->
+```
+
+로그인 전에는 모든 사용자가 볼 수 있도록 설정한 상태, 로그인 후에는 로그아웃만 보여지게 만든 것.
+
+
+
+WebSecurityConfig.java
+
+```java
+package com.example.secondproject.config;
+
+import com.example.secondproject.login.CustomUserDetailsService;
+import com.example.secondproject.service.MemberService;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
+
+@Configuration
+@EnableWebSecurity
+@AllArgsConstructor
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final CustomUserDetailsService customUserDetailsService;
+
+    @Bean
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable().authorizeRequests()
+                .antMatchers("/users").hasRole("ADMIN")
+                .antMatchers("/**").permitAll()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .permitAll()
+                .and()
+                .logout()
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .and()
+                .exceptionHandling().accessDeniedPage("/users/denied");
+
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+}
+
+```
+
+Member.java
+
+```java
+package com.example.secondproject.domain.user;
+
+import lombok.*;
+
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Member {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEMBER_ID")
+    private Long id;
+
+    private String loginid;
+
+    private String name;
+
+    private String password;
+
+    private String email;
+
+
+    @Builder
+    public Member(Long id, String loginid, String name, String password, String email) {
+        this.id = id;
+        this.loginid = loginid;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
+    public Member(String loginid, String name, String password, String email) {
+
+        this.loginid = loginid;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
+
+    //주소는 api사용
+
+}
+
 ```
 
 
+
+MemberRole.java
+
+```java
+package com.example.secondproject.domain.user;
+
+import lombok.*;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Getter
+@AllArgsConstructor
+public enum MemberRole {
+    ADMIN("ROLE_ADMIN"),
+    MEMBER("ROLE_MEMBER");
+
+    private String value;
+}
+
+```
+
+
+
+MemberDto.java
+
+```java
+package com.example.secondproject.domain.user;
+
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+public class MemberDto {
+    private Long id;
+    private String loginid;
+    private String password;
+    private String name;
+    private String email;
+
+    public Member toEntity(){
+        return Member.builder()
+                .id(id)
+                .loginid(loginid)
+                .name(name)
+                .password(password)
+                .email(email)
+                .build();
+
+    }
+
+    @Builder
+    public MemberDto(Long id, String loginid, String name, String password, String email) {
+        this.id = id;
+        this.loginid = loginid;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
+
+}
+
+```
+
+
+
+MemberController.java
+
+```java
+package com.example.secondproject.controller;
+
+import com.example.secondproject.domain.user.Member;
+import com.example.secondproject.dto.RegisterForm;
+import com.example.secondproject.service.MemberService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
+@Controller
+@Slf4j
+@AllArgsConstructor
+public class MemberController {
+
+    private final MemberService memberService;
+    //회원가입
+    @GetMapping("/register")
+    public String joinForm(@ModelAttribute RegisterForm registerForm) {
+        return "users/register";
+    }
+
+    @PostMapping("/register")
+    public String join(@ModelAttribute @Validated RegisterForm registerForm,
+                       BindingResult bindingResult)
+    {
+        if (bindingResult.hasErrors()) {
+            log.info(bindingResult.toString());
+            return "users/register";
+        }
+
+        Member newMember = new Member();
+        newMember.setLoginid(registerForm.getLoginid());
+        newMember.setName(registerForm.getName());
+        newMember.setPassword(registerForm.getPassword());
+        newMember.setEmail(registerForm.getEmail());
+
+        memberService.createUser(newMember);
+
+        return "redirect:/";
+    }
+
+//로그인
+    @GetMapping("/login")
+    public String memberLogin() {
+        return "users/loginForm1";
+    }
+
+    @GetMapping("/login/denied")
+    public String memberLoginDenied(){
+        return "/users/denied";
+    }
+
+    @GetMapping("/logout")
+    public String memberLogout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        return "redirect:/";
+    }
+
+
+
+}
+
+```
+
+
+
+CustomUserDetailsService.java
+
+```java
+package com.example.secondproject.login;
+
+import com.example.secondproject.domain.user.Member;
+import com.example.secondproject.domain.user.MemberRole;
+import com.example.secondproject.repository.MemberRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@AllArgsConstructor
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final MemberRepository memberRepository;
+
+
+    @Override
+    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        Optional<Member> memberEntityWrapper = memberRepository.findByLoginid(loginId);
+        Member member = memberEntityWrapper.get();
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        if (("admin").equals(loginId)) {
+            authorities.add(new SimpleGrantedAuthority(MemberRole.ADMIN.getValue()));
+        }
+        else {
+            authorities.add(new SimpleGrantedAuthority(MemberRole.MEMBER.getValue()));
+        }
+
+        return new User(member.getLoginid(), member.getPassword(), authorities);
+    }
+}
+
+```
+
+
+
+loginForm1.html
+
+```html
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common ::head('Second')">
+
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('board')">
+</nav>
+
+<div class="container">
+
+    <div class="py-5 text-center">
+        <h2>로그인</h2>
+    </div>
+    <form role="form" action="/login" method="post">
+        <div>
+            <label>로그인 ID</label>
+            <input type="text" name="username">
+            <!--            <div class="field-error" th:errors="*{loginid}" />-->
+        </div>
+        <div>
+            <label>비밀번호</label>
+            <input type="password" name="password">
+            <!--            <div class="field-error" th:errors="*{password}" />-->
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="col">
+                <button class="w-50 btn btn-primary btn-lg" type="submit">로그인</button>
+            </div>
+            <div class="col">
+                <button class="w-50 btn btn-secondary btn-lg" onclick="location.href='items.html'"
+                        th:onclick="|location.href='@{/}'|"
+                        type="button">취소</button>
+            </div>
+        </div>
+
+    </form>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script src="form-validation.js"></script>
+</body>
+
+</html>
+```
 
 
 
@@ -379,3 +784,16 @@ csrf는 데이터 변조 공격이므로 csrf을 적용 후에는 모든 POST방
 
 
 ## 1 - 5. 회원 탈퇴
+
+
+
+
+
+<details> 
+  <summary>접기/펼치기</summary> 
+  <div markdown="1">  
+  ```java
+  public class hello {     public static void main(String[] args) {         System.out.println("hello java");     } }  
+  ```  
+  </div> </details>
+

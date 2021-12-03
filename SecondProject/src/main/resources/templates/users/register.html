@@ -48,10 +48,8 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="name">Id</label>
-                            <input type="text" th:field="*{loginId}" class="form-control" id="name" placeholder="write Id"
-                                   th:class="${#fields.hasErrors('name')}? 'form-control fieldError' : 'form-control'">
+                            <input type="text" th:field="*{loginid}" class="form-control" id="loginid" placeholder="write Id" required>
                             <a type="button" th:href="@{/register/{id}/exists}">중복체크</a>
-                            <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">Incorrect date</p>
                         </div>
                     </div>
 
