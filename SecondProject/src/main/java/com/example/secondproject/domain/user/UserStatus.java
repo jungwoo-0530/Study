@@ -1,5 +1,5 @@
 package com.example.secondproject.domain.user;
 
-public enum UserStatus {
+enum MemberStatus {
     USER, ADMIN, PROVIDER
 }

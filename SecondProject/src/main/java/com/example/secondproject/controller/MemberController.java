@@ -1,11 +1,12 @@
 package com.example.secondproject.controller;
 
-import com.example.secondproject.domain.user.User;
+import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.RegisterForm;
-import com.example.secondproject.dto.LoginForm;
-import com.example.secondproject.service.UserService;
-import lombok.RequiredArgsConstructor;
+import com.example.secondproject.service.MemberService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,16 +17,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
 @Slf4j
-@RequiredArgsConstructor
-public class UserController {
+@AllArgsConstructor
+public class MemberController {
 
-    private final UserService userService;
-//회원가입
+    private final MemberService memberService;
+    //회원가입
     @GetMapping("/register")
     public String joinForm(@ModelAttribute RegisterForm joinForm) {
         return "/users/register";
@@ -40,18 +40,19 @@ public class UserController {
             return "/users/register";
         }
 
-        User newUser = new User();
-        newUser.setLoginid(joinForm.getLoginId());
-        newUser.setName(joinForm.getName());
-        newUser.setPassword(joinForm.getPassword());
-        newUser.setEmail(joinForm.getEmail());
+        Member newMember = new Member();
+        newMember.setLoginid(joinForm.getLoginId());
+        newMember.setName(joinForm.getName());
+        newMember.setPassword(joinForm.getPassword());
+        newMember.setEmail(joinForm.getEmail());
 
-        userService.createUser(newUser);
+        memberService.createUser(newMember);
 
         return "redirect:/";
     }
 
 //로그인
+    /*
     @GetMapping("/login")
     public String loginForm(@ModelAttribute LoginForm loginForm) {
         return "users/loginForm";
@@ -76,16 +77,33 @@ public class UserController {
         // 로그인 성공 처리
 
         return "redirect:/";
+    }*/
+
+    @GetMapping("/login")
+    public String memberLogin() {
+        return "users/loginForm1";
     }
+
+    @GetMapping("/login/denied")
+    public String memberLoginDenied(){
+        return "/users/denied";
+    }
+
+    @GetMapping("/logout")
+    public String memberLogout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        return "redirect:/";
+    }
+
 
 
     //유저 목록
     @GetMapping("/users")
     public String userList(Model model) {
 
-        List<User> users = userService.findAllUsers();
+        List<Member> members = memberService.findAllMembers();
 
-        model.addAttribute("users", users);
+        model.addAttribute("users", members);
 
         return "users/list";
     }

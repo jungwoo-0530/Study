@@ -1,14 +1,14 @@
 package com.example.secondproject.repository;
 
-import com.example.secondproject.domain.user.User;
+import com.example.secondproject.domain.user.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface MemberRepository extends JpaRepository<Member, Long>{
 
-    User findByLoginid(String loginid);
-
+    Optional<Member> findByLoginid(String LoginId);
 }
+

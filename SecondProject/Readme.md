@@ -330,6 +330,42 @@ public class LoginForm {
 
 
 
+sec의 태그를 사용하기 위해서는 
+
+```
+implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
+```
+
+```java
+@Bean
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
+    }
+```
+
+를 추가하고 html파일에 
+
+```html
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+```
+
+을 작성하면 sec태그를 사용할 수 있다.
+
+
+
+csrf는 데이터 변조 공격이므로 csrf을 적용 후에는 모든 POST방식의 데이터 전송에 토큰 값이 있어야 한다. GET 방식을 제외한 POST, PATCH, DELETE 메서드에만 적용됩니다.
+
+토큰 값을 세션에 지정된 이름으로 저장돼있기 때문에 아래와 같이 Form 태그 안에 삽입해주면 된다.
+
+```html
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+```
+
+
+
+
+
 ## 1 - 3. 회원 목록
 
 

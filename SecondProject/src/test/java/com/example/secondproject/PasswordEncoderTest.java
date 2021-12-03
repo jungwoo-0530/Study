@@ -1,6 +1,6 @@
 package com.example.secondproject;
 
-import com.example.secondproject.service.UserService;
+import com.example.secondproject.service.MemberService;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class PasswordEncoderTest {
 
     @Autowired
-    private UserService userService;
+    private MemberService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
