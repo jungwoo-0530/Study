@@ -55,7 +55,7 @@ public class MemberController {
 //로그인
     @GetMapping("/login")
     public String memberLogin() {
-        return "users/loginForm1";
+        return "users/loginForm";
     }
 
     @GetMapping("/login/denied")
