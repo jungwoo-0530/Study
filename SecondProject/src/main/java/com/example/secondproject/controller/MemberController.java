@@ -11,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +23,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+
     //회원가입
     @GetMapping("/register")
     public String joinForm(@ModelAttribute RegisterForm registerForm) {
@@ -33,8 +32,7 @@ public class MemberController {
 
     @PostMapping("/register")
     public String join(@ModelAttribute @Validated RegisterForm registerForm,
-                       BindingResult bindingResult)
-    {
+                       BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info(bindingResult.toString());
             return "users/register";
@@ -52,14 +50,14 @@ public class MemberController {
         return "redirect:/";
     }
 
-//로그인
+    //로그인
     @GetMapping("/login")
     public String memberLogin() {
         return "users/loginForm";
     }
 
     @GetMapping("/login/denied")
-    public String memberLoginDenied(){
+    public String memberLoginDenied() {
         return "/users/denied";
     }
 
@@ -70,9 +68,8 @@ public class MemberController {
     }
 
 
-
     //유저 목록
-    @GetMapping("/users")
+    @GetMapping("/admin/users")
     public String userList(Model model) {
 
         List<Member> members = memberService.findAllMembers();
@@ -82,6 +79,20 @@ public class MemberController {
         return "users/list";
     }
 
+    @GetMapping("/admin/users/{memberId}")
+    public String detailOfUser(@PathVariable("memberId") Long id, Model model) {
 
+        Member member = memberService.findOneById(id);
 
+        model.addAttribute("memberForm", member);
+
+        return "users/userDetail";
+    }
+
+    @DeleteMapping("/users/{memberId}/delete")
+    public String deleteForm(@PathVariable("memberId") Long memberId) {
+        log.info("BoardController DeleteMapping deleteForm");
+        memberService.deleteMember(memberId);
+        return "redirect:/admin/users";
+    }
 }

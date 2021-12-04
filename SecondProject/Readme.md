@@ -363,6 +363,10 @@ public class LoginForm {
 
 
 
+나중에 쿠키-세션 방식이 아닌 다른 방식으로도 하는 것을 추가로 업데이트할 예정이다.
+
+
+
 위에서 만들었던 회원등록도 post 방식으로 form 전송을 하므로 csrf를 사용한다. 그래서 현재 상태에서는 정상적으로 작동을 하지 않는다. 그렇기에 disable을 하여 csrf를 작동하지 못하게 한다.
 
 csrf는 데이터 변조 공격이므로 csrf을 적용 후에는 모든 POST방식의 데이터 전송에 토큰 값이 있어야 한다. GET 방식을 제외한 POST, PATCH, DELETE 메서드에만 적용됩니다.
@@ -426,9 +430,7 @@ WebSecurityConfig.java
 package com.example.secondproject.config;
 
 import com.example.secondproject.login.CustomUserDetailsService;
-import com.example.secondproject.service.MemberService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -459,7 +461,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-                .antMatchers("/users").hasRole("ADMIN")
+                .antMatchers("/users").hasRole("ADMIN")//자동으로 ROLE_이 붙어서 ROLE_ADMIN으로 됨.
                 .antMatchers("/**").permitAll()
                 .and()
                 .formLogin()
@@ -513,21 +515,16 @@ public class Member {
 
     private String email;
 
+    private String role;
 
-    @Builder
-    public Member(Long id, String loginid, String name, String password, String email) {
-        this.id = id;
-        this.loginid = loginid;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-    }
-    public Member(String loginid, String name, String password, String email) {
+
+    public Member(String loginid, String name, String password, String email, String role) {
 
         this.loginid = loginid;
         this.name = name;
         this.password = password;
         this.email = email;
+        this.role = role;
     }
 
     //주소는 api사용
@@ -535,77 +532,6 @@ public class Member {
 }
 
 ```
-
-
-
-MemberRole.java
-
-```java
-package com.example.secondproject.domain.user;
-
-import lombok.*;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-@Getter
-@AllArgsConstructor
-public enum MemberRole {
-    ADMIN("ROLE_ADMIN"),
-    MEMBER("ROLE_MEMBER");
-
-    private String value;
-}
-
-```
-
-
-
-MemberDto.java
-
-```java
-package com.example.secondproject.domain.user;
-
-import lombok.*;
-
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-public class MemberDto {
-    private Long id;
-    private String loginid;
-    private String password;
-    private String name;
-    private String email;
-
-    public Member toEntity(){
-        return Member.builder()
-                .id(id)
-                .loginid(loginid)
-                .name(name)
-                .password(password)
-                .email(email)
-                .build();
-
-    }
-
-    @Builder
-    public MemberDto(Long id, String loginid, String name, String password, String email) {
-        this.id = id;
-        this.loginid = loginid;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-    }
-
-}
-
-```
-
-
 
 MemberController.java
 
@@ -652,11 +578,12 @@ public class MemberController {
             return "users/register";
         }
 
-        Member newMember = new Member();
-        newMember.setLoginid(registerForm.getLoginid());
-        newMember.setName(registerForm.getName());
-        newMember.setPassword(registerForm.getPassword());
-        newMember.setEmail(registerForm.getEmail());
+        Member newMember = new Member(registerForm.getLoginid(), registerForm.getName(),
+                registerForm.getPassword(), registerForm.getEmail(), "MEMBER");
+//        newMember.setLoginid(registerForm.getLoginid());
+//        newMember.setName(registerForm.getName());
+//        newMember.setPassword(registerForm.getPassword());
+//        newMember.setEmail(registerForm.getEmail());
 
         memberService.createUser(newMember);
 
@@ -666,7 +593,7 @@ public class MemberController {
 //로그인
     @GetMapping("/login")
     public String memberLogin() {
-        return "users/loginForm1";
+        return "users/loginForm";
     }
 
     @GetMapping("/login/denied")
@@ -678,6 +605,19 @@ public class MemberController {
     public String memberLogout(HttpServletRequest request, HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/";
+    }
+
+
+
+    //유저 목록
+    @GetMapping("/users")
+    public String userList(Model model) {
+
+        List<Member> members = memberService.findAllMembers();
+
+        model.addAttribute("users", members);
+
+        return "users/list";
     }
 
 
@@ -694,12 +634,10 @@ CustomUserDetailsService.java
 package com.example.secondproject.login;
 
 import com.example.secondproject.domain.user.Member;
-import com.example.secondproject.domain.user.MemberRole;
 import com.example.secondproject.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -721,16 +659,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<Member> memberEntityWrapper = memberRepository.findByLoginid(loginId);
         Member member = memberEntityWrapper.get();
 
+
         List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_"+member.getRole()));
 
-        if (("admin").equals(loginId)) {
-            authorities.add(new SimpleGrantedAuthority(MemberRole.ADMIN.getValue()));
-        }
-        else {
-            authorities.add(new SimpleGrantedAuthority(MemberRole.MEMBER.getValue()));
-        }
 
-        return new User(member.getLoginid(), member.getPassword(), authorities);
+        return new MemberAccount(member, authorities);
     }
 }
 
@@ -738,9 +672,35 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
 
+MemberAccount.java
+
+```java
+package com.example.secondproject.login;
+
+import com.example.secondproject.domain.user.Member;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+
+import java.util.Collection;
+
+public class MemberAccount extends User {
+    private final Member member;
+    public MemberAccount(Member member, Collection<? extends GrantedAuthority> authorities) {
+        super(member.getLoginid(), member.getPassword(), authorities);
+        this.member = member;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+}
+
+```
 
 
-loginForm1.html
+
+loginForm.html
 
 ```html
 <!doctype html>
@@ -762,12 +722,10 @@ loginForm1.html
         <div>
             <label>로그인 ID</label>
             <input type="text" name="username">
-            <!--            <div class="field-error" th:errors="*{loginid}" />-->
         </div>
         <div>
             <label>비밀번호</label>
             <input type="password" name="password">
-            <!--            <div class="field-error" th:errors="*{password}" />-->
         </div>
 
         <hr class="my-4">
@@ -809,6 +767,116 @@ loginForm1.html
 ## 1 - 4. 회원 추방
 
 
+
+
+
+MemberController.java
+
+```java
+@DeleteMapping("/users/{memberId}/delete")
+    public String deleteForm(@PathVariable("memberId") Long memberId) {
+        log.info("BoardController DeleteMapping deleteForm");
+        memberService.deleteMember(memberId);
+        return "redirect:/admin/users";
+    }
+```
+
+MemberService.java
+
+```java
+@Transactional
+    public void deleteMember(Long memberId) {
+        memberRepository.deleteById(memberId);
+    }
+```
+
+MemberRepository.java
+
+```java
+@Repository
+public interface MemberRepository extends JpaRepository<Member, Long>{
+
+    Optional<Member> findByLoginid(String LoginId);
+
+    Member findOneById(Long id);
+}
+```
+
+memberDetail.java
+
+```html
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common ::head('My frist')">
+</head>
+
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('join')">
+</nav>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+</body>
+
+<!--내용-->
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+</style>
+<body class="bg-light">
+<div class="container">
+    <hr/>
+    <div class="row">
+        <div class="col-md-10">
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>이름</th>
+                    <td th:text="${memberForm.name}"></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>아이디</th>
+                    <td th:text="${memberForm.loginid}"></td>
+                </tr>
+                <tr>
+                    <th>이메일</th>
+                    <td th:text="${memberForm.email}"></td>
+                </tr>
+                <tr>
+                    <th>권한</th>
+                    <td th:text="${memberForm.role}"></td>
+                </tr>
+                <tr>
+                    <th>주소</th>
+                </tr>
+                <tr>
+                    <th>연락처</th>
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-right">
+                <a type="button" class="btn btn-primary" th:href="@{/users/{id}/edit(id=${memberForm.id})}" methods="get">수정</a>
+                <form id="delete-form" th:action="@{/users/{id}/delete(id=${memberForm.id})}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-primary">회원 추방</button>
+                </form>
+                <!--            <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/delete(id=${boardForm.id})}">삭제</a>-->
+                <a type="button" class="btn btn-primary" th:href="@{/admin/users}">회원 목록</a>
+            </div>
+        </div>
+    </div>
+    <hr/>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="form-validation.js"></script>
+</body>
+
+</html>
+```
 
 
 

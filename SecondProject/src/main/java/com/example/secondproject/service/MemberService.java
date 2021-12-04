@@ -32,6 +32,15 @@ public class MemberService {
     public List<Member> findAllMembers() {return memberRepository.findAll();}
 
 
+    @Transactional(readOnly = true)
+    public Member findOneById(Long id) {
+        return memberRepository.findOneById(id);
+    }
+
+    @Transactional
+    public void deleteMember(Long memberId) {
+        memberRepository.deleteById(memberId);
+    }
 
 
     @Transactional
@@ -51,7 +60,6 @@ public class MemberService {
         member1.setPassword(encodedPassword1);
         memberRepository.save(member1);
     }
-
 
 
 }
