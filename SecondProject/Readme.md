@@ -8,8 +8,6 @@
 
 
 
-
-
 ## function
 
 1. 회원
@@ -23,7 +21,6 @@
    
    5. 회원 탈퇴
    
-      
 2. 상품
    1. 상품 등록 - Provider 전용
    2. 상품 제거 - Provider, Admin 전용
@@ -339,6 +336,30 @@ public class LoginForm {
 - Authentication
   - 인증
   - 애플리케이션에서는 인증에서 사용되는 객체
+
+
+
+기본적으로 스프링 시큐리티는 **쿠키-세션 방식**을 사용한다. 대략적으로 설명하자면 클라이언트가 /login 요청을하여 로그인을 한다면 key-value로 spring security의 인메모리 세션저장소인 SecurityContextHolder에 저장한다. 로그인id가 value로 들어가고 랜덤한 값이 SessionId(key)에 들어간다.
+
+서버에서 로그인이 정상적으로 된다면 응답 메시지에 set-cookie에 SessionId를 넣어서 보내준다.
+
+클라이언트는 SessionId를 가지고 있는 쿠키를 브라우저에 있는 쿠키 저장소에 저장한다. 그 다음 클라이언트가 새로운 요청을 한다면 요청 Http에 SessionId를 포함한 값을 같이 보낸다. 
+
+그러면 서버는 db에 저장되어있는 SessionId를 가지고 인증을 한 후에 응답을 한다.
+
+<img src="img/image-20211204235440289.png" alt="image-20211204235440289" style="width:80%;" />
+
+위 스크린 샷은 로그인 성공한 응답을 받은 후의 모습이다. Request Cookies에 value값이 E9~이지만 로그인 인증 후에는 응답에 유저에 해당하는 랜덤한 SessionId값이 주어진 것을 알 수 있다.
+
+
+
+<img src="img/image-20211204235642508.png" alt="image-20211204235642508" style="width:70%;" />
+
+위 스크린샷은 브라우저의 저장소를 보면 쿠키 저장소에 JSESSIONID값이 위에 응답 쿠키 value랑 같은 것을 알 수 있다.
+
+
+
+쿠키-세션 방식의 장점은 서버쪽에서 Session 관리를 할 수 있으며 네트워크 부하가 적다는 것이 장점이다. 단점으로는 세션 저장소를 사용함으로써 서버에 부하가 간다는 것이다.
 
 
 
@@ -717,6 +738,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
 
+
+
 loginForm1.html
 
 ```html
@@ -771,6 +794,12 @@ loginForm1.html
 
 
 
+- 참고 : log로 http 메시지 보기
+  - 인터셉터를 사용
+  - 
+
+
+
 ## 1 - 3. 회원 목록
 
 
@@ -784,16 +813,4 @@ loginForm1.html
 
 
 ## 1 - 5. 회원 탈퇴
-
-
-
-
-
-<details> 
-  <summary>접기/펼치기</summary> 
-  <div markdown="1">  
-  ```java
-  public class hello {     public static void main(String[] args) {         System.out.println("hello java");     } }  
-  ```  
-  </div> </details>
 

@@ -1,12 +1,10 @@
 package com.example.secondproject.login;
 
 import com.example.secondproject.domain.user.Member;
-import com.example.secondproject.domain.user.MemberRole;
 import com.example.secondproject.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,15 +26,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<Member> memberEntityWrapper = memberRepository.findByLoginid(loginId);
         Member member = memberEntityWrapper.get();
 
+
         List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(member.getRole()));
 
-        if (("admin").equals(loginId)) {
-            authorities.add(new SimpleGrantedAuthority(MemberRole.ADMIN.getValue()));
-        }
-        else {
-            authorities.add(new SimpleGrantedAuthority(MemberRole.MEMBER.getValue()));
-        }
 
-        return new User(member.getLoginid(), member.getPassword(), authorities);
+        return new MemberAccount(member, authorities);
     }
 }

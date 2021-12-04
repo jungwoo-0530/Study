@@ -52,10 +52,7 @@ public class BoardController {
     public String createBoard(@Validated BoardForm form, BindingResult bindingResult) {
 
         log.info("BoardController postmapping createForm");
-//        if (bindingResult.hasErrors()) {
-//            return "board/writeboard";
-//        }
-//
+
         Board board = new Board();
         board.setName(form.getName());
         board.setTitle(form.getTitle());

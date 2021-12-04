@@ -24,21 +24,16 @@ public class Member {
 
     private String email;
 
+    private String role;
 
-    @Builder
-    public Member(Long id, String loginid, String name, String password, String email) {
-        this.id = id;
-        this.loginid = loginid;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-    }
-    public Member(String loginid, String name, String password, String email) {
+
+    public Member(String loginid, String name, String password, String email, String role) {
 
         this.loginid = loginid;
         this.name = name;
         this.password = password;
         this.email = email;
+        this.role = role;
     }
 
     //주소는 api사용

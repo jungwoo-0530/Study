@@ -40,11 +40,12 @@ public class MemberController {
             return "users/register";
         }
 
-        Member newMember = new Member();
-        newMember.setLoginid(registerForm.getLoginid());
-        newMember.setName(registerForm.getName());
-        newMember.setPassword(registerForm.getPassword());
-        newMember.setEmail(registerForm.getEmail());
+        Member newMember = new Member(registerForm.getLoginid(), registerForm.getName(),
+                registerForm.getPassword(), registerForm.getEmail(), "MEMBER");
+//        newMember.setLoginid(registerForm.getLoginid());
+//        newMember.setName(registerForm.getName());
+//        newMember.setPassword(registerForm.getPassword());
+//        newMember.setEmail(registerForm.getEmail());
 
         memberService.createUser(newMember);
 
@@ -52,33 +53,6 @@ public class MemberController {
     }
 
 //로그인
-    /*
-    @GetMapping("/login")
-    public String loginForm(@ModelAttribute LoginForm loginForm) {
-        return "users/loginForm";
-    }
-
-    @PostMapping("/login")
-    public String login(@ModelAttribute @Validated LoginForm loginForm,
-                        BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            log.info(bindingResult.toString());
-            return "users/loginForm";
-        }
-
-
-        boolean checkLogin = userService.validationLogin(loginForm.getLoginid(), loginForm.getPassword());
-
-        if (!checkLogin) {
-            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "users/loginForm";
-        }
-
-        // 로그인 성공 처리
-
-        return "redirect:/";
-    }*/
-
     @GetMapping("/login")
     public String memberLogin() {
         return "users/loginForm1";
@@ -107,11 +81,6 @@ public class MemberController {
 
         return "users/list";
     }
-
-//    @GetMapping("/uesrs/{id}")
-//    public String usersDetail(){
-//
-//    }
 
 
 
