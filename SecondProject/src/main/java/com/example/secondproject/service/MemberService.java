@@ -48,17 +48,21 @@ public class MemberService {
     public void initUserDb() {
         Member member = new Member("admin", "김정우",
                 "admin", "admin@naver.com", "ADMIN");
-//        user.setRoles(Arrays.asList(role));
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encodedPassword);
         memberRepository.save(member);
 
-        Member member1 = new Member("member", "김선우",
-                "member", "member@naver.com", "MEMBER");
-//        user.setRoles(Arrays.asList(role));
-        String encodedPassword1 = passwordEncoder.encode(member1.getPassword());
-        member1.setPassword(encodedPassword1);
-        memberRepository.save(member1);
+        int cnt = 0;
+        while(cnt != 40)
+        {
+            cnt++;
+            Member member1 = new Member("member"+cnt, "김선우"+cnt,
+                    "member"+cnt, "member"+cnt+"@naver.com", "MEMBER");
+            String encodedPassword1 = passwordEncoder.encode(member1.getPassword());
+            member1.setPassword(encodedPassword1);
+            memberRepository.save(member1);
+        }
+
     }
 
 

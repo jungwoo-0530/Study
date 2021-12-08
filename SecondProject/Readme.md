@@ -762,6 +762,74 @@ loginForm.html
 
 
 
+회원 목록에 페이징을 사용하여 페이지를 분할할 것이다. 우선 현재 토이프로젝트에서는 view도 타임리프로 대략적으로 개발중이라서 타임리프에서 대부분 개발을 하지만 추후에 api로 paging하는 방법도 업로드할 예정이다.
+
+페이징에는 querydsl와 스프링 데이터 jpa를 사용하여 개발할 것이다.
+
+querydsl을 사용하기 위해서는 아래와 같이 build.gradle을 세팅한다.
+
+```
+plugins {
+    id 'org.springframework.boot' version '2.5.6'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'junit:junit:4.13.1'
+    implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
+    implementation 'com.querydsl:querydsl-jpa'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+//querydsl 추가 시작
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath }
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+//querydsl 추가 끝
+```
+
+
+
 
 
 ## 1 - 4. 회원 추방
