@@ -20,5 +20,4 @@ public class BoardDto {
         this.name = name;
     }
 
-
 }

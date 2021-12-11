@@ -12,8 +12,9 @@ spring:
     hibernate:
       ddl-auto: create
     properties:
-      format_sql: true
-      show_sql: true
+      hibernate:
+        format_sql: true # sql이 여러 줄로 이쁘게 보여짐.
+        show_sql: true # sql이 보여짐.
     open-in-view: true
   data:
     web:
@@ -21,5 +22,5 @@ spring:
         default-page-size: 3
         max-page-size: 2000
 logging.level:
-  org.hibernate.SQL: debug
-# org.hibernate.type: trace
+#  org.hibernate.SQL: trace
+  org.hibernate.type: trace # ?가 보여짐.
