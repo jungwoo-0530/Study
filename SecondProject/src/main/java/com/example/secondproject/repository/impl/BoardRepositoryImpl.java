@@ -40,8 +40,10 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             PathBuilder pathBuilder = new PathBuilder(board.getType(), board.getMetadata());
             query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
                     pathBuilder.get(o.getProperty())));
+            System.out.println(o.getProperty());
         }
-
+        System.out.println("board.getType() " + board.getType());
+        System.out.println("board.getMetadata() "+board.getMetadata());
         QueryResults<BoardDto> results = query.fetchResults();
         List<BoardDto> content = results.getResults();
         long total = results.getTotal();
