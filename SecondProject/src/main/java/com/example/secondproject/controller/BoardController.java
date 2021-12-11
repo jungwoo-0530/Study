@@ -1,20 +1,22 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.board.Board;
+import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
+import com.example.secondproject.dto.paging.PageDto;
 import com.example.secondproject.repository.BoardRepository;
 import com.example.secondproject.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,18 +27,18 @@ public class BoardController {
     private final BoardRepository boardRepository;
 
 
-    @GetMapping("/boards")
-    public String list(Model model) {
-        log.info("BoardController getmapping list");
-
-
-        List<Board> boards = boardService.findAll();
-
-        //모델을 boards/list.html로 넘김. html에서 ${boards}이름으로 사용 가능.
-        model.addAttribute("boards", boards);
-
-        return "boards/list";
-    }
+//    @GetMapping("/boards")
+//    public String list(Model model) {
+//        log.info("BoardController getmapping list");
+//
+//
+//        List<Board> boards = boardService.findAll();
+//
+//        //모델을 boards/list.html로 넘김. html에서 ${boards}이름으로 사용 가능.
+//        model.addAttribute("boards", boards);
+//
+//        return "boards/list";
+//    }
 
 
     @GetMapping("/boards/new")
@@ -133,5 +135,24 @@ public class BoardController {
     @GetMapping("/boards/paging")
     public Page<Board> listPaging(Pageable pageable) {
         return boardRepository.findAll(pageable);
+    }
+
+    /*
+    Paging
+    */
+    @GetMapping("/boards")
+    public String list(Model model, @PageableDefault(size = 4, sort = "id",
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        log.info("BoardController getmapping list");
+
+//        Page<PageDto> results = boardRepository.findAllPageSort(pageable);
+
+        Page<BoardDto> results = boardRepository.findAllPageSort(pageable);
+
+        //모델을 boards/list.html로 넘김. html에서 ${boards}이름으로 사용 가능.
+        model.addAttribute("boards", results.getContent());
+        model.addAttribute("page", new PageDto(results.getTotalElements(), pageable));
+//        return "boards/list";
+        return "boards/pagingList";
     }
 }

@@ -52,8 +52,8 @@ public class BoardService {
     @PostConstruct
     @Transactional
     public void initBoardDb() {
-        for (int i = 0; i < 100; i++) {
-            Board board = new Board("test", "김정우", "안녕하세요. "+ i + "번째 글입니다");
+        for (int i = 1; i < 101; i++) {
+            Board board = new Board("제목test"+i, "김정우"+i, "안녕하세요. "+ i + "번째 글입니다");
             boardRepository.save(board);
         }
     }

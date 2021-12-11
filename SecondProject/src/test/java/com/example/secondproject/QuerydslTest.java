@@ -23,6 +23,7 @@ public class QuerydslTest {
 
     @Test
     void test() {
+
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QMember qMember = new QMember("m");
         Member findMember = queryFactory.selectFrom(qMember).where(qMember.name.eq("김정우"))

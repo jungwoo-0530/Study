@@ -10,12 +10,12 @@ import javax.persistence.PersistenceContext;
 
 @EnableJpaAuditing
 @Configuration
-public class querydslConfig {
+public class QuerydslConfig {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public querydslConfig() {
+    public QuerydslConfig() {
     }
 
     //JPAQueryFactory를 빈으로 등록함으로써 repository에서 바로 가져와서 사용.
