@@ -1,11 +1,28 @@
 package com.example.secondproject.config;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @EnableJpaAuditing
 @Configuration
 public class querydslConfig {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public querydslConfig() {
+    }
+
+    //JPAQueryFactory를 빈으로 등록함으로써 repository에서 바로 가져와서 사용.
+    //JPAQueryFactory가 우리가 작성한 것을 토대로 entityManager를 통하여 질의.
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(){
+        return new JPAQueryFactory(entityManager);
+    }
 
 }
