@@ -39,7 +39,13 @@
 
 
 
+- 리팩토링 할 때, 엔티티 @Setter 제거하기
 
+- 모든 연관관계는 지연로딩, XtoOne은 기본이 EAGER
+
+- EAGER가 필요하다면 fetch join 또는 엔티티 그래프 기능 사용
+
+  
 
 ## Dependency
 ```

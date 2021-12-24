@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -76,10 +77,17 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{boardId}/edit")
-    public String updateBoardForm(@PathVariable("boardId") Long boardId, Model model) {
+    public String updateBoardForm(@PathVariable("boardId") Long boardId,
+                                  Model model,
+                                  Principal principal) {
         log.info("BoardController GetMapping updateBoardForm");
 
         Board one = boardService.findById(boardId);
+        //여기서 해당 작성자와 같다면.
+        if (!principal.getName().equals(one.getName())) {
+            return "redirect:/boards";
+        }
+
         BoardForm form = new BoardForm();//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
 
         form.setId(one.getId());
@@ -93,7 +101,8 @@ public class BoardController {
 
 
     @PostMapping("/boards/{boardId}/edit")//뷰(readBoard.html)로부터 form이 넘어옴. 파라미터로 받음
-    public String updateForm(@PathVariable("boardId") Long boardId, @ModelAttribute("boardForm") BoardForm boardForm) {
+    public String updateForm(@PathVariable("boardId") Long boardId,
+                             @ModelAttribute("boardForm") BoardForm boardForm) {
 
         //준영속 엔티티다.
         //getId해서 setId하였기에 한번 들어갔다 나왔기에 준영속 엔티티다.
@@ -109,6 +118,7 @@ public class BoardController {
 //        board.setContent(boardForm.getContent());
 //
 //        boardService.updateBoard(boardForm.getId(), board);
+
         log.info("BoardService PostMapping updateForm");
         boardService.update(boardId, boardForm.getTitle(), boardForm.getName(), boardForm.getContent());
 
@@ -144,8 +154,6 @@ public class BoardController {
     public String list(Model model, @PageableDefault(size = 4, sort = "id",
             direction = Sort.Direction.DESC) Pageable pageable) {
         log.info("BoardController getmapping list");
-
-//        Page<PageDto> results = boardRepository.findAllPageSort(pageable);
 
         Page<BoardDto> results = boardRepository.findAllPageSort(pageable);
 
