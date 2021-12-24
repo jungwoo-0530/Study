@@ -492,6 +492,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 ```
 
+로그인 처리 방식은 form 로그인 처리 방식을 사용하였다. `UsernamePasswordAuthenticationFilter`에서 form 로그인 처리를 담당하는 필터이다.
+
+
+
+
+
+
+
 Member.java
 
 ```java
@@ -761,6 +769,33 @@ loginForm.html
 - 참고 : log로 http 메시지 보기
   - 인터셉터를 사용
   - 
+
+
+
+##### ROLE 계층 만들기.
+
+현재 만든 ROLE은 ADMIN, MEMBER이다. 추가로 상품을 등록하고 팔 수 있는 권한을 가진 PROVIDER라는 ROLE을 추가로 만들 것이다. 또한 인가 설정에서 `antMatchers.hasRole`을 사용하여 인가할 때, MEMBER가 할 수 있는 역할은 ADMIN, PROVIDER 또한 가능해야 할 것이다. 그러기에 계층을 만들어서 PROVIDER Role을 가진 자가 MEMBER의 권한을 가진 것도 같이 사용할 수 있게 만든다.
+
+
+
+스프링 시큐리티에서는 `RoleHierarchy`인터페이스를 제공한다. 
+
+`ROLE_A > ROLE_B > ROLE_C`으로 표현을 한다. 
+
+
+
+WebSecurityConfig에 다음과 같이 빈을 추가한다.
+
+```java
+    @Bean
+    RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_MEMBER");
+        return roleHierarchy;
+    }
+```
+
+위와 같이 설정하면 ROLE_ADMIN의 role을 가진 멤버는 ROLE_MEMBER가 접근 가능한 자원에 접근이 가능할 것이다.
 
 
 
