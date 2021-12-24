@@ -790,7 +790,7 @@ WebSecurityConfig에 다음과 같이 빈을 추가한다.
     @Bean
     RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_MEMBER");
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_PROVIDER > ROLE_MEMBER");
         return roleHierarchy;
     }
 ```

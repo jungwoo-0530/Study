@@ -24,6 +24,7 @@ public class MemberService {
     @Transactional
     public void createUser(Member member) {
         //password 암호화.
+        member.setRole("MEMBER");
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encodedPassword);
         memberRepository.save(member);
