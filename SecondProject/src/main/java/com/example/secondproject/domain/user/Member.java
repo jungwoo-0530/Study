@@ -35,6 +35,14 @@ public class Member {
         this.role = role;
     }
 
+    public void change(String name, String loginId, String email, String role) {
+        this.setName(name);
+        this.setLoginid(loginId);
+        this.setEmail(email);
+        this.setRole(role);
+    }
+
+
     //주소는 api사용
 
 }

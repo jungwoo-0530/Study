@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @Controller
 @Slf4j
@@ -76,17 +75,22 @@ public class MemberController {
     }
 
 
+///////////////////////////////admin/////////////////////
+
     @GetMapping("/admin/users/{memberId}")
-    public String detailOfUser(@PathVariable("memberId") Long id, Model model) {
+    public String detailOfUserByAdmin(@PathVariable("memberId") Long id, Model model) {
 
         Member member = memberService.findOneById(id);
 
         model.addAttribute("memberForm", member);
 
-        return "users/userDetail";
+        return "users/admin/userDetailByAdmin";
     }
 
-    @DeleteMapping("/users/{memberId}/delete")
+    /*
+    회원 추방
+    */
+    @DeleteMapping("/admin/users/delete/{memberId}")
     public String deleteForm(@PathVariable("memberId") Long memberId) {
         log.info("BoardController DeleteMapping deleteForm");
         memberService.deleteMember(memberId);
@@ -99,18 +103,46 @@ public class MemberController {
     @GetMapping("/admin/users")
     public String userList(Model model,
                            @PageableDefault(size = 20, sort = "id",
-                                   direction = Sort.Direction.ASC)Pageable pageable) {
+                                   direction = Sort.Direction.ASC) Pageable pageable) {
         Page<MemberDto> results = memberRepository.findAllPageSort(pageable);
 
         model.addAttribute("users", results.getContent());
         model.addAttribute("page", new MemberPageDto(results.getTotalElements(), pageable));
 
-        return "users/pagingMemberList";
+        return "users/admin/pagingMemberList";
     }
 
     /*
-    * 멤버 수정*/
+     * 멤버 수정 admin*/
+    @GetMapping("/admin/users/edit/{memberId}")
+    public String updateUserForm(@PathVariable("memberId") Long memberId,
+                                 Model model) {
+
+        Member findOne = memberService.findOneById(memberId);
+
+        MemberDto result = new MemberDto(memberId, findOne.getName(), findOne.getLoginid(),
+                findOne.getEmail(), findOne.getRole());
+
+        model.addAttribute("memberDto", result);
+        model.addAttribute("roleTypes", RoleTypes.values());
+
+        return "users/admin/updateUserByAdmin";
+    }
 
 
+    @PostMapping("/admin/users/edit/{memberId}")
+    public String updateUserByAdmin(@PathVariable("memberId") Long memberId,
+                                    @ModelAttribute("memberDto") MemberDto memberDto) {
 
+        memberService.updateByAdmin(memberId, memberDto.getName(), memberDto.getLoginid(),
+                memberDto.getEmail(), memberDto.getRole());
+
+        return "redirect:/admin/users";
+    }
+
+//
+//    @ModelAttribute("roleTypes")
+//    public RoleTypes[] roleTypes(){
+//        return RoleTypes.values();
+//    }
 }

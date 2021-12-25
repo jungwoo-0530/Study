@@ -67,4 +67,10 @@ public class MemberService {
     }
 
 
+    @Transactional
+    public void updateByAdmin(Long id, String name, String loginId, String email, String role) {
+        Member member = memberRepository.findOneById(id);
+
+        member.change(name, loginId, email, role);
+    }
 }
