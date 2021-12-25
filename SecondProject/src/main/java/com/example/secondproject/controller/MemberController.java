@@ -2,9 +2,16 @@ package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.RegisterForm;
+import com.example.secondproject.dto.paging.MemberDto;
+import com.example.secondproject.dto.paging.MemberPageDto;
+import com.example.secondproject.repository.MemberRepository;
 import com.example.secondproject.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -23,6 +30,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     //회원가입
     @GetMapping("/register")
@@ -69,7 +77,7 @@ public class MemberController {
 
 
     //유저 목록
-    @GetMapping("/admin/users")
+/*    @GetMapping("/admin/users")
     public String userList(Model model) {
 
         List<Member> members = memberService.findAllMembers();
@@ -77,7 +85,7 @@ public class MemberController {
         model.addAttribute("users", members);
 
         return "users/list";
-    }
+    }*/
 
     @GetMapping("/admin/users/{memberId}")
     public String detailOfUser(@PathVariable("memberId") Long id, Model model) {
@@ -95,4 +103,21 @@ public class MemberController {
         memberService.deleteMember(memberId);
         return "redirect:/admin/users";
     }
+
+    /*
+    Paging list
+    * */
+    @GetMapping("/admin/members")
+    public String userList(Model model,
+                           @PageableDefault(size = 20, sort = "id",
+                                   direction = Sort.Direction.ASC)Pageable pageable) {
+        Page<MemberDto> results = memberRepository.findAllPageSort(pageable);
+
+        model.addAttribute("members", results.getContent());
+        model.addAttribute("page", new MemberPageDto(results.getTotalElements(), pageable));
+
+        return "users/pagingMemberList";
+    }
+
+
 }

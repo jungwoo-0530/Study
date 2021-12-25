@@ -2,6 +2,9 @@ package com.example.secondproject.repository;
 
 
 import com.example.secondproject.domain.user.Member;
+import com.example.secondproject.dto.paging.MemberDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -9,5 +12,7 @@ import java.util.List;
 public interface MemberRepositoryCustom {
 
     List<Member> getMemberList();
+
+    Page<MemberDto> findAllPageSort(Pageable pageable);
 
 }
