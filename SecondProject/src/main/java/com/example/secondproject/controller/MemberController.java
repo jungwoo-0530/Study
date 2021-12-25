@@ -1,6 +1,7 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.user.Member;
+import com.example.secondproject.domain.user.RoleTypes;
 import com.example.secondproject.dto.RegisterForm;
 import com.example.secondproject.dto.paging.MemberDto;
 import com.example.secondproject.dto.paging.MemberPageDto;
@@ -140,9 +141,4 @@ public class MemberController {
         return "redirect:/admin/users";
     }
 
-//
-//    @ModelAttribute("roleTypes")
-//    public RoleTypes[] roleTypes(){
-//        return RoleTypes.values();
-//    }
 }

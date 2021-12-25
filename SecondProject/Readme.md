@@ -815,6 +815,89 @@ querydsl을 사용하기 위해서는 아래 링크를 타서 설정을 한다.
 
 
 
+회원의 role을 수정하기 위해서는 radio를 설정한다. 
+
+여기서는 Enum을 사용하여 우선 role을 정한다. 
+
+```java
+public enum RoleTypes {
+    ADMIN, PROVIDER, MEMBER
+}
+```
+
+컨트롤러에서 아래와 같이 코딩한다.
+
+```java
+@GetMapping("/admin/users/edit/{memberId}")
+    public String updateUserForm(@PathVariable("memberId") Long memberId,
+                                 Model model) {
+
+        Member findOne = memberService.findOneById(memberId);
+
+        MemberDto result = new MemberDto(memberId, findOne.getName(), findOne.getLoginid(),
+                findOne.getEmail(), findOne.getRole());
+
+        model.addAttribute("memberDto", result);
+        model.addAttribute("roleTypes", RoleTypes.values());
+
+        return "users/admin/updateUserByAdmin";
+    }
+```
+
+Enum타입에 `.value()`을 사용하면 Enum 데이터가 모두 나온다. 
+
+roleTypes이름으로 모델에 담는다.
+
+
+
+```html
+<div class="form-group">
+    <div>role</div>
+    <div th:each="type : ${roleTypes}" class="form-check form-check-inline">
+        <input type="radio" th:field="*{role}" th:value="${type.name()}" class="form-check-input">
+        <label th:for="${#ids.prev('role')}" th:text="${type.name()}" class="form-check-label">
+        </label>
+    </div>
+</div>
+```
+
+우선 총 3개에 role type이 존재하므로 타임리프 each문을 사용하여 각각의 라디오 버튼을 생성한다.
+
+모델에 `roleTypes`라는 이름으로 담았기에 `th:each="type : ${roleTypes}"`을 이용하여 하나씩 꺼낸다.
+
+`th:object="${memberDto}"`이므로 `th:field="*{role}"`로 설정하여 우리가 radio에서 체크하는 것으로 form에 담는다.
+
+<img src="img/image-20211226070216565.png" alt="image-20211226070216565" style="width:50%;" />
+
+```java
+    @PostMapping("/admin/users/edit/{memberId}")
+    public String updateUserByAdmin(@PathVariable("memberId") Long memberId,
+                                    @ModelAttribute("memberDto") MemberDto memberDto) {
+
+        memberService.updateByAdmin(memberId, memberDto.getName(), memberDto.getLoginid(),
+                memberDto.getEmail(), memberDto.getRole());
+
+        return "redirect:/admin/users";
+    }
+```
+
+form 태그 안에 라디오가 있으므로 폼에 담겨지고 
+
+html 파일에서 `th:object="${memberDto}"`로 하였기에 Post 메서드에서 memberDto로 모델을 가져온다.
+
+
+
+#추가해야 할것
+
+-  admin은 최소 한명은 있어야한다.
+- admin이 풀리는 순간
+
+
+
+
+
+
+
 
 
 ## 1 - 4. 회원 추방
