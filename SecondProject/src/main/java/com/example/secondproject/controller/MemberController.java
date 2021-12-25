@@ -76,17 +76,6 @@ public class MemberController {
     }
 
 
-    //유저 목록
-/*    @GetMapping("/admin/users")
-    public String userList(Model model) {
-
-        List<Member> members = memberService.findAllMembers();
-
-        model.addAttribute("users", members);
-
-        return "users/list";
-    }*/
-
     @GetMapping("/admin/users/{memberId}")
     public String detailOfUser(@PathVariable("memberId") Long id, Model model) {
 
@@ -105,19 +94,23 @@ public class MemberController {
     }
 
     /*
-    Paging list
+    Paging 회원 목록
     * */
-    @GetMapping("/admin/members")
+    @GetMapping("/admin/users")
     public String userList(Model model,
                            @PageableDefault(size = 20, sort = "id",
                                    direction = Sort.Direction.ASC)Pageable pageable) {
         Page<MemberDto> results = memberRepository.findAllPageSort(pageable);
 
-        model.addAttribute("members", results.getContent());
+        model.addAttribute("users", results.getContent());
         model.addAttribute("page", new MemberPageDto(results.getTotalElements(), pageable));
 
         return "users/pagingMemberList";
     }
+
+    /*
+    * 멤버 수정*/
+
 
 
 }
