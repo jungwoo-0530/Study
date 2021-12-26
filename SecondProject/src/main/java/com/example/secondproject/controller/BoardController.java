@@ -1,11 +1,13 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.board.Board;
+import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
 import com.example.secondproject.dto.paging.PageDto;
 import com.example.secondproject.repository.BoardRepository;
 import com.example.secondproject.service.BoardService;
+import com.example.secondproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +28,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final BoardRepository boardRepository;
-
+    private final MemberService memberService;
 
 //    @GetMapping("/boards")
 //    public String list(Model model) {
@@ -46,20 +48,29 @@ public class BoardController {
     public String createForm(Model model) {
         log.info("BoardController getmapping createForm");
 
+
         //모델을 boards/writeboard.html로 넘김. html에서 ${boardForm}으로 사용 가능.
         model.addAttribute("boardForm", new BoardForm());
+
         return "/boards/writeBoard";
     }
 
     @PostMapping("/boards/new")
-    public String createBoard(@Validated BoardForm form, BindingResult bindingResult) {
+    public String createBoard(@Validated BoardForm form,
+                              Principal principal,
+                              BindingResult bindingResult) {
 
         log.info("BoardController postmapping createForm");
 
+        String name = memberService.findByLoginid(principal.getName()).getName();
+
         Board board = new Board();
-        board.setName(form.getName());
+//        board.setName(form.getName());
+        board.setName(name);
         board.setTitle(form.getTitle());
         board.setContent(form.getContent());
+        board.setLoginid(principal.getName());
+
 
         boardService.save(board);
 
@@ -83,9 +94,9 @@ public class BoardController {
         log.info("BoardController GetMapping updateBoardForm");
 
         Board one = boardService.findById(boardId);
-        //여기서 해당 작성자와 같다면.
-        if (!principal.getName().equals(one.getName())) {
-            return "redirect:/boards";
+//        여기서 해당 작성자와 같다면.
+        if (!one.getLoginid().equals(principal.getName())) {
+            return "redirect:/boards/"+boardId;
         }
 
         BoardForm form = new BoardForm();//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
@@ -94,6 +105,7 @@ public class BoardController {
         form.setName(one.getName());
         form.setContent(one.getContent());
         form.setTitle(one.getTitle());
+        form.setLoginid(one.getLoginid());
 
         model.addAttribute("boardForm", form);
         return "boards/updateBoardForm";
@@ -120,7 +132,8 @@ public class BoardController {
 //        boardService.updateBoard(boardForm.getId(), board);
 
         log.info("BoardService PostMapping updateForm");
-        boardService.update(boardId, boardForm.getTitle(), boardForm.getName(), boardForm.getContent());
+        boardService.update(boardId, boardForm.getTitle(), boardForm.getName(),
+                boardForm.getContent(), boardForm.getLoginid());
 
         return "redirect:/boards";
 

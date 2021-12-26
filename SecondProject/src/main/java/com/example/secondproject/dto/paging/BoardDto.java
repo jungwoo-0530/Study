@@ -12,6 +12,7 @@ public class BoardDto {
     private Long id;
     private String title;
     private String name;
+    private String loginid;
 
     @QueryProjection
     public BoardDto(Long id, String title, String name) {
