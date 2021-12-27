@@ -1,8 +1,10 @@
 package com.example.secondproject.domain.user;
 
+import com.example.secondproject.domain.board.Board;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,6 +26,7 @@ public class Member {
     private String email;
 
     private String role;
+
 
 
     public Member(String loginid, String name, String password, String email, String role) {

@@ -1,7 +1,6 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.board.Board;
-import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
 import com.example.secondproject.dto.paging.PageDto;
@@ -21,6 +20,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+
+import static com.example.secondproject.login.CustomUserDetailsService.hasAdminRole;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -94,10 +96,11 @@ public class BoardController {
         log.info("BoardController GetMapping updateBoardForm");
 
         Board one = boardService.findById(boardId);
-//        여기서 해당 작성자와 같다면.
-        if (!one.getLoginid().equals(principal.getName())) {
+        //admin이 아니고 작성자도 아니면.
+        if (!one.getLoginid().equals(principal.getName()) && !hasAdminRole()) {
             return "redirect:/boards/"+boardId;
         }
+
 
         BoardForm form = new BoardForm();//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
 
@@ -110,6 +113,8 @@ public class BoardController {
         model.addAttribute("boardForm", form);
         return "boards/updateBoardForm";
     }
+
+
 
 
     @PostMapping("/boards/{boardId}/edit")//뷰(readBoard.html)로부터 form이 넘어옴. 파라미터로 받음
@@ -135,7 +140,7 @@ public class BoardController {
         boardService.update(boardId, boardForm.getTitle(), boardForm.getName(),
                 boardForm.getContent(), boardForm.getLoginid());
 
-        return "redirect:/boards";
+        return "redirect:/boards/"+boardId;
 
     }
 //
@@ -147,8 +152,14 @@ public class BoardController {
 
     //폼은 get, post밖에 안되므로 <input type="hidden" name="_method" value="delete"/> 설정해야함.
     @DeleteMapping("/boards/{boardId}/delete")
-    public String deleteForm(@PathVariable("boardId") Long boardId) {
+    public String deleteForm(@PathVariable("boardId") Long boardId,
+                             Principal principal) {
         log.info("BoardController DeleteMapping deleteForm");
+        Board one = boardService.findById(boardId);
+        if (!one.getLoginid().equals(principal.getName()) && !hasAdminRole()) {
+            return "redirect:/boards/"+boardId;
+        }
+
         boardService.deleteBoard(boardId);
         return "redirect:/boards";
     }

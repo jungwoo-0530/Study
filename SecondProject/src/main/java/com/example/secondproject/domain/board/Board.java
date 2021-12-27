@@ -1,6 +1,6 @@
 package com.example.secondproject.domain.board;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.secondproject.domain.user.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,12 +19,14 @@ public class Board {
 
     private String title;
 
-    private String name;
+    private String name;//멤버의 name.
 
+    //외래키.
     private String loginid;
 
     @Lob
     private String content;
+
 
     public Board(String title, String name, String content, String loginid) {
         this.title = title;

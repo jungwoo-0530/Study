@@ -900,6 +900,8 @@ html 파일에서 `th:object="${memberDto}"`로 하였기에 Post 메서드에�
 
 
 
+
+
 ## 1 - 4. 회원 추방
 
 
@@ -1018,3 +1020,233 @@ memberDetail.java
 
 ## 1 - 5. 회원 탈퇴
 
+
+
+
+
+## 1 - 6. 회원 상세(ADMIN)
+
+
+
+회원 상세는 admin 권한을 가진 유저가 회원을 상세히 볼 수 있으며 그 곳에서 권한이나 여러가지를 변경할 수 있다.
+
+또한 회원이 작성한 글들도 볼 수 있으며 작성한 댓글도 볼 수 있다.
+
+
+
+2. 우선은 회원이 작성한 글들도 회원 상세 페이지에서 볼 수 있도록
+
+그럴려면 일대다 양방향의 연관 관계를 가져야한다고 판단하여 하나의 멤버로 부터 여러개의 게시물과 연관관계를 맺게 하였다. 또한 게시판에서 게시물에 있는 멤버로 부터 멤버를 조회하기 위해서 사용할 것이다.
+
+제가 만든 토이프로젝트에서는 게시물에서 중복을 허용하지 않는 닉네임을 사용하지 않고 다른 회원과 중복이 가능한 주민등록번호 상의 실제 이름으로 하였으므로 좀 더 복잡한 쿼리를 사용한다. 왜냐하면 중복이 허용하지 않는 닉네임을 사용할 경우에는 닉네임을 가지고 닉네임을 가지고만 select만 하면된기 때문에 더욱 쉽다. 
+
+
+
+
+
+
+
+
+
+---------------------------------------------
+
+#### 게시물 수정
+
+게시물 작성자 이름
+
+게시물을 수정할 때, 두가지 방식을 생각했다. 게시물 작성시 게시물 비밀번호도 받아서 삭제나 수정할 시 그 비밀번호를 사용하는 것, 다른 방법은 작성한 유저 또는 admin 유저만 수정 삭제가 가능하도록 구현하는 방식이다. 그러나 어차피 로그인하여야 게시물 작성을 하므로 두번째 방법이 맞는 것 같다고 생각했고 비밀번호를 받아서 수정 삭제하는 방식은 게시물 작성을 비회원도 작성 가능한 곳에서 더 유용할 것같다고 생각했다.
+
+
+
+Board 엔티티는 아래와 같다.
+
+```java
+@Entity
+@Getter @Setter
+@NoArgsConstructor
+public class Board {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "BOARD_ID")
+    private Long id;
+
+    private String title;
+
+    private String name;//멤버의 name.
+
+    //외래키.
+    private String loginid;
+
+    @Lob
+    private String content;
+
+
+    public Board(String title, String name, String content, String loginid) {
+        this.title = title;
+        this.name = name;
+        this.content = content;
+        this.loginid = loginid;
+    }
+
+    //비지니스로직
+    //객체지향 디자인 방법중에 GRASP.
+    //정보를 가장 잘 알고 있는 곳에 로직(메서드)가 있어야 한다는 것.
+    //Board가 해당 필드 정보를 가장 잘 알기 떄문에 여기에 비지니스 로직을 짠다.
+    public void change(String title, String name, String content, String loginid) {
+        this.setTitle(title);
+        this.setName(name);
+        this.setContent(content);
+        this.setLoginid(loginid);
+    }
+
+}
+```
+
+name은 주민등록번호상의 실제 이름이고 loginid는 실제로 로그인하는 id이다. 나중에 깔끔하게 변경할 예정이다.
+
+게시판에 게시물 작성은 회원한 유저만 작성이 가능하며 게시판에는 name과 titile이 보여진다.
+
+loginid를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물을 수정하거나 삭제를 하면 남이 작성한 글에는 접근 권한이 없어야한다. 그러므로 유니크한 값이 필요하여서 loginid를 사용하였다. 이러한 방식은 깔끔한 방식이 아닌 것 같으므로 **그러나 나중에 멤버 엔티티와 Board 엔티티 연관관계를 맺으면서 새로운 방식으로 리팩토링할 예정이다.**
+
+```java
+    @GetMapping("/boards/{boardId}/edit")
+    public String updateBoardForm(@PathVariable("boardId") Long boardId,
+                                  Model model,
+                                  Principal principal) {
+        log.info("BoardController GetMapping updateBoardForm");
+
+        Board one = boardService.findById(boardId);
+        //admin이 아니고 작성자도 아니면.
+        if (!one.getLoginid().equals(principal.getName()) && !hasAdminRole()) {
+            return "redirect:/boards/"+boardId;
+        }
+
+
+        BoardForm form = new BoardForm();//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
+
+        form.setId(one.getId());
+        form.setName(one.getName());
+        form.setContent(one.getContent());
+        form.setTitle(one.getTitle());
+        form.setLoginid(one.getLoginid());
+
+        model.addAttribute("boardForm", form);
+        return "boards/updateBoardForm";
+    }
+
+
+
+
+    @PostMapping("/boards/{boardId}/edit")//뷰(readBoard.html)로부터 form이 넘어옴. 파라미터로 받음
+    public String updateForm(@PathVariable("boardId") Long boardId,
+                             @ModelAttribute("boardForm") BoardForm boardForm) {
+
+        //준영속 엔티티다.
+        //getId해서 setId하였기에 한번 들어갔다 나왔기에 준영속 엔티티다.
+        //왜냐하면 데이터베이스가 식별할 수 있는 Id를 가지고 있음.
+        //JPA가 관리하지 않음. 그렇기에 변경 감지를 하지 않음.
+        //준영속 엔티티를 수정하는 2가지 방법.
+        //1. 변경 감지 기능 사용(더티체크)
+        //2. 병합(merge) 사용
+//        Board board = new Board();
+//        board.setId(boardForm.getId());
+//        board.setTitle(boardForm.getTitle());
+//        board.setWriter(boardForm.getWriter());
+//        board.setContent(boardForm.getContent());
+//
+//        boardService.updateBoard(boardForm.getId(), board);
+
+        log.info("BoardService PostMapping updateForm");
+        boardService.update(boardId, boardForm.getTitle(), boardForm.getName(),
+                boardForm.getContent(), boardForm.getLoginid());
+
+        return "redirect:/boards/"+boardId;
+
+    }
+```
+
+
+
+//CustomUserDetailsService.java
+
+```java
+  public static boolean hasAdminRole()
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        return authorities.stream().filter(o -> o.getAuthority().equals("ROLE_ADMIN")).findAny().isPresent();
+    }
+```
+
+현재 세션에 있는 유저가 권한이 admin인지 아닌지 확인하는 메서드이다.
+
+
+
+```html
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common ::head('My frist')">
+</head>
+
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('join')">
+</nav>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+</body>
+
+<!--내용-->
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+</style>
+<body class="bg-light">
+<div class="container">
+    <h2>게시판</h2>
+<!--    th:action="/boards/{boardId}/edit" 이렇게 사용 x {}가 있으므로-->
+<!--    action 생략 가능. 같은 url이므로 post가.-->
+    <form role="form" th:action="@{/boards/{boardId}/edit(boardId=${boardForm.id})}" th:object="${boardForm}" method="post">
+        <div class="form-group">
+            <input type = "hidden" th:field="*{id}" />
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="">
+            </div>
+            <div class="form-group">
+                <input type="hidden" th:field="*{name}" />
+            </div>
+            <div class="form-group">
+                <input type="hidden" th:field="*{loginid}" />
+            </div>
+            <label for="content">내용</label>
+            <textarea class="form-control" id="content" th:field="*{content}" rows="10"></textarea>
+        </div>
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">확인</button>
+            <a type="button" class="btn btn-primary" th:href="@{/boards}">취소</a>
+        </div>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="form-validation.js"></script>
+</body>
+
+</html>
+```
+
+```html
+            <div class="form-group">
+                <input type="hidden" th:field="*{name}" />
+            </div>
+            <div class="form-group">
+                <input type="hidden" th:field="*{loginid}" />
+            </div>
+```
+
+이렇게 `type="hidden"`을 사용하여 실제 유저가 볼 필요가 굳이 없으므로 안 보이게하였다. 
+
+타임리프가 부족하여 계속 name과 loginid 값이 넘어가지를 않았다. 그래서 `th:field="*{name}"`를 작성하였더니 값이 넘어가졌다. 타임리프에 field를 사용해야 form에 값이 들어가서 값이 넘어가진다. 참고로 `th:object=${boardForm}`을 하였기에 그냥 `th:field="*{name}"`을 사용하면 되고 `th:object=${boardForm}`을 사용하지 않았다면 `th:field="${boardForm.name}"`으로 사용해야한다.
