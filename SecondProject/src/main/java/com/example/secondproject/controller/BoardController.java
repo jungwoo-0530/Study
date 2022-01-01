@@ -67,7 +67,6 @@ public class BoardController {
         String name = memberService.findByLoginid(principal.getName()).getName();
 
         Board board = new Board();
-//        board.setName(form.getName());
         board.setName(name);
         board.setTitle(form.getTitle());
         board.setContent(form.getContent());
@@ -164,12 +163,6 @@ public class BoardController {
         return "redirect:/boards";
     }
 
-
-    //paging list
-    @GetMapping("/boards/paging")
-    public Page<Board> listPaging(Pageable pageable) {
-        return boardRepository.findAll(pageable);
-    }
 
     /*
     Paging

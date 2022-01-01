@@ -848,7 +848,7 @@ Enum타입에 `.value()`을 사용하면 Enum 데이터가 모두 나온다.
 
 roleTypes이름으로 모델에 담는다.
 
-
+렌더링 전.
 
 ```html
 <div class="form-group">
@@ -859,6 +859,27 @@ roleTypes이름으로 모델에 담는다.
         </label>
     </div>
 </div>
+```
+
+렌더링 후.
+
+```html
+
+<div class="form-group">
+                <div>role</div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" value="ADMIN" class="form-check-input" id="role1" name="role">
+                    <label for="role1" class="form-check-label">ADMIN</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" value="PROVIDER" class="form-check-input" id="role2" name="role">
+                    <label for="role2" class="form-check-label">PROVIDER</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" value="MEMBER" class="form-check-input" id="role3" name="role" checked="checked">
+                    <label for="role3" class="form-check-label">MEMBER</label>
+                </div>
+            </div>
 ```
 
 우선 총 3개에 role type이 존재하므로 타임리프 each문을 사용하여 각각의 라디오 버튼을 생성한다.
@@ -1022,6 +1043,8 @@ memberDetail.java
 
 
 
+회원 탈퇴는 자기 자신 회원 정보를 보는 것을 구현 후에 구현할 예정. 
+
 
 
 ## 1 - 6. 회원 상세(ADMIN)
@@ -1050,7 +1073,493 @@ memberDetail.java
 
 ---------------------------------------------
 
-#### 게시물 수정
+## 2-1 게시판
+
+1. 게시판은 회원 가입한 사용자만 사용가능.
+2. 게시물 수정, 삭제는 admin이면 아무 개시물이든지 가능 또는 본인 게시물만 가능
+
+
+
+아래는 페이징을 사용하여 게시판을 만든 것이다.
+
+
+
+```java
+@Entity
+@Getter @Setter
+@NoArgsConstructor
+public class Board {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "BOARD_ID")
+    private Long id;
+
+    private String title;
+
+    private String name;//멤버의 name.
+
+    //외래키.
+    private String loginid;
+
+    @Lob
+    private String content;
+
+
+    public Board(String title, String name, String content, String loginid) {
+        this.title = title;
+        this.name = name;
+        this.content = content;
+        this.loginid = loginid;
+    }
+
+    //비지니스로직
+    //객체지향 디자인 방법중에 GRASP.
+  	// 각 객체에 책임을 부여하는 것.
+    //정보를 가장 잘 알고 있는 곳에 로직(메서드)가 있어야 한다는 것.
+    //Board가 해당 필드 정보를 가장 잘 알기 떄문에 여기에 비지니스 로직을 짠다.
+    public void change(String title, String name, String content, String loginid) {
+        this.setTitle(title);
+        this.setName(name);
+        this.setContent(content);
+        this.setLoginid(loginid);
+    }
+
+}
+```
+
+
+
+
+
+//BoardRepositoryCustom.java
+
+```java
+public interface BoardRepositoryCustom {
+    Page<BoardDto> findAllPageSort(Pageable pageable);
+}
+
+```
+
+//BoardRepositoryImpl.java
+
+```java
+import static com.example.secondproject.domain.board.QBoard.board;
+
+@RequiredArgsConstructor
+public class BoardRepositoryImpl implements BoardRepositoryCustom {
+
+    private final JPAQueryFactory jpaQueryFactory;
+
+
+    @Override
+    public Page<BoardDto> findAllPageSort(Pageable pageable) {
+        JPAQuery<BoardDto> query = jpaQueryFactory
+                .select(new QBoardDto(
+                        board.id.as("id"),
+                        board.title.as("title"),
+                        board.name.as("name")
+                ))
+                .from(board)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(board.getType(), board.getMetadata());
+            query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
+                    pathBuilder.get(o.getProperty())));
+        }
+
+        QueryResults<BoardDto> results = query.fetchResults();
+        List<BoardDto> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl(content, pageable, total);
+
+    }
+}
+```
+
+
+
+
+
+//BoardDto.java
+
+```java
+@NoArgsConstructor
+@Getter
+@Setter
+public class BoardDto {
+    private Long id;
+    private String title;
+    private String name;
+
+    @QueryProjection
+    public BoardDto(Long id, String title, String name) {
+        this.id = id;
+        this.title = title;
+        this.name = name;
+    }
+
+
+}
+```
+
+BoardDto를 QBoardDto 생성을 위해서는 @QueryProjection을 사용하여 QBoardDto를 생성한다.
+
+사용법은 해당 클래스의 생성자에 선언해서 사용한다. 생성자에 따라서 사용할 곳에서 new하여 사용한다.
+
+위 스크립트 같이 작성하고 빌드를 반드시 해서 QClass를 생성한다.
+
+
+
+//PageDto.java
+
+```java
+@Data
+public class PageDto {
+    private final int PAGENUM = 10;
+    private int pageSize; // 페이지당 몇개 표시할건지
+    private int startPage;
+    private int endPage;
+    private int curPage;
+    private boolean prev, next;
+
+    private long total;
+
+    public PageDto() {
+    }
+
+    public PageDto(long total, Pageable pageable) {
+        this.total = total;
+        this.curPage = pageable.getPageNumber();
+        this.pageSize = pageable.getPageSize();
+
+        this.endPage = (int) (Math.ceil((curPage+1) / 10.0)) * 10; // 일단 endPage를 10단위로 세팅, view는 1부터 시작이므로 curPage+1
+        this.startPage = this.endPage - (PAGENUM - 1); // 10단위 endPage에서 9를 빼면 시작페이지 구할 수 있음
+
+        int realEnd = (int) (Math.ceil((total * 1.0) / pageSize));
+
+        if (realEnd < this.endPage) { // 페이지가 10단위로 나누어 떨어지지 않을때 real endPage
+            this.endPage = realEnd;
+        }
+
+        this.prev = (curPage+1) > 1; // view에서는 1부터 시작이므로
+        this.next = (curPage+1) < realEnd; // view에서는 1부터 시작이므로
+    }
+}
+
+```
+
+PageDto은 뷰로 넘겨줄 때, 뷰에서 페이징에 필요한 데이터를 넘겨줄 Dto다.
+
+- startPage, endPage
+- pageSize
+  - 총 몇 페이지가 나오는지.
+  - pageable에 우리가 값을 넣으면 알아서 계산해줌.
+- curPage
+  - 
+- prev, next
+  - boolean 타입으로 다음 페이지가 있는지 없는지 알 수 있음.
+
+생성자로 total, pageable을 인자로 받는다.
+
+total은 총 갯수를 말한다. 즉, 컨텐츠의 총 갯수.
+
+pageable은 페이징할 컨텐츠의 갯수(size), 정렬 기준, 정렬 방향을 Pageable로 인자로 받는다.
+
+
+
+//BoardController.java
+
+
+
+```java
+@Controller
+@RequiredArgsConstructor
+@Slf4j
+public class BoardController {
+
+    private final BoardService boardService;
+    private final BoardRepository boardRepository;
+    private final MemberService memberService;
+  
+//    @GetMapping("/boards")
+//    public String list(Model model) {
+//        log.info("BoardController getmapping list");
+//
+//
+//        List<Board> boards = boardService.findAll();
+//
+//        //모델을 boards/list.html로 넘김. html에서 ${boards}이름으로 사용 가능.
+//        model.addAttribute("boards", boards);
+//
+//        return "boards/list";
+//    }
+  
+  /*
+    Paging
+    */
+    @GetMapping("/boards")
+    public String list(Model model, @PageableDefault(size = 4, sort = "id",
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        log.info("BoardController getmapping list");
+
+        Page<BoardDto> results = boardRepository.findAllPageSort(pageable);
+
+        //모델을 boards/list.html로 넘김. html에서 ${boards}이름으로 사용 가능.
+        model.addAttribute("boards", results.getContent());
+        model.addAttribute("page", new PageDto(results.getTotalElements(), pageable));
+//        return "boards/list";
+        return "boards/pagingList";
+    }
+  
+  
+}
+```
+
+
+
+주석 처리한 부분은 페이징 기능이 들어가지 않은 게시판이다.
+
+
+
+@PageableDefault 어노테이션을 사용하여 한 페이지에 몇개의 컨텐츠를 보여줄지(size), sort를 어떤 기준으로 할지, 그 기준에 따라서 오름차순, 내림차순으로 정렬할지 설정한다.
+
+Page 객체에 getContent() 메서드를 사용하여 컨텐츠에 접근한다. 즉, BoardDto를 얻는다.
+
+model에 PageDto와 BoardDto를 담아서 뷰로 넘겨준다.
+
+
+
+pagingList.html
+
+```java
+<div class="text-center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm">
+                <li th:if="${page.isPrev()}" class="page-item"><a th:href="@{/boards?page={page}(page = ${page.getCurPage()-1})}" class="page-link" href="#">Prev</a></li>
+                <li th:unless="${page.isPrev()}" class="page-item disabled"><a class="page-link">Prev</a></li>
+                <li class="page-item" th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
+                    <a th:href="@{/boards?page={page}(page = ${index.current-1})}" th:text="${num}" class="page-link" href="">1</a>
+                </li>
+                <li th:if="${page.isNext()}" class="page-item"><a th:href="@{/boards?page={page}(page = ${page.getCurPage()+1})}" class="page-link" href="#">Next</a></li>
+                <li th:unless="${page.isNext()}" class="page-item disabled"><a class="page-link">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+```
+
+
+
+
+
+<img src="../../../../Library/Application Support/typora-user-images/image-20211212034208787.png" alt="image-20211212034208787" style="width:70%;" />
+
+<img src="../../../../Library/Application Support/typora-user-images/image-20211212034234790.png" alt="image-20211212034234790" style="width:70%;" />
+
+## 2-2 게시물 등록, 읽기
+
+
+
+```java
+public class BoardController {
+
+    private final BoardService boardService;
+    private final BoardRepository boardRepository;
+    private final MemberService memberService;
+  
+   //...
+  
+    @GetMapping("/boards/new")
+    public String createForm(Model model) {
+        log.info("BoardController getmapping createForm");
+
+
+        //모델을 boards/writeboard.html로 넘김. html에서 ${boardForm}으로 사용 가능.
+        model.addAttribute("boardForm", new BoardForm());
+
+        return "/boards/writeBoard";
+    }
+
+    @PostMapping("/boards/new")
+    public String createBoard(@Validated BoardForm form,
+                              Principal principal,
+                              BindingResult bindingResult) {
+
+        log.info("BoardController postmapping createForm");
+
+        String name = memberService.findByLoginid(principal.getName()).getName();
+
+        Board board = new Board();
+//        board.setName(form.getName());
+        board.setName(name);
+        board.setTitle(form.getTitle());
+        board.setContent(form.getContent());
+        board.setLoginid(principal.getName());
+
+
+        boardService.save(board);
+
+        return "redirect:/boards";
+    }
+
+    @GetMapping("/boards/{boardId}")//{boardId} : boardId를 바인딩
+    public String readBoardForm(@PathVariable("boardId") Long id, Model model) {
+        log.info("BoardController GetMapping readBoardForm");
+
+        Board board = boardService.findById(id);
+
+        model.addAttribute("boardForm", board);
+        return "/boards/readBoard";
+    }  
+}
+```
+
+
+
+게시물 읽기와 등록의 컨트롤러는 위와 같다.
+
+게시물 등록은 `/boards/new`로 진입시 Get방식으로 빈 껍데기를 생성하여 view로 넘긴다.
+
+그렇다면 사용자가 브라우저에서 입력한 것이 Form에 담겨서 Post방식으로 createBoard 컨트롤러가 실행 될 것이다.
+
+아래는 BoardForm과 writeBoard.html을 보여준다.
+
+```java
+@Data
+public class BoardForm {
+
+    private Long id;
+
+//    @NotBlank(message = "작성자를 입력해주세요.")
+    private String name;
+
+    private String loginid;
+
+    @NotBlank(message = "제목을 입력해주세요.")
+    private String title;
+
+    @NotBlank(message = "내용을 입력해주세요.")
+    @Lob
+    private String content;
+
+}
+
+```
+
+
+
+```html
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common ::head('Second')">
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('join')">
+</nav>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+</body>
+
+<!--내용-->
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+</style>
+<body class="bg-light">
+<div class="container">
+    <h2>게시판</h2>
+    <form role="form" th:action="@{/boards/new}" th:object="${boardForm}" method="post">
+        <div class="form-group">
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="">
+            </div>
+            <label for="content">내용</label>
+            <textarea class="form-control" id="content" th:field="*{content}" rows="10"></textarea>
+        </div>
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">확인</button>
+            <a type="button" class="btn btn-primary" th:href="@{/boards}">취소</a>
+        </div>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="form-validation.js"></script>
+</body>
+
+</html>
+```
+
+
+
+어차피 게시판 사용은 회원제이므로 작성자를 굳이 view에 넣을 필요가 없다. 그러나 데이터베이스에 저장할 때, 어떤 사용자가 작성을 하였는지 알아야 하기에 컨트롤러 부분을 보면 `String name = memberService.findByLoginid(principal.getName()).getName();` 부분에서 현재 세션에 사용자 이름을 통하여 어떤 사용자인지 찾아내고 BoardForm에 담는다. 그런 후에 DB에 저장한다.
+
+
+
+------------------------
+
+읽기는 간단하다.
+
+board의 id로 데이터베이스에서 찾아 view로 띄워주기만 하면 된다.
+
+```java
+    @GetMapping("/boards/{boardId}")//{boardId} : boardId를 바인딩
+    public String readBoardForm(@PathVariable("boardId") Long id, Model model) {
+        log.info("BoardController GetMapping readBoardForm");
+
+        Board board = boardService.findById(id);
+
+        model.addAttribute("boardForm", board);
+        return "/boards/readBoard";
+    }  
+```
+
+url에 나온 게시물 번호가 board의 id를 나타내므로 `@PathVariable`을 사용하여 해당 데이터를 Long id로 받아오고 그 id를 통하여 찾아서 모델에 담는다. 모델에 담은 후 view로 보내 사용자에게 보여주기만 하면 된다.
+
+```html
+<div class="container">
+    <hr/>
+    <div class="row">
+        <div class="col-md-10">
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>제목</th>
+                    <td th:text="${boardForm.title}"></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>글쓴이</th>
+                    <td th:text="${boardForm.name}"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" th:text="${boardForm.content}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-right">
+                <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/edit(id=${boardForm.id})}" methods="get">수정</a>
+                <form id="delete-form" th:action="@{/boards/{id}/delete(id=${boardForm.id})}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-primary">삭제</button>
+                </form>
+                <!--            <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/delete(id=${boardForm.id})}">삭제</a>-->
+                <a type="button" class="btn btn-primary" th:href="@{/boards}">목록</a>
+            </div>
+        </div>
+    </div>
+    <hr/>
+</div>
+```
+
+
+
+## 2-3 게시물 수정, 삭제
 
 게시물 작성자 이름
 
@@ -1091,6 +1600,7 @@ public class Board {
 
     //비지니스로직
     //객체지향 디자인 방법중에 GRASP.
+  	// 각 객체에 책임을 부여하는 것.
     //정보를 가장 잘 알고 있는 곳에 로직(메서드)가 있어야 한다는 것.
     //Board가 해당 필드 정보를 가장 잘 알기 떄문에 여기에 비지니스 로직을 짠다.
     public void change(String title, String name, String content, String loginid) {
@@ -1250,3 +1760,174 @@ loginid를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물�
 이렇게 `type="hidden"`을 사용하여 실제 유저가 볼 필요가 굳이 없으므로 안 보이게하였다. 
 
 타임리프가 부족하여 계속 name과 loginid 값이 넘어가지를 않았다. 그래서 `th:field="*{name}"`를 작성하였더니 값이 넘어가졌다. 타임리프에 field를 사용해야 form에 값이 들어가서 값이 넘어가진다. 참고로 `th:object=${boardForm}`을 하였기에 그냥 `th:field="*{name}"`을 사용하면 되고 `th:object=${boardForm}`을 사용하지 않았다면 `th:field="${boardForm.name}"`으로 사용해야한다.
+
+
+
+
+
+### 각 속성 별 사용 예시
+
+### id 속성
+
+"애플리케이션의 고유 영역 식별자"
+
+> '뉴스' 영역과 '히어로즈' 영역을 구분 짓는 고유한 이름
+
+```
+<section id="front-end-news">
+  <h1>프론트엔드 개발 뉴스</h1>
+  ...
+</section>
+
+<section id="front-end-heroes">
+  <h1>프론트엔드 개발 히어로즈</h1>
+  ...
+</section>
+```
+
+------
+
+"레이블과 인풋 컨트롤을 연결하기 위한 식별자"
+
+> '이메일' 레이블 텍스트와 연결된 이메일 인풋 컨트롤
+
+```
+<div class="form-control">
+  <label for="email">이메일</label>
+  <input type="email" id="email">
+</div>
+```
+
+------
+
+"표와 표 설명을 연결하기 위한 식별자"
+
+> 표 요소의 `aria-describedby` 속성과 연결된 표 설명
+
+```
+<p hidden id="table-desc">표 설명(요약)</p>
+
+<table aria-describedby="table-desc">
+  <caption>표 제목</caption>
+  ...
+</table>
+```
+
+------
+
+### class 속성
+
+"재사용을 목적으로 하는 애플리케이션 컴포넌트 식별자"
+
+> 버튼 컴포넌트 스타일을 일괄적으로 반영하기 위한 클래스 이름
+
+```
+<button type="button" class="button">읽기</button>
+
+<input type="button" class="button" value="읽기">
+
+<a href class="button">읽기</a>
+```
+
+요소의 유형과 상관 없이 `class="button"` 설정 되면 일관된 디자인이 반영됩니다. (예: Bulma Element: [Button](https://bulma.io/documentation/elements/button/))
+
+[![이미지](https://res.cloudinary.com/eightcruz/image/upload/v1542542089/icdwbzpax4yysjyt3qjb.png)](https://res.cloudinary.com/eightcruz/image/upload/v1542542089/icdwbzpax4yysjyt3qjb.png)
+
+------
+
+"재사용을 목적으로 하는 애플리케이션 레이아웃 식별자"
+
+> 레이아웃 스타일을 일괄적으로 반영하기 위한 클래스 이름
+
+```
+<!-- 고정 너비를 가진 컨테이너 스타일을 반영하기 위한 식별자 -->
+<div class="container">
+  ...
+</div>
+
+<!-- 컨테이너 요소의 너비를 유연(fluid)하게 변경하는 식별자 추가 -->
+<div class="container is-fluid">
+  ...
+</div>
+```
+
+------
+
+"재사용을 목적으로 하는 애플리케이션 헬퍼 식별자"
+
+> 공통 반영되는 헬퍼 스타일을 일괄적으로 반영하기 위한 클래스 이름
+
+```
+<body class="is-marginless">
+  <div class="is-float-left is-clearfix">
+    ...
+  </div>
+  ...
+</body>
+/* CSS */
+
+.is-marginless {
+  margin: 0;
+}
+
+.is-float-left > * {
+  float: left;
+}
+
+.is-clearfix::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+```
+
+------
+
+### name 속성
+
+"폼 전송 이벤트 발생 시, 서버로 데이터를 전송하기 위한 식별자"
+
+> `<select`> 요소에 설정된 값을 식별하기 위한 이름
+
+```
+<form>
+  <div class="select">
+    <label for="source-of-info">정보 출처</label>
+    <select 
+      name="source-of-info" 
+      id="source-of-info">
+      <option>정보 출처를 선택해주세요.</option>
+      <option>페이스북</option>
+      <option>트위터</option>
+      <option selected>인스타그램</option>
+      ...
+    </select>
+  </div>
+  ...
+</form>
+```
+
+JavaScript 프로그래밍 코드를 사용하여 `<select>` 요소의 `name` 속성 값을 식별하여 사용자가 선택한 값을 가져와 출력할 수 있습니다.
+
+```
+// JavaScript
+
+var form = document.querySelector('form');
+var formData = new FormData(form);
+
+// name="source-of-info" 정보 값을 출력
+formData.get('source-of-info'); // 인스타그램
+```
+
+
+
+
+
+## 
+
+
+
+## 
+
+
+

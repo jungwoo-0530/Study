@@ -38,7 +38,7 @@
             <div class="form-group">
                 <div>role</div>
                 <div th:each="type : ${roleTypes}" class="form-check form-check-inline">
-                    <input type="radio" th:field="*{role}" th:value="${type.name()}" class="form-check-input">
+                    <input type="radio" th:field="*{role}" th:value="${type.name()}" name="role" class="form-check-input">
                     <label th:for="${#ids.prev('role')}" th:text="${type.name()}" class="form-check-label">
                     </label>
                 </div>
