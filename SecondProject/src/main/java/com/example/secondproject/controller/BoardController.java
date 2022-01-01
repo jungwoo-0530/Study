@@ -3,8 +3,11 @@ package com.example.secondproject.controller;
 import com.example.secondproject.domain.board.Board;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
+import com.example.secondproject.dto.paging.CommentDto;
+import com.example.secondproject.dto.paging.CommentPageDto;
 import com.example.secondproject.dto.paging.PageDto;
 import com.example.secondproject.service.BoardService;
+import com.example.secondproject.service.CommentService;
 import com.example.secondproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final MemberService memberService;
+    private final CommentService commentService;
 
 //    @GetMapping("/boards")
 //    public String list(Model model) {
@@ -76,8 +80,10 @@ public class BoardController {
         log.info("BoardController GetMapping readBoardForm");
 
         Board board = boardService.findById(id);
+        Page<CommentDto> commentResults = CommentService.findPageSort(id);
 
         model.addAttribute("boardForm", board);
+
         return "/boards/readBoard";
     }
 
@@ -115,13 +121,6 @@ public class BoardController {
         //준영속 엔티티를 수정하는 2가지 방법.
         //1. 변경 감지 기능 사용(더티체크)
         //2. 병합(merge) 사용
-//        Board board = new Board();
-//        board.setId(boardForm.getId());
-//        board.setTitle(boardForm.getTitle());
-//        board.setWriter(boardForm.getWriter());
-//        board.setContent(boardForm.getContent());
-//
-//        boardService.updateBoard(boardForm.getId(), board);
 
         log.info("BoardService PostMapping updateForm");
         boardService.update(boardId, boardForm.getTitle(), boardForm.getName(),

@@ -46,10 +46,6 @@ public class MemberController {
 
         Member newMember = new Member(registerForm.getLoginId(), registerForm.getName(),
                 registerForm.getPassword(), registerForm.getEmail(), "MEMBER");
-//        newMember.setLoginId(registerForm.getLoginId());
-//        newMember.setName(registerForm.getName());
-//        newMember.setPassword(registerForm.getPassword());
-//        newMember.setEmail(registerForm.getEmail());
 
         memberService.createUser(newMember);
 

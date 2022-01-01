@@ -28,8 +28,6 @@ public class Member {
     private String role;
 
 
-
-
     public Member(String loginId, String name, String password, String email, String role) {
 
         this.loginId = loginId;
