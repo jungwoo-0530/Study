@@ -4,7 +4,6 @@ import com.example.secondproject.domain.board.Board;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
 import com.example.secondproject.dto.paging.PageDto;
-import com.example.secondproject.repository.BoardRepository;
 import com.example.secondproject.service.BoardService;
 import com.example.secondproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ import static com.example.secondproject.login.CustomUserDetailsService.hasAdminR
 public class BoardController {
 
     private final BoardService boardService;
-    private final BoardRepository boardRepository;
     private final MemberService memberService;
 
 //    @GetMapping("/boards")
@@ -172,7 +170,7 @@ public class BoardController {
             direction = Sort.Direction.DESC) Pageable pageable) {
         log.info("BoardController getmapping list");
 
-        Page<BoardDto> results = boardRepository.findAllPageSort(pageable);
+        Page<BoardDto> results = boardService.findPageSort(pageable);
 
         //모델을 boards/list.html로 넘김. html에서 ${boards}이름으로 사용 가능.
         model.addAttribute("boards", results.getContent());

@@ -1,9 +1,12 @@
 package com.example.secondproject.service;
 
 import com.example.secondproject.domain.user.Member;
+import com.example.secondproject.dto.paging.MemberDto;
 import com.example.secondproject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +33,6 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public List<Member> findAllMembers() {return memberRepository.findAll();}
 
 
     @Transactional(readOnly = true)
@@ -76,5 +78,11 @@ public class MemberService {
         Member member = memberRepository.findOneById(id);
 
         member.change(name, loginId, email, role);
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<MemberDto> findPageSort(Pageable pageable) {
+        return memberRepository.findAllPageSort(pageable);
     }
 }

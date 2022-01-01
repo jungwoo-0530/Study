@@ -1,11 +1,12 @@
 package com.example.secondproject.service;
 
 import com.example.secondproject.domain.board.Board;
+import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +23,6 @@ public class BoardService {
     @Transactional
     public void save(Board board) {
         boardRepository.save(board);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Board> findAll() {
-        return boardRepository.findAll();
     }
 
     @Transactional(readOnly = true)
@@ -51,6 +47,10 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
+    public Page<BoardDto> findPageSort(Pageable pageable) {
+        return boardRepository.findAllPageSort(pageable);
+    }
 
 
     @PostConstruct

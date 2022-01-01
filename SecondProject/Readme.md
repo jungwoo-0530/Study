@@ -1039,14 +1039,6 @@ memberDetail.java
 
 
 
-## 1 - 5. 회원 탈퇴
-
-
-
-회원 탈퇴는 자기 자신 회원 정보를 보는 것을 구현 후에 구현할 예정. 
-
-
-
 ## 1 - 6. 회원 상세(ADMIN)
 
 
@@ -1923,9 +1915,13 @@ formData.get('source-of-info'); // 인스타그램
 
 
 
-## 
+## 1차 리팩토링
 
-
+1. account로 변경.
+2. Page
+   - BoardRepository 삭제, BoardService에서 받아오도록 설정.
+   - MemberRepository 삭제, MemberService에서 받아오도록 설정.
+3. BoardRepository, MemberRepository 필요 없는 메서드 삭제.
 
 ## 
 

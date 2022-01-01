@@ -5,7 +5,6 @@ import com.example.secondproject.domain.user.RoleTypes;
 import com.example.secondproject.dto.RegisterForm;
 import com.example.secondproject.dto.paging.MemberDto;
 import com.example.secondproject.dto.paging.MemberPageDto;
-import com.example.secondproject.repository.MemberRepository;
 import com.example.secondproject.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
     //회원가입
     @GetMapping("/register")
@@ -105,7 +103,7 @@ public class MemberController {
     public String userList(Model model,
                            @PageableDefault(size = 20, sort = "id",
                                    direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<MemberDto> results = memberRepository.findAllPageSort(pageable);
+        Page<MemberDto> results = memberService.findPageSort(pageable);
 
         model.addAttribute("users", results.getContent());
         model.addAttribute("page", new MemberPageDto(results.getTotalElements(), pageable));
