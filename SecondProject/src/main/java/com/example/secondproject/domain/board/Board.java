@@ -1,6 +1,7 @@
 package com.example.secondproject.domain.board;
 
 import com.example.secondproject.domain.user.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Board {
 
     @Id

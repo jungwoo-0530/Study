@@ -64,12 +64,7 @@ public class BoardController {
 
         String name = memberService.findByLoginId(principal.getName()).getName();
 
-        Board board = new Board();
-        board.setName(name);
-        board.setTitle(form.getTitle());
-        board.setContent(form.getContent());
-        board.setLoginId(principal.getName());
-
+        Board board = new Board(form.getTitle(), name, form.getContent(), principal.getName());
 
         boardService.save(board);
 
@@ -98,14 +93,9 @@ public class BoardController {
             return "redirect:/boards/"+boardId;
         }
 
+        BoardForm form = new BoardForm(one.getId(), one.getName(),
+                one.getLoginId(), one.getTitle(),one.getContent());//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
 
-        BoardForm form = new BoardForm();//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
-
-        form.setId(one.getId());
-        form.setName(one.getName());
-        form.setContent(one.getContent());
-        form.setTitle(one.getTitle());
-        form.setLoginId(one.getLoginId());
 
         model.addAttribute("boardForm", form);
         return "boards/updateBoardForm";
