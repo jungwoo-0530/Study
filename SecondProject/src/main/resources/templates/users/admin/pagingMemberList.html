@@ -28,7 +28,7 @@
         </thead>
         <tbody>
         <tr th:each="user : ${users}">
-            <td> <a th:text="${user.loginid}" th:href="@{/admin/users/{id} (id=${user.id})}"></a></td>
+            <td> <a th:text="${user.loginId}" th:href="@{/admin/users/{id} (id=${user.id})}"></a></td>
             <!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
             <td th:text="${user.name}"></td>
             <td th:text="${user.email}"></td>

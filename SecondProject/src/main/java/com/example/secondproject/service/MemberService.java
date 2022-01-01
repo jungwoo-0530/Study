@@ -46,8 +46,8 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member findByLoginid(String loginId) {
-        return memberRepository.findByLoginid(loginId).get();
+    public Member findByLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId).get();
     }
 
     @Transactional

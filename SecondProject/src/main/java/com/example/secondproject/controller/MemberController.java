@@ -44,9 +44,9 @@ public class MemberController {
             return "users/register";
         }
 
-        Member newMember = new Member(registerForm.getLoginid(), registerForm.getName(),
+        Member newMember = new Member(registerForm.getLoginId(), registerForm.getName(),
                 registerForm.getPassword(), registerForm.getEmail(), "MEMBER");
-//        newMember.setLoginid(registerForm.getLoginid());
+//        newMember.setLoginId(registerForm.getLoginId());
 //        newMember.setName(registerForm.getName());
 //        newMember.setPassword(registerForm.getPassword());
 //        newMember.setEmail(registerForm.getEmail());
@@ -119,7 +119,7 @@ public class MemberController {
 
         Member findOne = memberService.findOneById(memberId);
 
-        MemberDto result = new MemberDto(memberId, findOne.getName(), findOne.getLoginid(),
+        MemberDto result = new MemberDto(memberId, findOne.getName(), findOne.getLoginId(),
                 findOne.getEmail(), findOne.getRole());
 
         model.addAttribute("memberDto", result);
@@ -133,7 +133,7 @@ public class MemberController {
     public String updateUserByAdmin(@PathVariable("memberId") Long memberId,
                                     @ModelAttribute("memberDto") MemberDto memberDto) {
 
-        memberService.updateByAdmin(memberId, memberDto.getName(), memberDto.getLoginid(),
+        memberService.updateByAdmin(memberId, memberDto.getName(), memberDto.getLoginId(),
                 memberDto.getEmail(), memberDto.getRole());
 
         return "redirect:/admin/users";

@@ -33,11 +33,11 @@ public class BoardService {
 
 
     @Transactional
-    public void update(Long id, String title, String name, String content, String loginid) {
+    public void update(Long id, String title, String name, String content, String loginId) {
 
         Board board = boardRepository.findById(id).get();//영속상태
 
-        board.change(title, name, content, loginid);//변경감지, 비지니스로직을 엔티티에.
+        board.change(title, name, content, loginId);//변경감지, 비지니스로직을 엔티티에.
 
         //Board findOneBoard = boardRepository.findById(id).get();//영속상태.
     }

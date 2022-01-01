@@ -11,15 +11,15 @@ import lombok.Setter;
 public class MemberDto {
     private Long id;
     private String name;
-    private String loginid;
+    private String loginId;
     private String email;
     private String role;
 
     @QueryProjection
-    public MemberDto(Long id, String name, String loginid, String email, String role) {
+    public MemberDto(Long id, String name, String loginId, String email, String role) {
         this.id = id;
         this.name = name;
-        this.loginid = loginid;
+        this.loginId = loginId;
         this.email = email;
         this.role = role;
     }

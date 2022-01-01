@@ -30,7 +30,7 @@
         <tr th:each="user : ${users}">
             <td> <a th:text="${user.name}" th:href="@{/admin/users/{id} (id=${user.id})}"></a></td>
             <!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
-            <td th:text="${user.loginid}"></td>
+            <td th:text="${user.loginId}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.role}"></td>
         </tr>

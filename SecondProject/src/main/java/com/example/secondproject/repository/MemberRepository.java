@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom{
 
-    Optional<Member> findByLoginid(String LoginId);
+    Optional<Member> findByLoginId(String LoginId);
 
     Member findOneById(Long id);
 

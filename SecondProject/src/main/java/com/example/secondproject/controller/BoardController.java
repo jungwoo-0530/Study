@@ -62,13 +62,13 @@ public class BoardController {
 
         log.info("BoardController postmapping createForm");
 
-        String name = memberService.findByLoginid(principal.getName()).getName();
+        String name = memberService.findByLoginId(principal.getName()).getName();
 
         Board board = new Board();
         board.setName(name);
         board.setTitle(form.getTitle());
         board.setContent(form.getContent());
-        board.setLoginid(principal.getName());
+        board.setLoginId(principal.getName());
 
 
         boardService.save(board);
@@ -94,7 +94,7 @@ public class BoardController {
 
         Board one = boardService.findById(boardId);
         //admin이 아니고 작성자도 아니면.
-        if (!one.getLoginid().equals(principal.getName()) && !hasAdminRole()) {
+        if (!one.getLoginId().equals(principal.getName()) && !hasAdminRole()) {
             return "redirect:/boards/"+boardId;
         }
 
@@ -105,7 +105,7 @@ public class BoardController {
         form.setName(one.getName());
         form.setContent(one.getContent());
         form.setTitle(one.getTitle());
-        form.setLoginid(one.getLoginid());
+        form.setLoginId(one.getLoginId());
 
         model.addAttribute("boardForm", form);
         return "boards/updateBoardForm";
@@ -135,7 +135,7 @@ public class BoardController {
 
         log.info("BoardService PostMapping updateForm");
         boardService.update(boardId, boardForm.getTitle(), boardForm.getName(),
-                boardForm.getContent(), boardForm.getLoginid());
+                boardForm.getContent(), boardForm.getLoginId());
 
         return "redirect:/boards/"+boardId;
 
@@ -153,7 +153,7 @@ public class BoardController {
                              Principal principal) {
         log.info("BoardController DeleteMapping deleteForm");
         Board one = boardService.findById(boardId);
-        if (!one.getLoginid().equals(principal.getName()) && !hasAdminRole()) {
+        if (!one.getLoginId().equals(principal.getName()) && !hasAdminRole()) {
             return "redirect:/boards/"+boardId;
         }
 

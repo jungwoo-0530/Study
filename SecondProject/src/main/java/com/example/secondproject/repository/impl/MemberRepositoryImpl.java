@@ -50,7 +50,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .select(new QMemberDto(
                         qMember.id.as("id"),
                         qMember.name.as("name"),
-                        qMember.loginid.as("loginid"),
+                        qMember.loginId.as("loginId"),
                         qMember.email.as("email"),
                         qMember.role.as("role")
                 ))

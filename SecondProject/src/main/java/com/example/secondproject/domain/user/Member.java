@@ -17,7 +17,7 @@ public class Member {
     @Column(name = "MEMBER_ID")
     private Long id;
 
-    private String loginid;
+    private String loginId;
 
     private String name;
 
@@ -29,9 +29,10 @@ public class Member {
 
 
 
-    public Member(String loginid, String name, String password, String email, String role) {
 
-        this.loginid = loginid;
+    public Member(String loginId, String name, String password, String email, String role) {
+
+        this.loginId = loginId;
         this.name = name;
         this.password = password;
         this.email = email;
@@ -40,7 +41,7 @@ public class Member {
 
     public void change(String name, String loginId, String email, String role) {
         this.setName(name);
-        this.setLoginid(loginId);
+        this.setLoginId(loginId);
         this.setEmail(email);
         this.setRole(role);
     }

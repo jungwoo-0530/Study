@@ -11,7 +11,7 @@ public class RegisterForm {
 
     @NotBlank(message = "id를 꼭 입력해 주세요")
     @Size(min = 5, max = 15, message = "id는 최소 5, 최대 15글자를 입력해주세요")
-    private String loginid;
+    private String loginId;
 
     @NotBlank
     private String password;
