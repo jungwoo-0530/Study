@@ -11,8 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
 
 
 @Service
@@ -50,27 +48,7 @@ public class MemberService {
         return memberRepository.findByLoginId(loginId).get();
     }
 
-    @Transactional
-    @PostConstruct
-    public void initUserDb() {
 
-        Member member = new Member("admin", "김정우",
-                "admin", "admin@naver.com", "ADMIN");
-        String encodedPassword = passwordEncoder.encode(member.getPassword());
-        member.setPassword(encodedPassword);
-        memberRepository.save(member);
-
-        int cnt = 0;
-        while (cnt != 40) {
-            cnt++;
-            Member member1 = new Member("member" + cnt, "김선우" + cnt,
-                    "member" + cnt, "member" + cnt + "@naver.com", "MEMBER");
-            String encodedPassword1 = passwordEncoder.encode(member1.getPassword());
-            member1.setPassword(encodedPassword1);
-            memberRepository.save(member1);
-        }
-
-    }
 
 
     @Transactional

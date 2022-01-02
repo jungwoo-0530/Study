@@ -31,8 +31,12 @@ public class Board {
     @Lob
     private String content;
 
-    @OneToMany(mappedBy = "board")
-    private List<Comment> comments = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
+
+//    @OneToMany(mappedBy = "board")//OneToMany는 default가 LAZY
+//    private List<Comment> comments = new ArrayList<>();
 
 
     public Board(String title, String name, String content, String loginId) {
@@ -51,6 +55,11 @@ public class Board {
         this.setName(name);
         this.setContent(content);
         this.setLoginId(loginId);
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+        member.getBoards().add(this);
     }
 
 }

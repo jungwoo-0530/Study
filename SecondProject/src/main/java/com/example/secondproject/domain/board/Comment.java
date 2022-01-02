@@ -21,8 +21,13 @@ public class Comment {
 
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "BOARD_ID")
-    private Board board;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "BOARD_ID")
+//    private Board board;
+
+    public void change(String name, String content) {
+        this.setName(name);
+        this.setContent(content);
+    }
 
 }

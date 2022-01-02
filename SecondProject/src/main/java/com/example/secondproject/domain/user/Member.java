@@ -4,6 +4,7 @@ import com.example.secondproject.domain.board.Board;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,9 @@ public class Member {
 
     private String role;
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Board> boards = new ArrayList<>();
+
 
     public Member(String loginId, String name, String password, String email, String role) {
 
@@ -43,6 +47,16 @@ public class Member {
         this.setEmail(email);
         this.setRole(role);
     }
+
+
+//    public void addBoard(Board board) {
+//        this.boards.add(board);
+//        board.setMember(this);
+//    }
+
+
+
+
 
 
     //주소는 api사용

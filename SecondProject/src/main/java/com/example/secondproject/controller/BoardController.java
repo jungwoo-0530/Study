@@ -1,10 +1,9 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.board.Board;
+import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
-import com.example.secondproject.dto.paging.CommentDto;
-import com.example.secondproject.dto.paging.CommentPageDto;
 import com.example.secondproject.dto.paging.PageDto;
 import com.example.secondproject.service.BoardService;
 import com.example.secondproject.service.CommentService;
@@ -66,11 +65,11 @@ public class BoardController {
 
         log.info("BoardController postmapping createForm");
 
-        String name = memberService.findByLoginId(principal.getName()).getName();
+        Member findMember = memberService.findByLoginId(principal.getName());
 
-        Board board = new Board(form.getTitle(), name, form.getContent(), principal.getName());
+        Board board = new Board(form.getTitle(), findMember.getName(), form.getContent(), principal.getName());
 
-        boardService.save(board);
+        boardService.save(board, findMember);
 
         return "redirect:/boards";
     }
@@ -80,7 +79,7 @@ public class BoardController {
         log.info("BoardController GetMapping readBoardForm");
 
         Board board = boardService.findById(id);
-        Page<CommentDto> commentResults = CommentService.findPageSort(id);
+        //Page<CommentDto> commentResults = CommentService.findPageSort(id);
 
         model.addAttribute("boardForm", board);
 

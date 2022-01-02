@@ -1,12 +1,15 @@
 package com.example.secondproject.service;
 
 import com.example.secondproject.domain.board.Board;
+import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.repository.BoardRepository;
+import com.example.secondproject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +24,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public void save(Board board) {
+    public void save(Board board, Member member) {
+        board.setMember(member);
         boardRepository.save(board);
     }
 
@@ -53,12 +57,5 @@ public class BoardService {
     }
 
 
-    @PostConstruct
-    @Transactional
-    public void initBoardDb() {
-        for (int i = 1; i < 101; i++) {
-            Board board = new Board("제목test"+i, "김정우"+i, "안녕하세요. "+ i + "번째 글입니다", "member"+i);
-            boardRepository.save(board);
-        }
-    }
+
 }

@@ -37,12 +37,6 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     //QMember은 정적필드로 접근할 수 있음.
     QMember qMember = QMember.member;
 
-    @Override
-    public List<Member> getMemberList() {
-        return queryFactory
-                .selectFrom(qMember)
-                .fetch();
-    }
 
     @Override
     public Page<MemberDto> findAllPageSort(Pageable pageable) {
