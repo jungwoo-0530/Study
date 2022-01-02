@@ -3,6 +3,7 @@ package com.example.secondproject.repository;
 import com.example.secondproject.domain.board.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -10,4 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
 
 
+    @Query("select b from Board b left join fetch b.comments where b.id = :id")
+    Board findBoardAndCommentById(@Param("id") Long id);
+
+    @Query("select b from Board b where b.loginId = :loginId")
+    Board findByLoginId(@Param("loginId") String name);
 }

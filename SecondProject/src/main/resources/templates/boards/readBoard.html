@@ -49,17 +49,22 @@
                 <!--            <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/delete(id=${boardForm.id})}">삭제</a>-->
                 <a type="button" class="btn btn-primary" th:href="@{/boards}">목록</a>
             </div>
-            <table>
-                <thead>
-                <tr>
-                    <th>
-                        <label for="content">댓글</label>
-                        <textarea class="form-control" id="content" th:field="${boardForm.content}" rows="2" cols="100"></textarea>
-                    </th>
-                </tr>
-                </thead>
-
-            </table>
+            <form method="post" th:action="@{/boards/{boardId}(boardId=${boardForm.id})}" th:object="${commentForm}" >
+                <table>
+                    <thead>
+                    <tr>
+                        <th>
+                            <label for="content">댓글</label>
+                            <textarea class="form-control" id="content" th:field="*{content}" rows="2" cols="100"></textarea>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-primary">확인</button>
+<!--                    <a type="submit" class="btn btn-primary" th:href="@{/boards}">확인</a>-->
+                </div>
+            </form>
         </div>
     </div>
     <hr/>

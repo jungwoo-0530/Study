@@ -52,5 +52,11 @@ public class BoardService {
     }
 
 
+    public Board findBoardAndCommentById(Long id) {
+        return boardRepository.findBoardAndCommentById(id);
+    }
 
+    public Board findByLoingId(String name) {
+        return boardRepository.findByLoginId(name);
+    }
 }

@@ -21,13 +21,23 @@ public class Comment {
 
     private String content;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "BOARD_ID")
-//    private Board board;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BOARD_ID")//BOARD_ID FK
+    private Board board;
+
+    public Comment(String name, String content) {
+        this.name = name;
+        this.content = content;
+    }
 
     public void change(String name, String content) {
         this.setName(name);
         this.setContent(content);
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+        board.getComments().add(this);
     }
 
 }

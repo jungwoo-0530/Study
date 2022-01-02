@@ -35,6 +35,8 @@ public class Board {
     @JoinColumn(name = "MEMBER_ID")//MEMBER_ID : FK
     private Member member;
 
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     public Board(String title, String name, String content, String loginId) {
         this.title = title;

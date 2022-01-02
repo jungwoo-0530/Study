@@ -1,9 +1,11 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.board.Board;
+import com.example.secondproject.domain.board.Comment;
 import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
+import com.example.secondproject.dto.paging.CommentDto;
 import com.example.secondproject.dto.paging.PageDto;
 import com.example.secondproject.service.BoardService;
 import com.example.secondproject.service.CommentService;
@@ -79,18 +81,33 @@ public class BoardController {
     public String readBoardForm(@PathVariable("boardId") Long id, Model model) {
         log.info("BoardController GetMapping readBoardForm");
 
-        Board board = boardService.findById(id);
+//        Board board = boardService.findById(id);
         //Page<CommentDto> commentResults = CommentService.findPageSort(id);
-
+        Board board = boardService.findBoardAndCommentById(id);
+//        List<Comment> comments = board.getComments();
         model.addAttribute("boardForm", board);
+        model.addAttribute("commentForm", new CommentDto());
 
         return "/boards/readBoard";
+    }
+
+    @PostMapping("/boards/{boardId}")
+    public String createComment(@ModelAttribute(name = "commentForm") CommentDto commentDto,
+                                @PathVariable("boardId") Long id,
+                                Principal principal) {
+        Comment newComment = new Comment(principal.getName(), commentDto.getContent());
+
+        Board board = boardService.findById(id);
+        commentService.save(newComment, board);
+
+        return "redirect:/boards";
     }
 
     @GetMapping("/boards/{boardId}/edit")
     public String updateBoardForm(@PathVariable("boardId") Long boardId,
                                   Model model,
                                   Principal principal) {
+
         log.info("BoardController GetMapping updateBoardForm");
 
         Board one = boardService.findById(boardId);
