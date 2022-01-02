@@ -3,6 +3,7 @@ package com.example.secondproject.controller;
 import com.example.secondproject.domain.board.Board;
 import com.example.secondproject.domain.board.Comment;
 import com.example.secondproject.domain.user.Member;
+import com.example.secondproject.dto.CommentRegisterDto;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
 import com.example.secondproject.dto.paging.CommentDto;
@@ -82,22 +83,28 @@ public class BoardController {
 
 //        Board board = boardService.findById(id);
         //Page<CommentDto> commentResults = CommentService.findPageSort(id);
-        Board board = boardService.findBoardAndCommentById(id);
+        Board board = boardService.findBoardAndCommentByBoardId(id);
 //        List<Comment> comments = board.getComments();
         model.addAttribute("boardForm", board);
-        model.addAttribute("commentForm", new CommentDto());
+        model.addAttribute("commentForm", new CommentRegisterDto());
 
         return "/boards/readBoard";
     }
 
     @PostMapping("/boards/{boardId}")
-    public String createComment(@ModelAttribute(name = "commentForm") CommentDto commentDto,
-                                @PathVariable("boardId") Long id,
+    public String createComment(@ModelAttribute(name = "commentForm") CommentRegisterDto commentRegisterDto,
+                                @PathVariable("boardId") Long boardId,
                                 Principal principal) {
-        Comment newComment = new Comment(principal.getName(), commentDto.getContent());
+//        Comment newComment = new Comment(commentDto.getContent());
 
-        Board board = boardService.findById(id);
-        commentService.save(newComment, board);
+//        Board board = boardService.findById(id);
+//        System.out.println("===========================");
+//        System.out.println(board.getMember().getClass());
+//        newComment.setMember(board.getMember());
+        System.out.println("================================================");
+        Member sessionMember = memberService.findByEmail(principal.getName());
+        Comment comment = new Comment(commentRegisterDto.getContent());
+        commentService.save(comment, boardId, sessionMember.getId());
 
         return "redirect:/boards";
     }

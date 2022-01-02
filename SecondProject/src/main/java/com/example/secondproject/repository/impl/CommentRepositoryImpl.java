@@ -29,7 +29,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         JPAQuery<CommentDto> query = jpaQueryFactory
                 .select(new QCommentDto(
                         comment.id.as("id"),
-                        comment.name.as("name"),
                         comment.content.as("content")
                 ))
                 .from(comment)

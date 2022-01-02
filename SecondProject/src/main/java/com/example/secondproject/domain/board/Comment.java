@@ -1,5 +1,6 @@
 package com.example.secondproject.domain.board;
 
+import com.example.secondproject.domain.user.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,27 +18,32 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")//BOARD_ID FK
     private Board board;
 
-    public Comment(String name, String content) {
-        this.name = name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
+
+    public Comment(String content) {
+
         this.content = content;
     }
 
     public void change(String name, String content) {
-        this.setName(name);
         this.setContent(content);
     }
 
     public void setBoard(Board board) {
         this.board = board;
         board.getComments().add(this);
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
 }

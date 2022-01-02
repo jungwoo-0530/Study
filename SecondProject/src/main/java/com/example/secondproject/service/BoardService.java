@@ -52,8 +52,8 @@ public class BoardService {
     }
 
 
-    public Board findBoardAndCommentById(Long id) {
-        return boardRepository.findBoardAndCommentById(id);
+    public Board findBoardAndCommentByBoardId(Long id) {
+        return boardRepository.findBoardAndCommentByBoardId(id);
     }
 
 

@@ -10,13 +10,11 @@ import lombok.Setter;
 public class CommentDto {
 
     private Long id;
-    private String name;
     private String content;
 
     @QueryProjection
-    public CommentDto(Long id, String name, String content) {
+    public CommentDto(Long id, String content) {
         this.id = id;
-        this.name = name;
         this.content = content;
     }
 }
