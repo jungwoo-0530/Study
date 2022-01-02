@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 import static com.example.secondproject.login.CustomUserDetailsService.hasAdminRole;
 
@@ -95,18 +96,16 @@ public class BoardController {
         Board one = boardService.findById(boardId);
         //admin이 아니고 작성자도 아니면.
         if (!one.getLoginId().equals(principal.getName()) && !hasAdminRole()) {
-            return "redirect:/boards/"+boardId;
+            return "redirect:/boards/" + boardId;
         }
 
         BoardForm form = new BoardForm(one.getId(), one.getName(),
-                one.getLoginId(), one.getTitle(),one.getContent());//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
+                one.getLoginId(), one.getTitle(), one.getContent());//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
 
 
         model.addAttribute("boardForm", form);
         return "boards/updateBoardForm";
     }
-
-
 
 
     @PostMapping("/boards/{boardId}/edit")//뷰(readBoard.html)로부터 form이 넘어옴. 파라미터로 받음
@@ -125,7 +124,7 @@ public class BoardController {
         boardService.update(boardId, boardForm.getTitle(), boardForm.getName(),
                 boardForm.getContent(), boardForm.getLoginId());
 
-        return "redirect:/boards/"+boardId;
+        return "redirect:/boards/" + boardId;
 
     }
 //
@@ -142,7 +141,7 @@ public class BoardController {
         log.info("BoardController DeleteMapping deleteForm");
         Board one = boardService.findById(boardId);
         if (!one.getLoginId().equals(principal.getName()) && !hasAdminRole()) {
-            return "redirect:/boards/"+boardId;
+            return "redirect:/boards/" + boardId;
         }
 
         boardService.deleteBoard(boardId);
@@ -166,4 +165,14 @@ public class BoardController {
 //        return "boards/list";
         return "boards/pagingList";
     }
+
+    //내 글
+//    @GetMapping("/my/boards/{memberId}")
+//    public String myBoards(@PathVariable("memberId") Long id,
+//                           Model model) {
+//
+//        List<Board> boards = board
+//
+//        return "/users/myBoards";
+//    }
 }

@@ -63,6 +63,26 @@
     </div>
     <hr/>
 </div>
+<div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.id}"></td>
+            <td> <a th:text="${board.title}" th:href="@{/boards/{id} (id=${board.id})}"></a></td>
+            <!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
+            <td th:text="${board.name}"></td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 <script src="form-validation.js"></script>

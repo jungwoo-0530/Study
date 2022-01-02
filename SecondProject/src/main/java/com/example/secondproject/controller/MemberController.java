@@ -1,5 +1,6 @@
 package com.example.secondproject.controller;
 
+import com.example.secondproject.domain.board.Board;
 import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.domain.user.RoleTypes;
 import com.example.secondproject.dto.RegisterForm;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -72,12 +74,16 @@ public class MemberController {
 
 ///////////////////////////////admin/////////////////////
 
+    //user 상세정보
+    //기능 추가. 회원이 작성한 글 보기.
     @GetMapping("/admin/users/{memberId}")
     public String detailOfUserByAdmin(@PathVariable("memberId") Long id, Model model) {
 
-        Member member = memberService.findOneById(id);
+        Member findMember = memberService.findMemberAndBoardsById(id);
+        List<Board> boards = findMember.getBoards();
 
-        model.addAttribute("memberForm", member);
+        model.addAttribute("memberForm", findMember);
+        model.addAttribute("boards", boards);
 
         return "users/admin/userDetailByAdmin";
     }

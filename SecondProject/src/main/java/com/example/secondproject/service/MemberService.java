@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +31,6 @@ public class MemberService {
     }
 
 
-
     @Transactional(readOnly = true)
     public Member findOneById(Long id) {
         return memberRepository.findOneById(id);
@@ -49,8 +47,6 @@ public class MemberService {
     }
 
 
-
-
     @Transactional
     public void updateByAdmin(Long id, String name, String loginId, String email, String role) {
         Member member = memberRepository.findOneById(id);
@@ -62,5 +58,10 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Page<MemberDto> findPageSort(Pageable pageable) {
         return memberRepository.findAllPageSort(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Member findMemberAndBoardsById(Long id) {
+        return memberRepository.findMemberAndBoardsById(id);
     }
 }
