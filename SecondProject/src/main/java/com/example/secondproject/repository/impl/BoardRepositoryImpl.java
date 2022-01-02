@@ -24,6 +24,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+//    @Override
+//    public Page<BoardDto> findAllPageSort(Pageable pageable) {
+//        return null;
+//    }
+
 
     @Override
     public Page<BoardDto> findAllPageSort(Pageable pageable) {
@@ -31,7 +36,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .select(new QBoardDto(
                         board.id.as("id"),
                         board.title.as("title"),
-                        board.name.as("name")
+                        board.member.nickname.as("name")
                 ))
                 .from(board)
                 .offset(pageable.getOffset())

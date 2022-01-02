@@ -32,8 +32,8 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <th>글쓴이</th>
-                    <td th:text="${boardForm.name}"></td>
+                    <th>작성자</th>
+                    <td th:text="${boardForm.getMember().getNickname()}"></td>
                 </tr>
                 <tr>
                     <td colspan="2" th:text="${boardForm.content}"></td>

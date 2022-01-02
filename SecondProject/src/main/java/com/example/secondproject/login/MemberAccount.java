@@ -9,7 +9,7 @@ import java.util.Collection;
 public class MemberAccount extends User {
     private final Member member;
     public MemberAccount(Member member, Collection<? extends GrantedAuthority> authorities) {
-        super(member.getLoginId(), member.getPassword(), authorities);
+        super(member.getEmail(), member.getPassword(), authorities);//첫번째 인자에 따라서 principal.getName()이 달라진다.
         this.member = member;
     }
 

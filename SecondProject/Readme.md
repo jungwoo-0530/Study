@@ -109,7 +109,7 @@ dependencies {
       @Column(name = "USER_ID")
       private Long id;
   
-      private String loginId;
+      private String nickname;
   
       private String name;
   
@@ -117,8 +117,8 @@ dependencies {
   
       private String email;
   
-      public User(String loginId, String name, String password, String email) {
-          this.loginId = loginId;
+      public User(String nickname, String name, String password, String email) {
+          this.nickname = nickname;
           this.name = name;
           this.password = password;
           this.email = email;
@@ -149,7 +149,7 @@ dependencies {
   
       @NotBlank(message = "id를 꼭 입력해 주세요")
       @Size(min = 5, max = 15, message = "id는 최소 5, 최대 15글자를 입력해주세요")
-      private String loginId;
+      private String nickname;
   
       @NotBlank
       private String password;
@@ -185,7 +185,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
 
-    User findByLoginId(String loginId);
+    User findBynickname(String nickname);
 
 }
 
@@ -226,9 +226,9 @@ public class UserService {
     }
 
     //password가 일치하지 않을 경우, null 반환.
-    //findByLoginId의 반환이 optional이므로 null 반환 가능
-    public boolean validationLogin(String loginId, String password) {
-        User loginUser = userRepository.findByLoginId(loginId);
+    //findBynickname의 반환이 optional이므로 null 반환 가능
+    public boolean validationLogin(String nickname, String password) {
+        User loginUser = userRepository.findBynickname(nickname);
 
         if(loginUser == null){
             System.out.println("해당 아이디의 유저가 존재하지 않습니다");
@@ -273,7 +273,7 @@ import lombok.Data;
 
 @Data
 public class LoginForm {
-    private String loginId;
+    private String nickname;
     private String password;
 }
 
@@ -521,7 +521,7 @@ public class Member {
     @Column(name = "MEMBER_ID")
     private Long id;
 
-    private String loginId;
+    private String nickname;
 
     private String name;
 
@@ -532,9 +532,9 @@ public class Member {
     private String role;
 
 
-    public Member(String loginId, String name, String password, String email, String role) {
+    public Member(String nickname, String name, String password, String email, String role) {
 
-        this.loginId = loginId;
+        this.nickname = nickname;
         this.name = name;
         this.password = password;
         this.email = email;
@@ -592,9 +592,9 @@ public class MemberController {
             return "users/register";
         }
 
-        Member newMember = new Member(registerForm.getLoginId(), registerForm.getName(),
+        Member newMember = new Member(registerForm.getNickname(), registerForm.getName(),
                 registerForm.getPassword(), registerForm.getEmail(), "MEMBER");
-//        newMember.setLoginId(registerForm.getLoginId());
+//        newMember.setNickname(registerForm.getNickname());
 //        newMember.setName(registerForm.getName());
 //        newMember.setPassword(registerForm.getPassword());
 //        newMember.setEmail(registerForm.getEmail());
@@ -669,8 +669,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        Optional<Member> memberEntityWrapper = memberRepository.findByLoginId(loginId);
+    public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
+        Optional<Member> memberEntityWrapper = memberRepository.findBynickname(nickname);
         Member member = memberEntityWrapper.get();
 
 
@@ -700,7 +700,7 @@ import java.util.Collection;
 public class MemberAccount extends User {
     private final Member member;
     public MemberAccount(Member member, Collection<? extends GrantedAuthority> authorities) {
-        super(member.getLoginId(), member.getPassword(), authorities);
+        super(member.getNickname(), member.getPassword(), authorities);
         this.member = member;
     }
 
@@ -834,7 +834,7 @@ public enum RoleTypes {
 
         Member findOne = memberService.findOneById(memberId);
 
-        MemberDto result = new MemberDto(memberId, findOne.getName(), findOne.getLoginId(),
+        MemberDto result = new MemberDto(memberId, findOne.getName(), findOne.getNickname(),
                 findOne.getEmail(), findOne.getRole());
 
         model.addAttribute("memberDto", result);
@@ -895,7 +895,7 @@ roleTypes이름으로 모델에 담는다.
     public String updateUserByAdmin(@PathVariable("memberId") Long memberId,
                                     @ModelAttribute("memberDto") MemberDto memberDto) {
 
-        memberService.updateByAdmin(memberId, memberDto.getName(), memberDto.getLoginId(),
+        memberService.updateByAdmin(memberId, memberDto.getName(), memberDto.getNickname(),
                 memberDto.getEmail(), memberDto.getRole());
 
         return "redirect:/admin/users";
@@ -955,7 +955,7 @@ MemberRepository.java
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>{
 
-    Optional<Member> findByLoginId(String LoginId);
+    Optional<Member> findBynickname(String nickname);
 
     Member findOneById(Long id);
 }
@@ -998,7 +998,7 @@ memberDetail.java
                 <tbody>
                 <tr>
                     <th>아이디</th>
-                    <td th:text="${memberForm.loginId}"></td>
+                    <td th:text="${memberForm.nickname}"></td>
                 </tr>
                 <tr>
                     <th>이메일</th>
@@ -1092,17 +1092,17 @@ public class Board {
     private String name;//멤버의 name.
 
     //외래키.
-    private String loginId;
+    private String nickname;
 
     @Lob
     private String content;
 
 
-    public Board(String title, String name, String content, String loginId) {
+    public Board(String title, String name, String content, String nickname) {
         this.title = title;
         this.name = name;
         this.content = content;
-        this.loginId = loginId;
+        this.nickname = nickname;
     }
 
     //비지니스로직
@@ -1110,11 +1110,11 @@ public class Board {
   	// 각 객체에 책임을 부여하는 것.
     //정보를 가장 잘 알고 있는 곳에 로직(메서드)가 있어야 한다는 것.
     //Board가 해당 필드 정보를 가장 잘 알기 떄문에 여기에 비지니스 로직을 짠다.
-    public void change(String title, String name, String content, String loginId) {
+    public void change(String title, String name, String content, String nickname) {
         this.setTitle(title);
         this.setName(name);
         this.setContent(content);
-        this.setLoginId(loginId);
+        this.setNickname(nickname);
     }
 
 }
@@ -1381,14 +1381,14 @@ public class BoardController {
 
         log.info("BoardController postmapping createForm");
 
-        String name = memberService.findByLoginId(principal.getName()).getName();
+        String name = memberService.findBynickname(principal.getName()).getName();
 
         Board board = new Board();
 //        board.setName(form.getName());
         board.setName(name);
         board.setTitle(form.getTitle());
         board.setContent(form.getContent());
-        board.setLoginId(principal.getName());
+        board.setNickname(principal.getName());
 
 
         boardService.save(board);
@@ -1427,7 +1427,7 @@ public class BoardForm {
 //    @NotBlank(message = "작성자를 입력해주세요.")
     private String name;
 
-    private String loginId;
+    private String nickname;
 
     @NotBlank(message = "제목을 입력해주세요.")
     private String title;
@@ -1488,7 +1488,7 @@ public class BoardForm {
 
 
 
-어차피 게시판 사용은 회원제이므로 작성자를 굳이 view에 넣을 필요가 없다. 그러나 데이터베이스에 저장할 때, 어떤 사용자가 작성을 하였는지 알아야 하기에 컨트롤러 부분을 보면 `String name = memberService.findByLoginId(principal.getName()).getName();` 부분에서 현재 세션에 사용자 이름을 통하여 어떤 사용자인지 찾아내고 BoardForm에 담는다. 그런 후에 DB에 저장한다.
+어차피 게시판 사용은 회원제이므로 작성자를 굳이 view에 넣을 필요가 없다. 그러나 데이터베이스에 저장할 때, 어떤 사용자가 작성을 하였는지 알아야 하기에 컨트롤러 부분을 보면 `String name = memberService.findBynickname(principal.getName()).getName();` 부분에서 현재 세션에 사용자 이름을 통하여 어떤 사용자인지 찾아내고 BoardForm에 담는다. 그런 후에 DB에 저장한다.
 
 
 
@@ -1577,17 +1577,17 @@ public class Board {
     private String name;//멤버의 name.
 
     //외래키.
-    private String loginId;
+    private String nickname;
 
     @Lob
     private String content;
 
 
-    public Board(String title, String name, String content, String loginId) {
+    public Board(String title, String name, String content, String nickname) {
         this.title = title;
         this.name = name;
         this.content = content;
-        this.loginId = loginId;
+        this.nickname = nickname;
     }
 
     //비지니스로직
@@ -1595,21 +1595,21 @@ public class Board {
   	// 각 객체에 책임을 부여하는 것.
     //정보를 가장 잘 알고 있는 곳에 로직(메서드)가 있어야 한다는 것.
     //Board가 해당 필드 정보를 가장 잘 알기 떄문에 여기에 비지니스 로직을 짠다.
-    public void change(String title, String name, String content, String loginId) {
+    public void change(String title, String name, String content, String nickname) {
         this.setTitle(title);
         this.setName(name);
         this.setContent(content);
-        this.setLoginId(loginId);
+        this.setNickname(nickname);
     }
 
 }
 ```
 
-name은 주민등록번호상의 실제 이름이고 loginId는 실제로 로그인하는 id이다. 나중에 깔끔하게 변경할 예정이다.
+name은 주민등록번호상의 실제 이름이고 nickname는 실제로 로그인하는 id이다. 나중에 깔끔하게 변경할 예정이다.
 
 게시판에 게시물 작성은 회원한 유저만 작성이 가능하며 게시판에는 name과 titile이 보여진다.
 
-loginId를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물을 수정하거나 삭제를 하면 남이 작성한 글에는 접근 권한이 없어야한다. 그러므로 유니크한 값이 필요하여서 loginId를 사용하였다. 이러한 방식은 깔끔한 방식이 아닌 것 같으므로 **그러나 나중에 멤버 엔티티와 Board 엔티티 연관관계를 맺으면서 새로운 방식으로 리팩토링할 예정이다.**
+nickname를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물을 수정하거나 삭제를 하면 남이 작성한 글에는 접근 권한이 없어야한다. 그러므로 유니크한 값이 필요하여서 nickname를 사용하였다. 이러한 방식은 깔끔한 방식이 아닌 것 같으므로 **그러나 나중에 멤버 엔티티와 Board 엔티티 연관관계를 맺으면서 새로운 방식으로 리팩토링할 예정이다.**
 
 ```java
     @GetMapping("/boards/{boardId}/edit")
@@ -1620,7 +1620,7 @@ loginId를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물�
 
         Board one = boardService.findById(boardId);
         //admin이 아니고 작성자도 아니면.
-        if (!one.getLoginId().equals(principal.getName()) && !hasAdminRole()) {
+        if (!one.getNickname().equals(principal.getName()) && !hasAdminRole()) {
             return "redirect:/boards/"+boardId;
         }
 
@@ -1631,7 +1631,7 @@ loginId를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물�
         form.setName(one.getName());
         form.setContent(one.getContent());
         form.setTitle(one.getTitle());
-        form.setLoginId(one.getLoginId());
+        form.setNickname(one.getNickname());
 
         model.addAttribute("boardForm", form);
         return "boards/updateBoardForm";
@@ -1661,7 +1661,7 @@ loginId를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물�
 
         log.info("BoardService PostMapping updateForm");
         boardService.update(boardId, boardForm.getTitle(), boardForm.getName(),
-                boardForm.getContent(), boardForm.getLoginId());
+                boardForm.getContent(), boardForm.getNickname());
 
         return "redirect:/boards/"+boardId;
 
@@ -1721,7 +1721,7 @@ loginId를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물�
                 <input type="hidden" th:field="*{name}" />
             </div>
             <div class="form-group">
-                <input type="hidden" th:field="*{loginId}" />
+                <input type="hidden" th:field="*{nickname}" />
             </div>
             <label for="content">내용</label>
             <textarea class="form-control" id="content" th:field="*{content}" rows="10"></textarea>
@@ -1745,13 +1745,13 @@ loginId를 엔티티에 추가한 이유는 컨트롤러에서 현재 게시물�
                 <input type="hidden" th:field="*{name}" />
             </div>
             <div class="form-group">
-                <input type="hidden" th:field="*{loginId}" />
+                <input type="hidden" th:field="*{nickname}" />
             </div>
 ```
 
 이렇게 `type="hidden"`을 사용하여 실제 유저가 볼 필요가 굳이 없으므로 안 보이게하였다. 
 
-타임리프가 부족하여 계속 name과 loginId 값이 넘어가지를 않았다. 그래서 `th:field="*{name}"`를 작성하였더니 값이 넘어가졌다. 타임리프에 field를 사용해야 form에 값이 들어가서 값이 넘어가진다. 참고로 `th:object=${boardForm}`을 하였기에 그냥 `th:field="*{name}"`을 사용하면 되고 `th:object=${boardForm}`을 사용하지 않았다면 `th:field="${boardForm.name}"`으로 사용해야한다.
+타임리프가 부족하여 계속 name과 nickname 값이 넘어가지를 않았다. 그래서 `th:field="*{name}"`를 작성하였더니 값이 넘어가졌다. 타임리프에 field를 사용해야 form에 값이 들어가서 값이 넘어가진다. 참고로 `th:object=${boardForm}`을 하였기에 그냥 `th:field="*{name}"`을 사용하면 되고 `th:object=${boardForm}`을 사용하지 않았다면 `th:field="${boardForm.name}"`으로 사용해야한다.
 
 
 
@@ -1917,7 +1917,7 @@ formData.get('source-of-info'); // 인스타그램
 
 ## 1차 리팩토링
 
-1. Member Entity에서 loginid -> loginId로 변경.
+1. Member Entity에서 loginid -> nickname로 변경.
 
 2. Page
    - BoardRepository 삭제, BoardService에서 받아오도록 설정.

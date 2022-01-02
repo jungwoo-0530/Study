@@ -27,8 +27,8 @@ public class Init {
     @Transactional
     public void initDB() {
 
-        Member member = new Member("admin", "김정우",
-                "admin", "admin@naver.com", "ADMIN");
+        Member member = new Member("admin@naver.com", "admin",
+                "admin_nickname", "김정우", "ADMIN");
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encodedPassword);
         memberRepository.save(member);
@@ -37,13 +37,15 @@ public class Init {
         int cnt = 0;
         while (cnt != 40) {
             cnt++;
-            Member member1 = new Member("member" + cnt, "김정우" + cnt,
-                    "member" + cnt, "member" + cnt + "@naver.com", "MEMBER");
+            Member member1 = new Member("member"+cnt+"@naver.com", "member" + cnt,
+                    "member" + cnt +"_nickname", "member" + cnt, "MEMBER");
             memberService.createUser(member1);
             for (int i = 0; i < 2; i++) {
                 count++;
-                Board board = new Board("제목test"+count, "김정우"+cnt, "안녕하세요. "+ count + "번째 글입니다",
-                        "member"+cnt);
+                Board board = new Board("제목test"+count, "안녕하세요. "+ count + "번째 글입니다");
+
+//                Board board = new Board("제목test"+count, "member"+cnt, "안녕하세요. "+ count + "번째 글입니다",
+//                        "member"+cnt+"_nickname");
                 boardService.save(board, member1);
             }
         }

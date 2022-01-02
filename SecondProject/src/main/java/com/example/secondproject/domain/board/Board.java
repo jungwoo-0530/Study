@@ -23,11 +23,6 @@ public class Board {
 
     private String title;
 
-    private String name;//멤버의 name.
-
-    //외래키.
-    private String loginId;
-
     @Lob
     private String content;
 
@@ -35,25 +30,22 @@ public class Board {
     @JoinColumn(name = "MEMBER_ID")//MEMBER_ID : FK
     private Member member;
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    public Board(String title, String name, String content, String loginId) {
+    public Board(String title, String content) {
         this.title = title;
-        this.name = name;
         this.content = content;
-        this.loginId = loginId;
     }
+
 
     //비지니스로직
     //객체지향 디자인 방법중에 GRASP.
     //정보를 가장 잘 알고 있는 곳에 로직(메서드)가 있어야 한다는 것.
     //Board가 해당 필드 정보를 가장 잘 알기 떄문에 여기에 비지니스 로직을 짠다.
-    public void change(String title, String name, String content, String loginId) {
+    public void change(String title, String content) {
         this.setTitle(title);
-        this.setName(name);
         this.setContent(content);
-        this.setLoginId(loginId);
     }
 
     public void setMember(Member member) {

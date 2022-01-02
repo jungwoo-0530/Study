@@ -42,16 +42,16 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member findByLoginId(String loginId) {
-        return memberRepository.findByLoginId(loginId).get();
+    public Member findBynickname(String nickname) {
+        return memberRepository.findBynickname(nickname).get();
     }
 
 
     @Transactional
-    public void updateByAdmin(Long id, String name, String loginId, String email, String role) {
+    public void updateByAdmin(Long id,String nickname, String role) {
         Member member = memberRepository.findOneById(id);
 
-        member.change(name, loginId, email, role);
+        member.change(nickname, role);
     }
 
 
@@ -63,5 +63,10 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member findMemberAndBoardsById(Long id) {
         return memberRepository.findMemberAndBoardsById(id);
+    }
+
+
+    public Member findByEmail(String name) {
+        return memberRepository.findByEmail(name).get();
     }
 }

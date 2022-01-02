@@ -18,33 +18,31 @@ public class Member {
     @Column(name = "MEMBER_ID")
     private Long id;
 
-    private String loginId;
-
-    private String name;
+    private String email;
 
     private String password;
 
-    private String email;
+    private String nickname;
+
+    private String name;
 
     private String role;
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
 
-    public Member(String loginId, String name, String password, String email, String role) {
+    public Member(String email, String password, String nickname, String name, String role) {
 
-        this.loginId = loginId;
+        this.nickname = nickname;
         this.name = name;
         this.password = password;
         this.email = email;
         this.role = role;
     }
 
-    public void change(String name, String loginId, String email, String role) {
-        this.setName(name);
-        this.setLoginId(loginId);
-        this.setEmail(email);
+    public void change(String nickname, String role) {
+        this.setNickname(nickname);
         this.setRole(role);
     }
 

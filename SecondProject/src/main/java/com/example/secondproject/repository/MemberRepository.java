@@ -14,12 +14,15 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom{
 
-    Optional<Member> findByLoginId(String LoginId);
+    Optional<Member> findBynickname(String nickname);
 
     Member findOneById(Long id);
 
     @Query("select m from Member m left join fetch m.boards where m.id = :id")
     Member findMemberAndBoardsById(@Param("id") Long id);
+
+
+    Optional<Member> findByEmail(String email);
 
     //@Query : 사용자 정의 쿼리(@Query, 쿼리메서드, Named Query
     //여기서 쿼리는 JPQL(엔티티 대상으로 하는 쿼리)

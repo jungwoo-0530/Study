@@ -46,7 +46,7 @@ public class MemberController {
             return "users/register";
         }
 
-        Member newMember = new Member(registerForm.getLoginId(), registerForm.getName(),
+        Member newMember = new Member(registerForm.getNickname(), registerForm.getName(),
                 registerForm.getPassword(), registerForm.getEmail(), "MEMBER");
 
         memberService.createUser(newMember);
@@ -77,7 +77,8 @@ public class MemberController {
     //user 상세정보
     //기능 추가. 회원이 작성한 글 보기.
     @GetMapping("/admin/users/{memberId}")
-    public String detailOfUserByAdmin(@PathVariable("memberId") Long id, Model model) {
+    public String detailOfUserByAdmin(@PathVariable("memberId") Long id,
+                                      Model model) {
 
         Member findMember = memberService.findMemberAndBoardsById(id);
         List<Board> boards = findMember.getBoards();
@@ -121,7 +122,7 @@ public class MemberController {
 
         Member findOne = memberService.findOneById(memberId);
 
-        MemberDto result = new MemberDto(memberId, findOne.getName(), findOne.getLoginId(),
+        MemberDto result = new MemberDto(memberId, findOne.getName(), findOne.getNickname(),
                 findOne.getEmail(), findOne.getRole());
 
         model.addAttribute("memberDto", result);
@@ -135,8 +136,7 @@ public class MemberController {
     public String updateUserByAdmin(@PathVariable("memberId") Long memberId,
                                     @ModelAttribute("memberDto") MemberDto memberDto) {
 
-        memberService.updateByAdmin(memberId, memberDto.getName(), memberDto.getLoginId(),
-                memberDto.getEmail(), memberDto.getRole());
+        memberService.updateByAdmin(memberId, memberDto.getNickname(),memberDto.getRole());
 
         return "redirect:/admin/users";
     }

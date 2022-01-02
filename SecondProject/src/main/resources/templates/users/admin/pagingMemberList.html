@@ -20,18 +20,18 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">id</th>
-            <th scope="col">name</th>
-            <th scope="col">email</th>
+            <th scope="col">이메일</th>
+            <th scope="col">이름</th>
+            <th scope="col">닉네임</th>
             <th scope="col">role</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="user : ${users}">
-            <td> <a th:text="${user.loginId}" th:href="@{/admin/users/{id} (id=${user.id})}"></a></td>
             <!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
-            <td th:text="${user.name}"></td>
             <td th:text="${user.email}"></td>
+            <td th:text="${user.name}"></td>
+            <td> <a th:text="${user.nickname}" th:href="@{/admin/users/{id} (id=${user.id})}"></a></td>
             <td th:text="${user.role}"></td>
         </tr>
         </tbody>

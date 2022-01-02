@@ -14,11 +14,6 @@ public class BoardForm {
 
     private Long id;
 
-//    @NotBlank(message = "작성자를 입력해주세요.")
-    private String name;
-
-    private String loginId;
-
     @NotBlank(message = "제목을 입력해주세요.")
     private String title;
 

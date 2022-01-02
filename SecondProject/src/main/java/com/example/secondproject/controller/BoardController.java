@@ -23,7 +23,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 import static com.example.secondproject.login.CustomUserDetailsService.hasAdminRole;
 
@@ -68,9 +67,9 @@ public class BoardController {
 
         log.info("BoardController postmapping createForm");
 
-        Member findMember = memberService.findByLoginId(principal.getName());
+        Member findMember = memberService.findByEmail(principal.getName());
 
-        Board board = new Board(form.getTitle(), findMember.getName(), form.getContent(), principal.getName());
+        Board board = new Board(form.getTitle(), form.getContent());
 
         boardService.save(board, findMember);
 
@@ -112,12 +111,11 @@ public class BoardController {
 
         Board one = boardService.findById(boardId);
         //admin이 아니고 작성자도 아니면.
-        if (!one.getLoginId().equals(principal.getName()) && !hasAdminRole()) {
+        if (!one.getMember().getEmail().equals(principal.getName()) && !hasAdminRole()) {
             return "redirect:/boards/" + boardId;
         }
 
-        BoardForm form = new BoardForm(one.getId(), one.getName(),
-                one.getLoginId(), one.getTitle(), one.getContent());//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
+        BoardForm form = new BoardForm(one.getId(), one.getTitle(), one.getContent());//업데이트하는데 Board 엔티티를 안보내고 Board 폼을 보낼 것이다.
 
 
         model.addAttribute("boardForm", form);
@@ -138,8 +136,10 @@ public class BoardController {
         //2. 병합(merge) 사용
 
         log.info("BoardService PostMapping updateForm");
-        boardService.update(boardId, boardForm.getTitle(), boardForm.getName(),
-                boardForm.getContent(), boardForm.getLoginId());
+
+
+
+        boardService.update(boardId, boardForm.getTitle(), boardForm.getContent());
 
         return "redirect:/boards/" + boardId;
 
@@ -157,7 +157,7 @@ public class BoardController {
                              Principal principal) {
         log.info("BoardController DeleteMapping deleteForm");
         Board one = boardService.findById(boardId);
-        if (!one.getLoginId().equals(principal.getName()) && !hasAdminRole()) {
+        if (!one.getMember().getEmail().equals(principal.getName()) && !hasAdminRole()) {
             return "redirect:/boards/" + boardId;
         }
 
@@ -171,7 +171,8 @@ public class BoardController {
     */
     @GetMapping("/boards")
     public String list(Model model, @PageableDefault(size = 4, sort = "id",
-            direction = Sort.Direction.DESC) Pageable pageable) {
+            direction = Sort.Direction.DESC) Pageable pageable,
+                       Principal principal) {
         log.info("BoardController getmapping list");
 
         Page<BoardDto> results = boardService.findPageSort(pageable);
@@ -179,6 +180,10 @@ public class BoardController {
         //모델을 boards/list.html로 넘김. html에서 ${boards}이름으로 사용 가능.
         model.addAttribute("boards", results.getContent());
         model.addAttribute("page", new PageDto(results.getTotalElements(), pageable));
+
+
+        System.out.println("=====================================================");
+        System.out.println(principal.getName());
 //        return "boards/list";
         return "boards/pagingList";
     }
