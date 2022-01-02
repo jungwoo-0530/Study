@@ -1931,6 +1931,40 @@ formData.get('source-of-info'); // 인스타그램
 
      
 
+5. MEMBER, BOARD 연관관계 (다대일 양방향 연관관계)
+
+   - ```java
+     //Board.java
+     @ManyToOne(fetch = FetchType.LAZY)
+     @JoinColumn(name = "MEMBER_ID")//MEMBER_ID : FK
+     private Member member;
+     
+     ...
+       
+     //비지니스 로직
+     public void setMember(Member member) {
+       this.member = member;
+       member.getBoards().add(this);
+     }
+     ```
+
+   - ```java
+     //Member.java
+     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+     private List<Board> boards = new ArrayList<>();
+     ```
+
+   - ```java
+     //BoardService.java
+     @Transactional
+     public void save(Board board, Member member) {
+         board.setMember(member);
+         boardRepository.save(board);
+     }
+     ```
+
+
+
 
 
 

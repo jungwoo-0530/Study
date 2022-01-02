@@ -32,11 +32,8 @@ public class Board {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(name = "MEMBER_ID")//MEMBER_ID : FK
     private Member member;
-
-//    @OneToMany(mappedBy = "board")//OneToMany는 default가 LAZY
-//    private List<Comment> comments = new ArrayList<>();
 
 
     public Board(String title, String name, String content, String loginId) {
