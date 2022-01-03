@@ -55,10 +55,10 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
             PathBuilder pathBuilder = new PathBuilder(member.getType(), member.getMetadata());
             query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
                     pathBuilder.get(o.getProperty())));
-            System.out.println(o.getProperty());
+//            System.out.println(o.getProperty());
         }
-        System.out.println("board.getType() " + member.getType());
-        System.out.println("board.getMetadata() "+member.getMetadata());
+//        System.out.println("board.getType() " + member.getType());
+//        System.out.println("board.getMetadata() "+member.getMetadata());
         QueryResults<MemberDto> results = query.fetchResults();
         List<MemberDto> content = results.getResults();
         long total = results.getTotal();

@@ -38,10 +38,10 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
             PathBuilder pathBuilder = new PathBuilder(comment.getType(), comment.getMetadata());
             query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
                     pathBuilder.get(o.getProperty())));
-            System.out.println(o.getProperty());
+//            System.out.println(o.getProperty());
         }
-        System.out.println("board.getType() " + comment.getType());
-        System.out.println("board.getMetadata() "+comment.getMetadata());
+//        System.out.println("board.getType() " + comment.getType());
+//        System.out.println("board.getMetadata() "+comment.getMetadata());
         QueryResults<CommentDto> results = query.fetchResults();
         List<CommentDto> content = results.getResults();
         long total = results.getTotal();

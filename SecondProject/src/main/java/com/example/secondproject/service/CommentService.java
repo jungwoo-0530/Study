@@ -21,7 +21,7 @@ public class CommentService {
 
     @Transactional//boardId -> Board, 현재 세션 Member
     public void save(Comment newComment, Long boardId, Long memberId) {
-        Board board = boardRepository.findBoardAndCommentByBoardId(boardId);
+        Board board = boardRepository.findBoardWithCommentByBoardId(boardId);
         newComment.setBoard(board);
         newComment.setMember(memberRepository.findOneById(memberId));
         commentRepository.save(newComment);

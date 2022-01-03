@@ -93,7 +93,7 @@ public class MemberController {
     회원 추방
     */
     @DeleteMapping("/admin/users/delete/{memberId}")
-    public String deleteForm(@PathVariable("memberId") Long memberId) {
+    public String deleteUserBanish(@PathVariable("memberId") Long memberId) {
         log.info("BoardController DeleteMapping deleteForm");
         memberService.deleteMember(memberId);
         return "redirect:/admin/users";

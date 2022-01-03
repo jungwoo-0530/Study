@@ -42,8 +42,8 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member findBynickname(String nickname) {
-        return memberRepository.findBynickname(nickname).get();
+    public Member findOneByNickname(String nickname) {
+        return memberRepository.findOneByNickname(nickname).get();
     }
 
 
@@ -62,7 +62,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member findMemberAndBoardsById(Long id) {
-        return memberRepository.findMemberAndBoardsById(id);
+        return memberRepository.findMemberWithBoardsById(id);
     }
 
 

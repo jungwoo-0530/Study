@@ -1,15 +1,12 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.board.Board;
-import com.example.secondproject.domain.board.Comment;
 import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.CommentRegisterDto;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
-import com.example.secondproject.dto.paging.CommentDto;
 import com.example.secondproject.dto.paging.PageDto;
 import com.example.secondproject.service.BoardService;
-import com.example.secondproject.service.CommentService;
 import com.example.secondproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,20 +30,6 @@ public class BoardController {
 
     private final BoardService boardService;
     private final MemberService memberService;
-    private final CommentService commentService;
-
-//    @GetMapping("/boards")
-//    public String list(Model model) {
-//        log.info("BoardController getmapping list");
-//
-//
-//        List<Board> boards = boardService.findAll();
-//
-//        //모델을 boards/list.html로 넘김. html에서 ${boards}이름으로 사용 가능.
-//        model.addAttribute("boards", boards);
-//
-//        return "boards/list";
-//    }
 
 
     @GetMapping("/boards/new")
@@ -62,9 +44,8 @@ public class BoardController {
     }
 
     @PostMapping("/boards/new")
-    public String createBoard(@Validated BoardForm form,
-                              Principal principal,
-                              BindingResult bindingResult) {
+    public String createBoard(@Validated @ModelAttribute("boardForm") BoardForm form,
+                              Principal principal) {
 
         log.info("BoardController postmapping createForm");
 
@@ -81,33 +62,14 @@ public class BoardController {
     public String readBoardForm(@PathVariable("boardId") Long id, Model model) {
         log.info("BoardController GetMapping readBoardForm");
 
-//        Board board = boardService.findById(id);
-        //Page<CommentDto> commentResults = CommentService.findPageSort(id);
-        Board board = boardService.findBoardAndCommentByBoardId(id);
-//        List<Comment> comments = board.getComments();
+        Board board = boardService.findBoardWithCommentByBoardId(id);
         model.addAttribute("boardForm", board);
         model.addAttribute("commentForm", new CommentRegisterDto());
 
         return "/boards/readBoard";
     }
 
-    @PostMapping("/boards/{boardId}")
-    public String createComment(@ModelAttribute(name = "commentForm") CommentRegisterDto commentRegisterDto,
-                                @PathVariable("boardId") Long boardId,
-                                Principal principal) {
-//        Comment newComment = new Comment(commentDto.getContent());
 
-//        Board board = boardService.findById(id);
-//        System.out.println("===========================");
-//        System.out.println(board.getMember().getClass());
-//        newComment.setMember(board.getMember());
-        System.out.println("================================================");
-        Member sessionMember = memberService.findByEmail(principal.getName());
-        Comment comment = new Comment(commentRegisterDto.getContent());
-        commentService.save(comment, boardId, sessionMember.getId());
-
-        return "redirect:/boards";
-    }
 
     @GetMapping("/boards/{boardId}/edit")
     public String updateBoardForm(@PathVariable("boardId") Long boardId,
@@ -189,8 +151,6 @@ public class BoardController {
         model.addAttribute("page", new PageDto(results.getTotalElements(), pageable));
 
 
-        System.out.println("=====================================================");
-        System.out.println(principal.getName());
 //        return "boards/list";
         return "boards/pagingList";
     }

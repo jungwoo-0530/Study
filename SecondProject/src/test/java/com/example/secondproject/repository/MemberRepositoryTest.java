@@ -42,7 +42,7 @@ class MemberRepositoryTest {
 
         System.out.println("================test=============");
         for (Board board : findMember.getBoards()) {
-            System.out.println(board.getId());
+//            System.out.println(board.getId());
         }
 
     }

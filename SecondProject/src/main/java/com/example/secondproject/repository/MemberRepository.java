@@ -14,12 +14,12 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom{
 
-    Optional<Member> findBynickname(String nickname);
+    Optional<Member> findOneByNickname(String nickname);
 
     Member findOneById(Long id);
 
     @Query("select m from Member m left join fetch m.boards where m.id = :id")
-    Member findMemberAndBoardsById(@Param("id") Long id);
+    Member findMemberWithBoardsById(@Param("id") Long id);
 
 
     Optional<Member> findByEmail(String email);

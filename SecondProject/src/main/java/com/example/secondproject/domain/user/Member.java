@@ -47,16 +47,6 @@ public class Member {
     }
 
 
-//    public void addBoard(Board board) {
-//        this.boards.add(board);
-//        board.setMember(this);
-//    }
-
-
-
-
-
-
     //주소는 api사용
 
 }
