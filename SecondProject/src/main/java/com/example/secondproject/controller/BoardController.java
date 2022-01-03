@@ -2,11 +2,13 @@ package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.board.Board;
 import com.example.secondproject.domain.user.Member;
+import com.example.secondproject.dto.CommentReadDto;
 import com.example.secondproject.dto.CommentRegisterDto;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
 import com.example.secondproject.dto.paging.PageDto;
 import com.example.secondproject.service.BoardService;
+import com.example.secondproject.service.CommentService;
 import com.example.secondproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final MemberService memberService;
+    private final CommentService commentService;
 
 
     @GetMapping("/boards/new")
@@ -68,7 +71,13 @@ public class BoardController {
         Board board = boardService.findBoardWithMemberByBoardId(id);//sql
         BoardDto boardDto = new BoardDto(id,board.getTitle(),
                 board.getMember().getNickname(), board.getContent());//Dto로 view로 넘기기위해서.//sql
+
+        List<CommentReadDto> commentList = new ArrayList<>();
+
+        commentList = commentService.findCommentsWithMemberByBoardId(id);
+
         model.addAttribute("boardForm", boardDto);
+        model.addAttribute("commentList", commentList);
         model.addAttribute("commentForm", new CommentRegisterDto());
 
         return "/boards/readBoard";

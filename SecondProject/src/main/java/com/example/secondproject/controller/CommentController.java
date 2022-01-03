@@ -41,7 +41,7 @@ public class CommentController {
                 boardService.findById(boardId));//sql
 
         commentService.save(comment);
-        return "redirect:/boards";
+        return "redirect:/boards/" + boardId;
     }
 
     @GetMapping("/my/comments")

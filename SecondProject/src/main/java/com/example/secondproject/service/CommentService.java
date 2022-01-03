@@ -1,6 +1,7 @@
 package com.example.secondproject.service;
 
 import com.example.secondproject.domain.board.Comment;
+import com.example.secondproject.dto.CommentReadDto;
 import com.example.secondproject.dto.MyCommentDto;
 import com.example.secondproject.repository.BoardRepository;
 import com.example.secondproject.repository.CommentRepository;
@@ -38,5 +39,18 @@ public class CommentService {
             myCommentDtos.add(myCommentDto);
         }
         return myCommentDtos;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommentReadDto> findCommentsWithMemberByBoardId(Long id) {
+        List<Comment> comments = commentRepository.findCommentsWithMemberByBoardId(id);
+        List<CommentReadDto> commentReadDtos = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            CommentReadDto commentReadDto = new CommentReadDto(comment.getMember().getNickname(),
+                    comment.getContent());
+            commentReadDtos.add(commentReadDto);
+        }
+        return commentReadDtos;
     }
 }

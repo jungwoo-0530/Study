@@ -65,6 +65,26 @@
 <!--                    <a type="submit" class="btn btn-primary" th:href="@{/boards}">확인</a>-->
                 </div>
             </form>
+            <div>
+                <table class="table">
+                <thead>
+                <tr>
+<!--                    <th>번호</th>-->
+                    <th scope="col">내용</th>
+                    <th scope="col">작성자</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="comment : ${commentList}">
+<!--                    <td th:text="${comment.id}"></td>-->
+                    <td th:text="${comment.content}"></td>
+                    <!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
+                    <td th:text="${comment.memberNickname}"></td>
+                </tr>
+                </tbody>
+
+                </table>
+            </div>
         </div>
     </div>
     <hr/>
