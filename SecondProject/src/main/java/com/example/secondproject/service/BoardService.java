@@ -11,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -56,10 +59,21 @@ public class BoardService {
         return boardRepository.findBoardWithCommentByBoardId(id);
     }
 
+    @Transactional(readOnly = true)
     public Board findBoardWithMemberByBoardId(Long id) {
         return boardRepository.findBoardWithMemberByBoardId(id);
     }
 
 
-
+    @Transactional(readOnly = true)
+    public List<BoardDto> findBoardsWithMemberByMemberId(Long id) {
+        List<Board> boards = boardRepository.findBoardsWithMemberByMemberId(id);
+        List<BoardDto> boardDtos = new ArrayList<>();
+        for (Board board : boards ) {
+            BoardDto boardDto = new BoardDto(board.getId(), board.getTitle(),
+                    board.getMember().getNickname(), board.getContent());
+            boardDtos.add(boardDto);
+        }
+        return boardDtos;
+    }
 }

@@ -1917,12 +1917,12 @@ formData.get('source-of-info'); // 인스타그램
 
 ## 1차 리팩토링
 
-1. Member Entity에서 loginid -> nickname로 변경.
+1. Member Entity에서 loginid 제거 -> nickname 추가.
 
 2. Page
    - BoardRepository 삭제, BoardService에서 받아오도록 설정.
    - MemberRepository 삭제, MemberService에서 받아오도록 설정.
-   
+
 3. BoardRepository, MemberRepository 필요 없는 메서드 삭제.
 
 4. `createBoard` Controller, `updateBoardForm`

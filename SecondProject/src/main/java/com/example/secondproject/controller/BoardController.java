@@ -20,6 +20,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.secondproject.login.CustomUserDetailsService.hasAdminRole;
 
@@ -159,12 +161,13 @@ public class BoardController {
     }
 
     //내 글
-//    @GetMapping("/my/boards/{memberId}")
-//    public String myBoards(@PathVariable("memberId") Long id,
-//                           Model model) {
-//
-//        List<Board> boards = board
-//
-//        return "/users/myBoards";
-//    }
+    @GetMapping("/my/boards")
+    public String myBoards(Model model, Principal principal) {
+
+        Member member = memberService.findByEmail(principal.getName());
+        List<BoardDto> boards = boardService.findBoardsWithMemberByMemberId(member.getId());
+        model.addAttribute("boards", boards);
+
+        return "/users/myBoards";
+    }
 }

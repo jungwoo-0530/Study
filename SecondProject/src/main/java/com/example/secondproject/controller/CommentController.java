@@ -31,9 +31,11 @@ public class CommentController {
                                 Principal principal) {
 
         Member sessionMember = memberService.findByEmail(principal.getName());//sql
+
         Comment comment = new Comment();
         comment.createComment(commentRegisterDto.getContent(), sessionMember,
                 boardService.findById(boardId));//sql
+
         commentService.save(comment);
         return "redirect:/boards";
     }

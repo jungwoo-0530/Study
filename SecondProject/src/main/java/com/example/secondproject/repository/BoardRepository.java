@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
@@ -16,6 +18,9 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
 
     @Query("select b from Board b left join fetch b.member where b.id = :id")
     Board findBoardWithMemberByBoardId(@Param("id") Long id);
+
+    @Query("select b from Board b left join fetch b.member where b.member.id = :id")
+    List<Board> findBoardsWithMemberByMemberId(@Param("id") Long memberId);
 
 
 //    @Query("select b from Board b where b.nickname = :nickname")
