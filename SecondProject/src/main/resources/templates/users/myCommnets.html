@@ -12,43 +12,26 @@
 </body>
 <body class="bg-light">
 <div class="container">
-    <h2>게시판</h2>
-    <!--    <div>총 건수 : <span th:text="${#lists.size(boards)}"></span></div>-->
-    <div>총 건수 : <span th:text="${page.getTotal()}"></span></div>
+    <h2>내 댓글</h2>
+        <div>총 건수 : <span th:text="${#lists.size(comments)}"></span></div>
     <table class="table">
         <thead>
         <tr>
             <th>번호</th>
-            <th scope="col">제목</th>
-            <th scope="col">작성자</th>
+            <th scope="col">글</th>
+            <th scope="col">내용</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="board : ${boards}">
-            <td th:text="${board.id}"></td>
-            <td> <a th:text="${board.title}" th:href="@{/boards/{id} (id=${board.id})}"></a></td>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.id}"></td>
+            <td> <a th:text="${comment.boardTitle}" th:href="@{/boards/{id} (id=${comment.getBoardId()})}"></a></td>
             <!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
-            <td th:text="${board.nickname}"></td>
+            <td th:text="${comment.content}"></td>
         </tr>
         </tbody>
 
     </table>
-    <div class="text-center">
-        <nav aria-label="Page navigation">
-            <ul class="pagination pagination-sm">
-                <li th:if="${page.isPrev()}" class="page-item"><a th:href="@{/boards?page={page}(page = ${page.getCurPage()-1})}" class="page-link" href="#">Prev</a></li>
-                <li th:unless="${page.isPrev()}" class="page-item disabled"><a class="page-link">Prev</a></li>
-                <li class="page-item" th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
-                    <a th:href="@{/boards?page={page}(page = ${index.current-1})}" th:text="${num}" class="page-link" href="">1</a>
-                </li>
-                <li th:if="${page.isNext()}" class="page-item"><a th:href="@{/boards?page={page}(page = ${page.getCurPage()+1})}" class="page-link" href="#">Next</a></li>
-                <li th:unless="${page.isNext()}" class="page-item disabled"><a class="page-link">Next</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="text-right">
-        <a type="button" class="btn btn-primary" th:href="@{/boards/new}">글쓰기</a>
-    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
