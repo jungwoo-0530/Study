@@ -36,7 +36,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .select(new QBoardDto(
                         board.id.as("id"),
                         board.title.as("title"),
-                        board.member.nickname.as("name")
+                        board.member.nickname.as("nickname"),
+                        board.content.as("content")
                 ))
                 .from(board)
                 .offset(pageable.getOffset())

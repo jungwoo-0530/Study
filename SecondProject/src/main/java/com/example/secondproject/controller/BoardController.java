@@ -62,8 +62,11 @@ public class BoardController {
     public String readBoardForm(@PathVariable("boardId") Long id, Model model) {
         log.info("BoardController GetMapping readBoardForm");
 
-        Board board = boardService.findBoardWithCommentByBoardId(id);
-        model.addAttribute("boardForm", board);
+
+        Board board = boardService.findBoardWithMemberByBoardId(id);//sql
+        BoardDto boardDto = new BoardDto(id,board.getTitle(),
+                board.getMember().getNickname(), board.getContent());//Dto로 view로 넘기기위해서.//sql
+        model.addAttribute("boardForm", boardDto);
         model.addAttribute("commentForm", new CommentRegisterDto());
 
         return "/boards/readBoard";

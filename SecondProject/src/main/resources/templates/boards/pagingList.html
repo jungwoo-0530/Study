@@ -28,7 +28,7 @@
             <td th:text="${board.id}"></td>
             <td> <a th:text="${board.title}" th:href="@{/boards/{id} (id=${board.id})}"></a></td>
             <!--            <td> <a th:text="${board.title}" th:href="@{/boards/form(id=${board.id})}"></a></td>-->
-            <td th:text="${board.name}"></td>
+            <td th:text="${board.nickname}"></td>
         </tr>
         </tbody>
 

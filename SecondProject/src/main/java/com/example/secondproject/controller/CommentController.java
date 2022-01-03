@@ -3,6 +3,7 @@ package com.example.secondproject.controller;
 import com.example.secondproject.domain.board.Comment;
 import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.CommentRegisterDto;
+import com.example.secondproject.service.BoardService;
 import com.example.secondproject.service.CommentService;
 import com.example.secondproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class CommentController {
 
     private final CommentService commentService;
     private final MemberService memberService;
+    private final BoardService boardService;
 
 
     @PostMapping("/boards/{boardId}")
@@ -28,10 +30,11 @@ public class CommentController {
                                 @PathVariable("boardId") Long boardId,
                                 Principal principal) {
 
-        Member sessionMember = memberService.findByEmail(principal.getName());
-        Comment comment = new Comment(commentRegisterDto.getContent());
-        commentService.save(comment, boardId, sessionMember.getId());
-
+        Member sessionMember = memberService.findByEmail(principal.getName());//sql
+        Comment comment = new Comment();
+        comment.createComment(commentRegisterDto.getContent(), sessionMember,
+                boardService.findById(boardId));//sql
+        commentService.save(comment);
         return "redirect:/boards";
     }
 

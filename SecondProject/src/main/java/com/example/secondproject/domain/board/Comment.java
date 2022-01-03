@@ -47,4 +47,12 @@ public class Comment {
         this.member = member;
     }
 
+    public void createComment(String content, Member member, Board board) {
+
+        this.content = content;
+        this.member = member;
+        this.setBoard(board);
+
+    }
+
 }

@@ -11,14 +11,15 @@ import lombok.Setter;
 public class BoardDto {
     private Long id;
     private String title;
-    private String name;
     private String nickname;
+    private String content;
 
     @QueryProjection
-    public BoardDto(Long id, String title, String name) {
+    public BoardDto(Long id, String title, String nickname, String content) {
         this.id = id;
         this.title = title;
-        this.name = name;
+        this.nickname = nickname;
+        this.content = content;
     }
 
 }

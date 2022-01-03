@@ -19,12 +19,9 @@ public class CommentService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
 
-    @Transactional//boardId -> Board, 현재 세션 Member
-    public void save(Comment newComment, Long boardId, Long memberId) {
-        Board board = boardRepository.findBoardWithCommentByBoardId(boardId);
-        newComment.setBoard(board);
-        newComment.setMember(memberRepository.findOneById(memberId));
-        commentRepository.save(newComment);
-        System.out.println("==============end===========");
+
+    @Transactional
+    public void save(Comment comment) {
+        commentRepository.save(comment);
     }
 }

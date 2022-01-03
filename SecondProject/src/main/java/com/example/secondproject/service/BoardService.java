@@ -56,6 +56,10 @@ public class BoardService {
         return boardRepository.findBoardWithCommentByBoardId(id);
     }
 
+    public Board findBoardWithMemberByBoardId(Long id) {
+        return boardRepository.findBoardWithMemberByBoardId(id);
+    }
+
 
 
 }
