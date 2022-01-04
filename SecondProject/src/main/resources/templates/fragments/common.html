@@ -13,7 +13,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:fragment="menu(menu)">
-    <a class="navbar-brand" href="/">JPASHOP</a>
+    <a class="navbar-brand" href="/">Project</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -27,7 +27,7 @@
                 <a class="nav-link" href="#" th:href="@{/boards}">게시판 <span class="sr-only" th:if="${menu} == 'board'">(current)</span></a>
             </li>
             <li class="nav-item" th:classappend="${menu} == 'users'? 'active'">
-                <a class="nav-link" href="#" th:href="@{/admin/users}">회원 목록 <span class="sr-only" th:if="${menu} == 'users'">(current)</span></a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link" href="#" th:href="@{/admin/users}">회원 목록 <span class="sr-only" th:if="${menu} == 'users'">(current)</span></a>
             </li>
 
         </ul>

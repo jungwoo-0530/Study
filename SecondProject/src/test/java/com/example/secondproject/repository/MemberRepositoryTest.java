@@ -22,7 +22,7 @@ class MemberRepositoryTest {
 
         String name = "김정우1";
 
-        Member findMember = memberRepository.findFatchByName(name);
+//        Member findMember = memberRepository.findFatchByName(name);
 
         System.out.println("================test=============");
         for (Board board : findMember.getBoards()) {
