@@ -2,12 +2,13 @@ package com.example.secondproject.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardForm {

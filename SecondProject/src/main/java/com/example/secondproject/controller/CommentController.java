@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +32,9 @@ public class CommentController {
 
 
     @PostMapping("/boards/{boardId}")
-    public String createComment(@ModelAttribute(name = "commentForm") CommentRegisterDto commentRegisterDto,
+    public String createComment(@ModelAttribute(name = "commentForm") @Validated CommentRegisterDto commentRegisterDto,
                                 @PathVariable("boardId") Long boardId,
+                                BindingResult bindingResult,
                                 Principal principal) {
 
         Member sessionMember = memberService.findByEmail(principal.getName());//sql

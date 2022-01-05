@@ -6,7 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Data
+@Getter
 public class RegisterForm {
 
     @NotBlank(message = "닉네임을 입력해 주세요")
