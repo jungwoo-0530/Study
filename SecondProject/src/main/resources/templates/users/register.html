@@ -30,27 +30,17 @@
         <div class="row">
             <div class="col-md-8 order-md-1">
                 <form class="needs-validation" novalidate>
-<!--                    <div class="mb-3">-->
-<!--                        <label for="email">email</label><span class="text-muted">(Required)</span>-->
-<!--                        <input type="text" th:field = "*{email}" class="form-control" id="email" placeholder="write email" required>-->
-
-<!--                        <label>-->
-<!--                            <select class="select" name="email1" id="email1">-->
-<!--                                <option>직접입력</option>-->
-<!--                                <option th:value="*{email}" th:text="*{email} + 'naver.com'"></option>-->
-<!--                                <option>google.com</option>-->
-<!--                            </select>-->
-<!--                        </label>-->
-<!--                    </div>-->
                     <div class="mb-3">
                         <label for="email">이메일</label>
                         <input type="text" th:field = "*{email}" class="form-control" id="email" placeholder="write email" required>
+                        <p th:if="${#fields.hasErrors('email')}" th:errors = "*{email}"></p>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="name">닉네임</label>
                             <input type="text" th:field="*{nickname}" class="form-control" id="nickname" placeholder="write Id" required>
+                            <p th:if="${#fields.hasErrors('nickname')}" th:errors = "*{nickname}"></p>
 
                         </div>
                     </div>
@@ -58,17 +48,13 @@
                     <div class="mb-3">
                         <label for="password">password</label>
                         <input type="text" th:field = "*{password}" class="form-control" id="password" placeholder="write password" required>
-                        <div class="invalid-feedback">
-                            Please enter your shipping city.
-                        </div>
+                        <p th:if="${#fields.hasErrors('password')}" th:errors = "*{password}"></p>
                     </div>
 
                     <div class="mb-3">
                         <label for="name">Name</label>
                         <input type="text" th:field = "*{name}" class="form-control" id="name" placeholder="write name" required>
-                        <div class="invalid-feedback">
-                            Please enter your shipping street.
-                        </div>
+                        <p th:if="${#fields.hasErrors('name')}" th:errors = '*{name}'></p>
                     </div>
 
 

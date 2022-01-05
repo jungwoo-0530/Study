@@ -9,14 +9,15 @@ import javax.validation.constraints.Size;
 @Data
 public class RegisterForm {
 
-    @NotBlank(message = "id를 꼭 입력해 주세요")
-    @Size(min = 5, max = 15, message = "id는 최소 5, 최대 15글자를 입력해주세요")
+    @NotBlank(message = "닉네임을 입력해 주세요")
+    @Size(min = 5, max = 15, message = "닉네임은 최소 5, 최대 15글자를 입력해주세요")
     private String nickname;
 
-    @NotBlank
+    @NotBlank(message = "패스워드를 입력하세요")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "이름을 입력하세요")
+    @Size(min = 1, max = 10, message = "이름은 최소 1, 최대 10글자를 입력해주세요")
     private String name;
 
     @Email(message = "이메일 양식에 맞춰서 입력해주세요")
