@@ -6,6 +6,7 @@ import com.example.secondproject.domain.user.RoleTypes;
 import com.example.secondproject.dto.RegisterForm;
 import com.example.secondproject.dto.paging.MemberDto;
 import com.example.secondproject.dto.paging.MemberPageDto;
+import com.example.secondproject.dto.UserDetailDto;
 import com.example.secondproject.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -80,7 +82,12 @@ public class MemberController {
                                       Model model) {
 
         Member findMember = memberService.findMemberAndBoardsById(id);
-        List<Board> boards = findMember.getBoards();
+        List<UserDetailDto> boards = new ArrayList<>();
+        for (Board board : findMember.getBoards()) {
+            UserDetailDto userDetailDto = new UserDetailDto(board.getId(),
+                    board.getTitle(), findMember.getNickname());
+            boards.add(userDetailDto);
+        }
 
         model.addAttribute("memberForm", findMember);
         model.addAttribute("boards", boards);
