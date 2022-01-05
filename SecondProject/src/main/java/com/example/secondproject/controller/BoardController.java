@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,9 +51,15 @@ public class BoardController {
 
     @PostMapping("/boards/new")
     public String createBoard(@Validated @ModelAttribute("boardForm") BoardForm form,
+                              BindingResult bindingResult,
                               Principal principal) {
 
         log.info("BoardController postmapping createForm");
+
+        if (bindingResult.hasErrors()) {
+            log.info(bindingResult.toString());
+            return "/boards/writeBoard";
+        }
 
         Member findMember = memberService.findByEmail(principal.getName());
 
