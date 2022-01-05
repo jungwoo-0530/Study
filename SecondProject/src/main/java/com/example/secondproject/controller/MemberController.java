@@ -31,15 +31,14 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-
     //회원가입
     @GetMapping("/register")
-    public String joinForm(@ModelAttribute RegisterForm registerForm) {
+    public String userRegister(@ModelAttribute RegisterForm registerForm) {
         return "users/register";
     }
 
     @PostMapping("/register")
-    public String join(@ModelAttribute @Validated RegisterForm registerForm,
+    public String userRegister(@ModelAttribute @Validated RegisterForm registerForm,
                        BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info(bindingResult.toString());
@@ -77,7 +76,7 @@ public class MemberController {
     //user 상세정보
     //기능 추가. 회원이 작성한 글 보기.
     @GetMapping("/admin/users/{memberId}")
-    public String detailOfUserByAdmin(@PathVariable("memberId") Long id,
+    public String userDetailByAdmin(@PathVariable("memberId") Long id,
                                       Model model) {
 
         Member findMember = memberService.findMemberAndBoardsById(id);
@@ -117,7 +116,7 @@ public class MemberController {
     /*
      * 멤버 수정 admin*/
     @GetMapping("/admin/users/edit/{memberId}")
-    public String updateUserForm(@PathVariable("memberId") Long memberId,
+    public String updateUserByAdmin(@PathVariable("memberId") Long memberId,
                                  Model model) {
 
         Member findOne = memberService.findOneById(memberId);

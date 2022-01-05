@@ -38,7 +38,7 @@ public class BoardController {
 
 
     @GetMapping("/boards/new")
-    public String createForm(Model model) {
+    public String createBoard(Model model) {
         log.info("BoardController getmapping createForm");
 
 
@@ -64,7 +64,7 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{boardId}")//{boardId} : boardId를 바인딩
-    public String readBoardForm(@PathVariable("boardId") Long id, Model model) {
+    public String readBoard(@PathVariable("boardId") Long id, Model model) {
         log.info("BoardController GetMapping readBoardForm");
 
 
@@ -86,7 +86,7 @@ public class BoardController {
 
 
     @GetMapping("/boards/{boardId}/edit")
-    public String updateBoardForm(@PathVariable("boardId") Long boardId,
+    public String updateBoard(@PathVariable("boardId") Long boardId,
                                   Model model,
                                   Principal principal) {
 
@@ -107,7 +107,7 @@ public class BoardController {
 
 
     @PostMapping("/boards/{boardId}/edit")//뷰(readBoard.html)로부터 form이 넘어옴. 파라미터로 받음
-    public String updateForm(@PathVariable("boardId") Long boardId,
+    public String updateBoard(@PathVariable("boardId") Long boardId,
                              @ModelAttribute("boardForm") BoardForm boardForm) {
 
         //준영속 엔티티다.
@@ -119,8 +119,6 @@ public class BoardController {
         //2. 병합(merge) 사용
 
         log.info("BoardService PostMapping updateForm");
-
-
 
         boardService.update(boardId, boardForm.getTitle(), boardForm.getContent());
 
@@ -136,7 +134,7 @@ public class BoardController {
 
     //폼은 get, post밖에 안되므로 <input type="hidden" name="_method" value="delete"/> 설정해야함.
     @DeleteMapping("/boards/{boardId}/delete")
-    public String deleteForm(@PathVariable("boardId") Long boardId,
+    public String deleteBoard(@PathVariable("boardId") Long boardId,
                              Principal principal) {
         log.info("BoardController DeleteMapping deleteForm");
         Board one = boardService.findById(boardId);
@@ -153,7 +151,7 @@ public class BoardController {
     Paging
     */
     @GetMapping("/boards")
-    public String list(Model model, @PageableDefault(size = 4, sort = "id",
+    public String listBoard(Model model, @PageableDefault(size = 4, sort = "id",
             direction = Sort.Direction.DESC) Pageable pageable,
                        Principal principal) {
         log.info("BoardController getmapping list");
