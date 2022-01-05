@@ -45,7 +45,7 @@ class InitTest {
         Member member = memberRepository.findById(2L).get();
 
         //영속상태.
-        System.out.println(member.getBoards().get(0).getName());
+//        System.out.println(member.getBoards().get(0).getName());
     }
 
     @Test

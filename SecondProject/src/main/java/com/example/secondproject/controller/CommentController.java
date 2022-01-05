@@ -34,8 +34,8 @@ public class CommentController {
     @PostMapping("/boards/{boardId}")
     public String createComment(@ModelAttribute(name = "commentForm") @Validated CommentRegisterDto commentRegisterDto,
                                 @PathVariable("boardId") Long boardId,
-                                BindingResult bindingResult,
                                 Principal principal) {
+
 
         Member sessionMember = memberService.findByEmail(principal.getName());//sql
 

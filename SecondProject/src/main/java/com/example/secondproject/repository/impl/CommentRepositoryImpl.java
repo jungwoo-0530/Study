@@ -25,23 +25,22 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<CommentDto> findAllPageSort(Pageable pageable) {
+    public Page<CommentDto> findAllPageSort(Pageable pageable, Long boardId) {
         JPAQuery<CommentDto> query = jpaQueryFactory
                 .select(new QCommentDto(
                         comment.id.as("id"),
-                        comment.content.as("content")
+                        comment.content.as("content"),
+                        comment.member.nickname.as("nickname")
                 ))
                 .from(comment)
+                .where(comment.board.id.eq(boardId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
         for (Sort.Order o : pageable.getSort()) {
             PathBuilder pathBuilder = new PathBuilder(comment.getType(), comment.getMetadata());
             query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
                     pathBuilder.get(o.getProperty())));
-//            System.out.println(o.getProperty());
         }
-//        System.out.println("board.getType() " + comment.getType());
-//        System.out.println("board.getMetadata() "+comment.getMetadata());
         QueryResults<CommentDto> results = query.fetchResults();
         List<CommentDto> content = results.getResults();
         long total = results.getTotal();

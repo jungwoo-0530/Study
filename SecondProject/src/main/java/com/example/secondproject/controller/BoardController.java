@@ -6,6 +6,8 @@ import com.example.secondproject.dto.CommentReadDto;
 import com.example.secondproject.dto.CommentRegisterDto;
 import com.example.secondproject.dto.paging.BoardDto;
 import com.example.secondproject.dto.BoardForm;
+import com.example.secondproject.dto.paging.CommentDto;
+import com.example.secondproject.dto.paging.CommentPageDto;
 import com.example.secondproject.dto.paging.PageDto;
 import com.example.secondproject.service.BoardService;
 import com.example.secondproject.service.CommentService;
@@ -71,7 +73,9 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{boardId}")//{boardId} : boardId를 바인딩
-    public String readBoard(@PathVariable("boardId") Long id, Model model) {
+    public String readBoard(@PathVariable("boardId") Long id, Model model,
+                            @PageableDefault(size = 10, sort = "id",
+                                    direction = Sort.Direction.DESC)Pageable pageable) {
         log.info("BoardController GetMapping readBoardForm");
 
 
@@ -79,12 +83,16 @@ public class BoardController {
         BoardDto boardDto = new BoardDto(id,board.getTitle(),
                 board.getMember().getNickname(), board.getContent());//Dto로 view로 넘기기위해서.//sql
 
-        List<CommentReadDto> commentList = new ArrayList<>();
+//        List<CommentReadDto> commentList = new ArrayList<>();
 
-        commentList = commentService.findCommentsWithMemberByBoardId(id);
+        Page<CommentDto> results = commentService.findPageSort(pageable, id);
 
+//        commentList = commentService.findCommentsWithMemberByBoardId(id);
+
+        model.addAttribute("comments", results.getContent());
+        model.addAttribute("page", new CommentPageDto(results.getTotalElements(), pageable));
         model.addAttribute("boardForm", boardDto);
-        model.addAttribute("commentList", commentList);
+//        model.addAttribute("commentList", commentList);
         model.addAttribute("commentForm", new CommentRegisterDto());
 
         return "/boards/readBoard";

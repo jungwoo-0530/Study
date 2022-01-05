@@ -3,11 +3,14 @@ package com.example.secondproject.service;
 import com.example.secondproject.domain.board.Comment;
 import com.example.secondproject.dto.CommentReadDto;
 import com.example.secondproject.dto.MyCommentDto;
+import com.example.secondproject.dto.paging.CommentDto;
 import com.example.secondproject.repository.BoardRepository;
 import com.example.secondproject.repository.CommentRepository;
 import com.example.secondproject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,11 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+
+    @Transactional(readOnly = true)
+    public Page<CommentDto> findPageSort(Pageable pageable, Long boardId) {
+        return commentRepository.findAllPageSort(pageable, boardId);
+    }
 
 
     @Transactional
