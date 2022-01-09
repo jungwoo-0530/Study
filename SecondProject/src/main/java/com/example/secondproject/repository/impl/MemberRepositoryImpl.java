@@ -42,11 +42,11 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     public Page<MemberDto> findAllPageSort(Pageable pageable) {
         JPAQuery<MemberDto> query = queryFactory
                 .select(new QMemberDto(
-                        qMember.id.as("id"),
-                        qMember.name.as("name"),
-                        qMember.nickname.as("nickname"),
-                        qMember.email.as("email"),
-                        qMember.role.as("role")
+                        qMember.id,
+                        qMember.name,
+                        qMember.nickname,
+                        qMember.email,
+                        qMember.role
                 ))
                 .from(qMember)
                 .offset(pageable.getOffset())

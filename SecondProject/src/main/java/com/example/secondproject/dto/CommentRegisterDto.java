@@ -10,6 +10,6 @@ import javax.validation.constraints.Size;
 public class CommentRegisterDto {
     private Long id;
 
-    @Size(min = 1, max = 50, message = "내용을 최소 1, 최대 50글자를 입력해주세요")
+    @Size(min = 1, max = 50, message = "내용을 최소 {min}, 최대 {max}글자를 입력해주세요")
     private String content;
 }

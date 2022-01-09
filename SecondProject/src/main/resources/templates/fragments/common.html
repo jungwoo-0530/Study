@@ -29,6 +29,12 @@
             <li class="nav-item" th:classappend="${menu} == 'users'? 'active'">
                 <a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link" href="#" th:href="@{/admin/users}">회원 목록 <span class="sr-only" th:if="${menu} == 'users'">(current)</span></a>
             </li>
+            <li class="nav-item" th:classappend="${menu} == 'users'? 'active'">
+                <a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link" href="#" th:href="@{/admin/category/add}">카테고리 추가<span class="sr-only" th:if="${menu} == 'categoryAdd'">(current)</span></a>
+            </li>
+            <li class="nav-item" th:classappend="${menu} == 'users'? 'active'">
+                <a sec:authorize="hasRole('ROLE_PROVIDER')" class="nav-link" href="#" th:href="@{/provider/item/add}">상품 등록<span class="sr-only" th:if="${menu} == 'itemAdd'">(current)</span></a>
+            </li>
 
         </ul>
 

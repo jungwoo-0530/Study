@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 
 @Service
 @Slf4j
@@ -41,9 +44,13 @@ public class MemberService {
         memberRepository.deleteById(memberId);
     }
 
+    //orElse는 Optional에 값이 있든 말든 실행.
+    //orElseThrow
     @Transactional(readOnly = true)
     public Member findOneByNickname(String nickname) {
-        return memberRepository.findOneByNickname(nickname).get();
+
+        return memberRepository.findOneByNickname(nickname).orElseThrow(NoSuchElementException::new);
+
     }
 
 
@@ -67,6 +74,6 @@ public class MemberService {
 
 
     public Member findByEmail(String name) {
-        return memberRepository.findByEmail(name).get();
+        return memberRepository.findByEmail(name).orElseThrow(NoSuchElementException::new);
     }
 }

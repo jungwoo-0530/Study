@@ -1,28 +1,28 @@
-package com.example.secondproject;
-
-import com.example.secondproject.domain.board.Board;
-import com.example.secondproject.domain.user.Member;
-import com.example.secondproject.repository.MemberRepository;
-import com.example.secondproject.service.BoardService;
-import com.example.secondproject.service.MemberService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-
-@Component
-@RequiredArgsConstructor
-@Slf4j
-public class Init {
-    private final MemberService memberService;
-    private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final BoardService boardService;
-
-
+//package com.example.secondproject;
+//
+//import com.example.secondproject.domain.board.Board;
+//import com.example.secondproject.domain.user.Member;
+//import com.example.secondproject.repository.MemberRepository;
+//import com.example.secondproject.service.BoardService;
+//import com.example.secondproject.service.MemberService;
+//import lombok.RequiredArgsConstructor;
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.stereotype.Component;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//import javax.annotation.PostConstruct;
+//
+//@Component
+//@RequiredArgsConstructor
+//@Slf4j
+//public class Init {
+//    private final MemberService memberService;
+//    private final MemberRepository memberRepository;
+//    private final PasswordEncoder passwordEncoder;
+//    private final BoardService boardService;
+//
+//
 //    @PostConstruct
 //    @Transactional
 //    public void initDB() {
@@ -51,5 +51,5 @@ public class Init {
 //        }
 //
 //    }
-
-}
+//
+//}

@@ -37,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()//인가설정.
                 .antMatchers("/admin/**").hasRole("ADMIN")//자동으로 ROLE_이 붙어서 ROLE_ADMIN으로 됨.
                 .antMatchers("/boards/**").hasRole("MEMBER")
+                .antMatchers("/provider/**").hasRole("PROVIDER")
                 .and()
                 .formLogin()//form 로그인 방식 사용.
                 .loginPage("/login")
