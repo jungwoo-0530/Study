@@ -1,8 +1,10 @@
 package com.example.secondproject.controller;
 
 import com.example.secondproject.domain.order.Category;
+import com.example.secondproject.domain.order.Item;
 import com.example.secondproject.domain.user.Member;
 import com.example.secondproject.dto.order.ItemCreateForm;
+import com.example.secondproject.dto.order.ItemDetailDto;
 import com.example.secondproject.service.CategoryService;
 import com.example.secondproject.service.ItemService;
 import com.example.secondproject.service.MemberService;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
@@ -34,7 +37,7 @@ public class ItemController {
         model.addAttribute("itemForm", new ItemCreateForm());
         model.addAttribute("categoryNames", categories);
 
-        return "/orders/itemCreate";
+        return "/orders/item/itemCreate";
     }
 
     @PostMapping("/provider/item/add")
@@ -48,7 +51,26 @@ public class ItemController {
         return "redirect:/";
     }
 
+    /////////////////////////////
+    //아이템 리스트.
+    @GetMapping("/provider/items")
+    public String itemList(Model model, Principal principal) {
+        List<Item> items = itemService.findItemsByMemberEmail(principal.getName());
+        model.addAttribute("itemList", items);
+        return null;
+    }
 
+    //아이템 상세 정보.
+    @GetMapping("/provider/items/{itemId}")
+    public String itemDetail(@PathVariable("itemId")Long itemId,
+                             Model model) {
 
+        Item item = itemService.findOneById(itemId);
+        ItemDetailDto itemDetailDto = new ItemDetailDto(item.getName(), item.getPrice(),
+                item.getStock(), item.getContent());
 
+        model.addAttribute("itemDto", itemDetailDto);
+
+        return null;
+    }
 }
