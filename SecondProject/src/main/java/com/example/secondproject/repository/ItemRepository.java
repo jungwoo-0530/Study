@@ -15,4 +15,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findItemsByMemberEmail(@Param("email")String email);
 
 
+    @Query("select i from Item i where i.category.id = :id")
+    List<Item> findItemsByCategoryId(@Param("id") Long categoryId);
 }

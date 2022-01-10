@@ -35,6 +35,9 @@
             <li class="nav-item" th:classappend="${menu} == 'users'? 'active'">
                 <a sec:authorize="hasRole('ROLE_PROVIDER')" class="nav-link" href="#" th:href="@{/provider/item/add}">상품 등록<span class="sr-only" th:if="${menu} == 'itemAdd'">(current)</span></a>
             </li>
+            <li class="nav-item" th:classappend="${menu} == 'users'? 'active'">
+                <a class="nav-link" href="#" th:href="@{/items}">상품<span class="sr-only" th:if="${menu} == 'items'">(current)</span></a>
+            </li>
 
         </ul>
 
