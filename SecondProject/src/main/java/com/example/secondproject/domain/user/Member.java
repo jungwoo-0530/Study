@@ -46,7 +46,4 @@ public class Member {
         this.setRole(role);
     }
 
-
-    //주소는 api사용
-
 }

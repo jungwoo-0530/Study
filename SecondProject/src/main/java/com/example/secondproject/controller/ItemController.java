@@ -3,15 +3,15 @@ package com.example.secondproject.controller;
 import com.example.secondproject.domain.order.Category;
 import com.example.secondproject.domain.order.Item;
 import com.example.secondproject.domain.user.Member;
-import com.example.secondproject.dto.order.ItemCreateForm;
-import com.example.secondproject.dto.order.ItemDetailDto;
+import com.example.secondproject.dto.order.ItemDto;
+import com.example.secondproject.dto.order.provider.ItemCreateForm;
+import com.example.secondproject.dto.order.provider.ItemDetailDto;
 import com.example.secondproject.dto.order.ItemList;
 import com.example.secondproject.service.CategoryService;
 import com.example.secondproject.service.ItemService;
 import com.example.secondproject.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,18 +43,23 @@ public class ItemController {
         return "/orders/item/itemList";
     }
 
-    //DTO사용해야할 것. 나중에.
     @GetMapping("/items/{categoryId}/{itemId}")
     public String itemDetail(@PathVariable("itemId") Long itemId,
                              @PathVariable("categoryId") Long categoryId,
                              Model model) {
 
-        Item item = itemService.findOneById(itemId);
+        ItemDto item = itemService.findItemDtoById(itemId);
 
         model.addAttribute("item", item);
 
         return "/orders/item/itemDetail";
     }
+
+
+
+
+/////////////////////////////provider//////////////////////////////////
+
 
     @GetMapping("/provider/item/add")
     public String createItem(Model model) {

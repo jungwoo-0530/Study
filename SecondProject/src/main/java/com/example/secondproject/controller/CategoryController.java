@@ -1,18 +1,13 @@
 package com.example.secondproject.controller;
 
-import com.example.secondproject.domain.order.Category;
-import com.example.secondproject.dto.order.CategoryCreateForm;
+import com.example.secondproject.dto.order.provider.CategoryCreateForm;
 import com.example.secondproject.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.junit.experimental.categories.Categories;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor

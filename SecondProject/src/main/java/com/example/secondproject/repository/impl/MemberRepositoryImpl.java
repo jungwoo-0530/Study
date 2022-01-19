@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.example.secondproject.domain.user.QMember.member;
@@ -29,6 +30,7 @@ import static com.example.secondproject.domain.user.QMember.member;
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
 //    public MemberRepositoryImpl(JPAQueryFactory queryFactory) {
 //        this.queryFactory = queryFactory;

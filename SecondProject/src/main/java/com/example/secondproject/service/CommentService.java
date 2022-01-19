@@ -40,6 +40,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<MyCommentDto> findCommentsWithBoardByEmail(String email) {
         List<Comment> comments = commentRepository.findCommentsWithBoardByEmail(email);
+
         List<MyCommentDto> myCommentDtos = new ArrayList<>();
         for (Comment comment : comments) {
             MyCommentDto myCommentDto = new MyCommentDto(comment.getId(), comment.getBoard().getTitle(),

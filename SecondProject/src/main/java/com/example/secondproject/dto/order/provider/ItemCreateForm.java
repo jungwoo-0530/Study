@@ -1,16 +1,23 @@
-package com.example.secondproject.dto.order;
+package com.example.secondproject.dto.order.provider;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.Lob;
 
 @Data
-@AllArgsConstructor
-public class ItemDetailDto {
+public class ItemCreateForm {
+
+    private Long id;
+
     private String name;
+
     private int price;
+
     private int stock;
+
+    private String categoryName;
+
     @Lob
     private String content;
 }

@@ -1,4 +1,4 @@
-package com.example.secondproject.dto.order;
+package com.example.secondproject.dto.order.provider;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

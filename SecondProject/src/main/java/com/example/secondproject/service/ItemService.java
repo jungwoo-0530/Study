@@ -3,7 +3,8 @@ package com.example.secondproject.service;
 import com.example.secondproject.domain.order.Category;
 import com.example.secondproject.domain.order.Item;
 import com.example.secondproject.domain.user.Member;
-import com.example.secondproject.dto.order.ItemCreateForm;
+import com.example.secondproject.dto.order.ItemDto;
+import com.example.secondproject.dto.order.provider.ItemCreateForm;
 import com.example.secondproject.dto.order.ItemList;
 import com.example.secondproject.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,15 @@ public class ItemService {
         return itemRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
+    @Transactional(readOnly = true)
+    public ItemDto findItemDtoById(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return new ItemDto(id, item.getName(), item.getPrice(),
+                item.getContent());
+    }
 
+
+    @Transactional(readOnly = true)
     public List<ItemList> findItemsByCategoryId(Long categoryId) {
 
         List<Item> items = itemRepository.findItemsByCategoryId(categoryId);
