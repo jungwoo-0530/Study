@@ -69,11 +69,15 @@ public class BoardService {
     public List<BoardDto> findBoardsWithMemberByMemberId(Long id) {
         List<Board> boards = boardRepository.findBoardsWithMemberByMemberId(id);
         List<BoardDto> boardDtos = new ArrayList<>();
+
+//        boards.forEach(b -> new BoardDto(b.getId(), b.getTitle(),
+//                b.getMember().getNickname(), b.getContent()));
         for (Board board : boards ) {
             BoardDto boardDto = new BoardDto(board.getId(), board.getTitle(),
                     board.getMember().getNickname(), board.getContent());
             boardDtos.add(boardDto);
         }
+
         return boardDtos;
     }
 }
