@@ -19,6 +19,8 @@ public class Main {
         Supplier<String> supplier = () -> "Hello";
         System.out.println(supplier.get());
 
+        System.out.println("new Branch");
+
 
         System.out.println("main");
     }
