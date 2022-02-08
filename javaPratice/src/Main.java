@@ -19,8 +19,7 @@ public class Main {
         Supplier<String> supplier = () -> "Hello";
         System.out.println(supplier.get());
 
-        CSVReader
 
-
+        System.out.println("main");
     }
 }
