@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d15843e7-26ee-4531-b574-97c1f253dc9d" name="Changes" comment="fixup! CSVReader" />
+    <list default="true" id="d15843e7-26ee-4531-b574-97c1f253dc9d" name="Changes" comment="Docs: &quot;C++: STL&quot;">
+      <change afterPath="$PROJECT_DIR$/Java/애너테이션.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,7 +46,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1666950420527</updated>
-      <workItem from="1666950421672" duration="822000" />
+      <workItem from="1666950421672" duration="1427000" />
     </task>
     <task id="LOCAL-00001" summary="Docs: &quot;C++: STL&quot;">
       <created>1666950488860</created>
