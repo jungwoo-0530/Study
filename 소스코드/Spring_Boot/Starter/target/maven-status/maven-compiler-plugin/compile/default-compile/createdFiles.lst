@@ -1,0 +1,5 @@
+META-INF/spring-autoconfigure-metadata.properties
+META-INF/spring-configuration-metadata.json
+boot/jungwoo/HolomanConfiguration.class
+boot/jungwoo/HolomanProperties.class
+boot/jungwoo/Holoman.class

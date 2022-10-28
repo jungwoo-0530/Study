@@ -1,0 +1,105 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common ::head('My frist')">
+</head>
+
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('join')">
+</nav>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+</body>
+
+<!--내용-->
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+</style>
+<body class="bg-light">
+<div class="container">
+    <hr/>
+    <div class="row">
+        <div class="col-md-10">
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>제목</th>
+                    <td th:text="${boardForm.title}"></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>작성자</th>
+                    <td th:text="${boardForm.nickname}"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" th:text="${boardForm.content}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-right">
+                <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/edit(id=${boardForm.id})}" methods="get">수정</a>
+                <form id="delete-form" th:action="@{/boards/{id}/delete(id=${boardForm.id})}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-primary">삭제</button>
+                </form>
+                <!--            <a type="button" class="btn btn-primary" th:href="@{/boards/{id}/delete(id=${boardForm.id})}">삭제</a>-->
+                <a type="button" class="btn btn-primary" th:href="@{/boards}">목록</a>
+            </div>
+            <form method="post" th:action="@{/boards/{boardId}(boardId=${boardForm.id})}" th:object="${commentForm}" >
+                <table>
+                    <thead>
+                    <tr>
+                        <th>
+                            <label for="content">댓글</label>
+                            <textarea class="form-control" id="content" th:field="*{content}" rows="2" cols="100"></textarea>
+                            <p th:if="${#fields.hasErrors('content')}" th:errors = "*{content}"></p>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-primary">확인</button>
+                </div>
+            </form>
+
+            <div>총 건수 : <span th:text="${page.getTotal()}"></span></div>
+            <table class="table">
+                <thead>
+                <tr>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="comment : ${comments}">
+                    <td th:text="${comment.nickname}"></td>
+                    <td th:text="${comment.content}"></td>
+                </tr>
+                </tbody>
+
+            </table>
+            <div class="text-center">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm">
+                        <li th:if="${page.isPrev()}" class="page-item"><a th:href="@{/boards/{boardId}?page={page}(page = ${page.getCurPage()-1}, boardId = ${boardForm.id})}" class="page-link" href="#">Prev</a></li>
+                        <li th:unless="${page.isPrev()}" class="page-item disabled"><a class="page-link">Prev</a></li>
+                        <li class="page-item" th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
+                            <a th:href="@{/boards/{boardId}?page={page}(page = ${index.current-1}, boardId = ${boardForm.id})}" th:text="${num}" class="page-link" href="">1</a>
+                        </li>
+                        <li th:if="${page.isNext()}" class="page-item"><a th:href="@{/boards?page={page}(page = ${page.getCurPage()+1})}" class="page-link" href="#">Next</a></li>
+                        <li th:unless="${page.isNext()}" class="page-item disabled"><a class="page-link">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <hr/>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="form-validation.js"></script>
+</body>
+
+</html>

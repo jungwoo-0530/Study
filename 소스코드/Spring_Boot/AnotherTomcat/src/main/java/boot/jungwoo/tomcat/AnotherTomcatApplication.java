@@ -1,0 +1,13 @@
+package boot.jungwoo.tomcat;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AnotherTomcatApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(AnotherTomcatApplication.class, args);
+    }
+
+}
