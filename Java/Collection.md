@@ -535,3 +535,16 @@
 
 
 
+
+
+
+
+
+
+------------------
+
+## List<String, String> - https://www.techiedelight.com/ko/five-alternatives-pair-class-java/
+
+- 지원하지 않는다.
+- 정 만들고 싶으면 `Pair`를 사용해서 만들 수 있다.
+- 

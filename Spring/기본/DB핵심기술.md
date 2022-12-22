@@ -20,8 +20,14 @@
 
 ### DataSource
 
+- DriverManager의 대안
+- DataSource를 통해 Connection Pool을 활용할 수 있다.
+  - 즉, Connection Pool을 관리
+  - <img src="img/DB핵심기술/Screenshot of Safari (2022-12-15 6-10-57 PM).png" alt="Screenshot of Safari (2022-12-15 6-10-57 PM)" style="zoom:50%;" />
+- **DataSource의 구현체로  HikariCP가 있다.**
+
 - DB와 관계된 커넥션 정보, 커넥션을 위한 standard method를 담고있으며 빈으로 등록하여 인자로 넘겨준다.
-  - 이 과정을 통해 Spring은 DataSource로 DB와 연결을 획득한다.
+  - 이 과정을 통해 Spring은 DataSource로 DB와 Connection객체를 획득한다.
     - DB 서버와의 연결을 해준다.
     - DB Connection pooling 기능
 - spring boot에서는 `spring-boot-starter-jdbc` 또는 `spring-boot-starter-data-jpa`를 추가하면 Spring Boot에서는 DataSource를 관리를 위한 구현체로써 tomcat-jdbc를 default를 제공한다.
@@ -548,7 +554,7 @@ Database Connection을 위한 DataSource 설정이 완료되었다면, JDBC Temp
 - **다양한 쿼리 방법을 지원**
   - **JPQL**
   - JPA Criteria
-  - **QuertDSL**
+  - **QueryDSL**
   - 네이티브 SQL
   - JDBC API 직접 사용, MyBatis, SpringJdbcTemplate 함께 사용
 
@@ -792,17 +798,17 @@ transactionManager 빈(트랜잭션 처리 기능) = entityManagerFactory
       public DataSource routingDataSource(@Qualifier("masterDataSource") DataSource master,
                                           @Qualifier("slaveDataSource") DataSource slave) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
-    
+      
         HashMap<Object, Object> sources = new HashMap<>();
         sources.put(DATASOURCE_KEY_MASTER, master);
         sources.put(DATASOURCE_KEY_SLAVE, slave);
-    
+      
         routingDataSource.setTargetDataSources(sources);
         routingDataSource.setDefaultTargetDataSource(master);
-    
+      
         return routingDataSource;
       }
-    
+      
     @Primary
       @Bean
       public DataSource dataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
@@ -1320,19 +1326,113 @@ https://data-make.tistory.com/616
 
 
 
+------------------
+
+DataSource
+
+- 인터페이스
+
+- Spring은 DataSource 구현체로 DB와의 연결을 획득한다.
+
+- 즉, 커넥션 풀에서 커넥션을 얻어오고 반납한다.
+
+- ```java
+  public Connection getConnection(final long hardTimeout) throws SQLException
+  {
+    suspendResumeLock.acquire();
+    final long startTime = currentTime();
+  
+    try {
+      long timeout = hardTimeout;
+      do {
+        PoolEntry poolEntry = connectionBag.borrow(timeout, MILLISECONDS);
+        if (poolEntry == null) {
+          break; // We timed out... break and throw exception
+        }
+  
+        final long now = currentTime();
+        if (poolEntry.isMarkedEvicted() || (elapsedMillis(poolEntry.lastAccessed, now) > aliveBypassWindowMs && !isConnectionAlive(poolEntry.connection))) {
+          closeConnection(poolEntry, poolEntry.isMarkedEvicted() ? EVICTED_CONNECTION_MESSAGE : DEAD_CONNECTION_MESSAGE);
+          timeout = hardTimeout - elapsedMillis(startTime);
+        }
+        else {
+          metricsTracker.recordBorrowStats(poolEntry, startTime);
+          return poolEntry.createProxyConnection(leakTaskFactory.schedule(poolEntry), now);
+        }
+      } while (timeout > 0L);
+  
+      metricsTracker.recordBorrowTimeoutStats(startTime);
+      throw createTimeoutException(startTime);
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new SQLException(poolName + " - Interrupted during connection acquisition", e);
+    }
+    finally {
+      suspendResumeLock.release();
+    }
+  }
+  ```
 
 
 
 
 
+JDBC(Java Database Connectivity)
+
+- 데이터베이스에 접근할 수 있게 해주는 자바에서 제공하는 API(Application Programming Interface)
+- 불편함이 존재
+  - JDBC Driver 로드
+  - 유 dusruf
+
+
+
+JdbcTemplate
+
+- Spring에서 제공하는 클래스로 JDBC API의 불편함을 해소시켜주는 역할
+  - JDBC API의 불편함.
+    - DB연결, 트랜잭션, 
+    - 이러한 반복적인 루틴을 알아서 해준다.
+- 내부적으로 JDBC API의 루틴이 정의되어 있다. 
+  - 즉, 우리는 쿼리만 작성하면 JDBC API의 불편함은 알아서 해준다.
+- 
+
+- Spring 
 
 
 
 
 
+JPA(Java Persistence API)
+
+- 자바에서 만듬.
+- 이것도 JdbcTemplate과 마찬가지로 내부적으로 JDBC API의 루틴이 정의되어 있다.
 
 
 
+Spring Data Jpa
+
+- Spring Data JPA가 JPA를 추상화 시킨 Repository 인터페이스 제공.
+  - 추상화 시킨 Repository 제공 -> Repositroy의 내부적으로 JPA를 사용함
+    - 사용자가 Repository 인터페이스에 정해진 규칙대로 메소드를 입력시
+    - Spring이 알아서 JPA를 사용해 메소드 이름에 적합한 쿼리를 날려준다.
+- JPA + JDBC API
+
+
+
+DAO -> JDBC API 
+
+
+
+Java
+
+- JDBC API
+- JPA
+
+Spring
+
+- JdbcTemplate
+- Spring Data JPA
 
 
 

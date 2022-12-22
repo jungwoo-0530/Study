@@ -6,7 +6,7 @@
 
 
 
-## JDBC
+# JDBC, JPA, Spring JDBC, Spring Data Jpa
 
 
 
@@ -29,7 +29,7 @@
 - JDBC driver
 
   - 자바 프로그램의 요청을 DBMS(MySql, Oracle...)가 **이해할 수 있는 프로토콜**로 변환해주는 클라이언트 사이드 **어댑터**.
-  - 각각의 DBMS는 자신에게 알맞은 JDBC Driver를 제공하고 있음.
+  - 각각의 DBMS(Database Managemanet System)는 자신에게 알맞은 JDBC Driver를 제공하고 있음.
   - **드라이버는 어떤 DB와 연결되느냐**에 따라 **MySQL, Oracle Driver**를 선택함.
 
 
@@ -306,7 +306,9 @@ https://stackoverflow.com/questions/51923060/spring-jdbc-vs-spring-data-jdbc-and
 
 
 
-- **java가 제공하는 API**, 인터페이스로 자바 프로그램 내에서 ORM을 사용하도록 지원.
+- **java가 제공하는 API**, **인터페이스**로 자바 프로그램 내에서 ORM을 사용하도록 지원.
+
+- **인터페이스로 DB를 어떻게 사용하라고 정의한 명세의 역할**
 
 - `javax.persistance` 패키지로 정의된 API 그 자체.
 
@@ -317,7 +319,12 @@ https://stackoverflow.com/questions/51923060/spring-jdbc-vs-spring-data-jdbc-and
   - Entity : `@Entity` 어노테이션을 사용하면 엔티티 클래스로 등록.
   - EntityManager
     - entity instance를 생성/삭제하거나 탐색하기 위한 매니저 객체
+    - 즉, Entity를 관리하는 역할
+    - **스레드간 공유하지 않으므로** 각각의 스레드가 서로 다른 `EntityManager`를 사용하고 반납.
     - 객체의 persistency를 관리하는 객체를 Persistence context라고 부름.
+  - hibernate.dialect
+    - JPA는 특정 데이터베이스에 종속되지 않습니다.
+    - 각각의 데이터베이스가 제공하는 SQL 문법과 함수는 다르기 때문에 JPA에서는 dialect로 특정 데이터베이스를 지정할 수 있습니다.
 
 - 사용자가 원하는 JPA 구현체를 선택해서 사용할 수 있다.
 
@@ -325,9 +332,45 @@ https://stackoverflow.com/questions/51923060/spring-jdbc-vs-spring-data-jdbc-and
 
   - 이 구현체들을 **ORM Framework**라고 부른다.
 
-    
+- 내부 동작
+- <img src="img/JDBC/Screenshot of Typora (2022-11-16 12-08-23 PM).png" alt="Screenshot of Typora (2022-11-16 12-08-23 PM)" style="zoom:50%;" />
+  - 요청이 들어오면 `EntityManagerFactory`가 각 요청마다 `EntityManager`를 생성해주고, `EntityManager`는 커넥션 풀을 이용해 DB에 접근한다.
+- `EntityManagerFactory`는 하나만 생성해서 애플리케이션 전체에서 공유한다.
+  - `EntityManager`는 스레드간 공유하지 않는다.
 
-### 1) ORM
+
+
+
+### 1) Entity
+
+- 엔티티의 생명 주기
+
+  - <img src="img/JDBC/Screenshot of Typora (2022-11-16 12-14-46 PM).png" alt="Screenshot of Typora (2022-11-16 12-14-46 PM)" style="zoom:50%;" />
+
+  - 비영속(new / transient) : 영속성 컨텍스트와 전혀 관계가 없는 새로운 상태
+
+  - 영속 (managed) : 영속성 컨텍스트에 관리되는 상태
+
+    - ```java
+      //객체를 생성한 상태(비영속) 
+      Member member = new Member(); 
+      member.setId("member1"); 
+      member.setUsername(“회원1”);
+      
+      EntityManager em = emf.createEntityManager();
+      em.getTransaction().begin();
+      
+      //객체를 저장한 상태(영속)
+      em.persist(member);
+      ```
+
+      
+
+  - 준영속 (detached) : 영속성 컨텍스트에 저장되었다가 분리된 상태
+
+  - 삭제 (removed) : 삭제된 상태
+
+### 2) ORM
 
 지속성(persistence)을 유지하기 위해 도입된 개념.
 
@@ -335,7 +378,7 @@ https://stackoverflow.com/questions/51923060/spring-jdbc-vs-spring-data-jdbc-and
 
 
 
-### 2) 기본적인 CRUD
+### 3) 기본적인 CRUD
 
 - Create
 
@@ -381,9 +424,11 @@ https://stackoverflow.com/questions/51923060/spring-jdbc-vs-spring-data-jdbc-and
 
 
 
-### 3) JPQL
+### 4) JPQL
 
 - entity의 persistent state를 관리하기 위한 쿼리
+
+- **JPQL은 테이블이 아닌 엔티티 객체를 대상으로 검색할 수 있도록 도와준다.**
 
 - SQL이랑 유사한 문법을 사용함
 
@@ -431,7 +476,32 @@ https://stackoverflow.com/questions/51923060/spring-jdbc-vs-spring-data-jdbc-and
 
 ## 5. Spring data JPA
 
+- <img src="img/JDBC/Screenshot of Safari (2022-11-16 12-07-15 PM).png" alt="Screenshot of Safari (2022-11-16 12-07-15 PM)" style="zoom:50%;" />
 
+- **Spring에서 제공**하는 모듈 중 하나.
+
+- **JPA를 더 쉽고 편하게 사용할 수 있도록 도와줌.**
+
+- 핵심은 `Repository`
+
+  - JPA를 한 단계 더 추상화 시킨 인터페이스
+
+  - 구현에 있어서 JPA를 사용
+
+  - `Repository` 인터페이스에 정해진 규칙대로 메소드를 사용하면, Spring이 알아서 해당 메소드 이름에 적합한 query를 날리는 구현체를 만들어서 Bean으로 등록.
+
+  - `Repository` 인터페이스의 기본 구현체는 `SimpleJpaRepsoitory`
+
+    -  `SimpleJpaRepsoitory` 내부적으로 `EntityManager`를 사용하고 있음. 
+
+  - ```java
+    @Repository
+    public interface MemberRepository extends JpaRepository<Member, Long>{
+      
+    }
+    ```
+
+    
 
 
 
@@ -497,31 +567,33 @@ Persistence Framework
 
 
 
-Spring Data JPA
-
-- Spring에서 제공하는 모듈 중 하나.
-
-- JPA를 더 쉽고 편하게 사용할 수 있도록 도와줌.
-
-- 핵심은 `Repository`
-
-  - JPA를 한 단계 더 추상화 시킨 인터페이스
-
-  - 구현에 있어서 JPA를 사용
-
-  - `Repository` 인터페이스에 정해진 규칙대로 메소드를 사용하면, Spring이 알아서 해당 메소드 이름에 적합한 query를 날리는 구현체를 만들어서 Bean으로 등록.
-
-  - `Repository` 인터페이스의 기본 구현체는 `SimpleJpaRepsoitory`
-
-    -  `SimpleJpaRepsoitory` 내부적으로 `EntityManager`를 사용하고 있음. 
-
-  - ```java
-    @Repository
-    public interface MemberRepository extends JpaRepository<Member, Long>{
-      
-    }
-    ```
-
+- - Spring Data JPA
+    
+    - Spring에서 제공하는 모듈 중 하나.
+    
+    - JPA를 더 쉽고 편하게 사용할 수 있도록 도와줌.
+    
+    - 핵심은 `Repository`
+    
+      - JPA를 한 단계 더 추상화 시킨 인터페이스
+    
+      - 구현에 있어서 JPA를 사용
+    
+      - `Repository` 인터페이스에 정해진 규칙대로 메소드를 사용하면, Spring이 알아서 해당 메소드 이름에 적합한 query를 날리는 구현체를 만들어서 Bean으로 등록.
+    
+      - `Repository` 인터페이스의 기본 구현체는 `SimpleJpaRepsoitory`
+    
+        -  `SimpleJpaRepsoitory` 내부적으로 `EntityManager`를 사용하고 있음. 
+    
+      - ```java
+        @Repository
+        public interface MemberRepository extends JpaRepository<Member, Long>{
+          
+        }
+        ```
+    
+        
+    
     
 
 
@@ -529,3 +601,21 @@ Spring Data JPA
 자바에서 만든 것 : jdbc, jpa
 
 스프링에서 만든 것 : jdbctemplate(spring jdbc), spring data jpa
+
+
+
+# 정리
+
+|         자바          |             Spring             |
+| :-------------------: | :----------------------------: |
+|         JDBC          |          JdbcTemplate          |
+|      JDBC Driver      | Spring Data Jpa(JpaRepository) |
+|     DriverManager     |                                |
+| Connection 인터페이스 |                                |
+| Statemnet 인터페이스  |                                |
+| PreparedStatement객체 |                                |
+|      Data Source      |                                |
+|          JPA          |                                |
+|     EntityManager     |                                |
+|         JPQL          |                                |
+|                       |                                |
